@@ -7,8 +7,8 @@
 workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 
 %fName = '11_06_2014_FISH_HelaL_8_list.txt';
-%fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
-fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
+fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
+%fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
 
 data = tdfread([workDir fName]);
@@ -37,22 +37,14 @@ toc
 %% Separate clusters.
 numClusters = max(class);
 clusters = cell(numClusters + 1,1);
+clustersUnshifted = cell(numClusters + 1,1);
 
 for ctr = 1:numClusters
     clusters{ctr} = dataF(class == ctr, :);
 end
+
 % Save noise points in the last element of the 'clusters' array.
 clusters{end} = dataF(class == -1, :);
-
-%% Count the number of localizations within each cluster and noise points.
-numLoc = zeros(numClusters + 1,1);
-
-for ctr = 1:numClusters
-    [numLoc(ctr), ~] = size(clusters{ctr});
-end
-
-% Noise points occupy the last element of the clusters cell array.
-[numLoc(end), ~] = size(clusters{end});
 
 %% Filter the clusters by number of localizations.
 % Remove clusters with fewer than minLoc localizations
@@ -62,6 +54,11 @@ minLoc = 50;
 
 clustersF = clusters(cellfun(@length, clusters) > minLoc);
 numClustersF = length(clustersF) - 1;
+
+%% Plot 3D scatter plot of all data points.
+% scatter3(dataF(:,1),dataF(:,2),dataF(:,3), '.k')
+% axis equal
+% grid on
 
 %% Plot filtered clusters in 3D.
 % See, for example, <http://stackoverflow.com/questions/5492806/plotting-a-surface-from-a-set-of-interior-3d-scatter-points-in-matlab>
@@ -74,11 +71,6 @@ for ctr = 1:numClustersF
     axis equal
 end
 hold off
-grid on
-
-%% Plot 3D scatter plot of all data points.
-scatter3(dataF(:,1),dataF(:,2),dataF(:,3), '.k')
-axis equal
 grid on
 
 %% Plot 3D scatter plot of cluster points and noise points.
@@ -97,11 +89,14 @@ removeLength = 9;
 fType = '.jp2';
 fNameImg = [fName(1:dateLength) 'WF' fName(dateLength:end-removeLength) fType];
 
+% Distance-to-pixel conversion factor
+dist2pix = 1/160;
+
 img = imread(fNameImg);
 imshow(img, [min(img(:)) max(img(:))])
 hold on
 for ctr = 1:numClustersF
-    scatter(clustersF{end}(:,1), clustersF{end}(:,2), 'filled')
+    plot(dist2pix * clustersF{ctr}(:,1), dist2pix * clustersF{ctr}(:,2), 'r+')
 end
 hold off
 
@@ -118,5 +113,55 @@ M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false)
 % Magnitude of the second moment
 M2Mag = sqrt(sum(M2,2));
 
-%% Plot histogram of second central moments
+%% Count the number of localizations within each cluster and noise points.
+numLoc = zeros(numClustersF + 1,1);
+
+for ctr = 1:numClusters
+    [numLoc(ctr), ~] = size(clustersF{ctr});
+end
+
+% Noise points occupy the last element of the clusters cell array.
+[numLoc(end), ~] = size(clustersF{end});
+
+%% Determine the volume of the complex hull defined by the clusters.
+% See: <http://scicomp.stackexchange.com/questions/8089/volume-of-3d-convex-hull-of-small-point-sets-all-on-the-hull>
+volume = zeros(numClustersF,1);
+
+for ctr = 1:numClustersF
+    DT = DelaunayTri(clustersF{ctr});
+    t = DT.Triangulation;
+    e1 = clustersF{ctr}(t(:,2),:) - clustersF{ctr}(t(:,1),:);
+    e2 = clustersF{ctr}(t(:,3),:) - clustersF{ctr}(t(:,1),:);
+    e3 = clustersF{ctr}(t(:,4),:) - clustersF{ctr}(t(:,1),:);
+    V = abs(dot(cross(e1,e2,2),e3,2))/6;
+    volume(ctr) = sum(V);
+end
+
+%% Plot the histogram of second central moments.
 hist(M2(1:end-1, :))
+title('Distribution of the variances from clustered groups of localizations about the x, y, and z axes')
+xlabel('Variance, nm^2')
+ylabel('Number of occurrences')
+legend('M_x^2', 'M_y^2', 'M_z^2')
+grid on
+
+%% Plot the histogram of magnitude of second moments.
+hist(M2Mag(1:end-1))
+title('Distribution of the magnitudes of the standard deviation from clustered groups of localizations')
+xlabel('Standard deviation, nm')
+ylabel('Number of occurrences')
+grid on
+
+%% Plot the histogram of the number of localizations.
+hist(numLoc(1:end-1))
+title('Distribution of the number of localizations per cluster')
+xlabel('Number of localizations')
+ylabel('Number of occurrences')
+grid on
+
+%% Plot the histogram of the volumes of the complex hulls.
+hist(volume)
+title('Distribution of the volumes of the complex hulls of the clusters')
+xlabel('Volume, nm^3')
+ylabel('Number of occurrences')
+grid on
