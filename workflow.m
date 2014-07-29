@@ -1,14 +1,14 @@
-% Workflow for analysis of the telomere data
+% Workflow for analysis of the telomere data.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/23 $ $REVISION: 0.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/29 $ $REVISION: 0.2 $
 % 
 %% Read localization data into memory.
 %workDir = 'Z:\LEB\Users\Kyle-Michael-Douglass\Projects\Telomeres\';
 workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 
 %fName = '11_06_2014_FISH_HelaL_8_list.txt';
-fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
-%fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
+%fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
+fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
 
 data = tdfread([workDir fName]);
@@ -26,7 +26,7 @@ tic
 [class, type] = dbscan(dataF, k, Eps);
 toc
 
-%% Check histogram of localization types
+%% Check histogram of localization types.
 %hist(type)
 
 %% Filter noise localizations out of data.
@@ -50,6 +50,8 @@ numLoc = zeros(numClusters + 1,1);
 for ctr = 1:numClusters
     [numLoc(ctr), ~] = size(clusters{ctr});
 end
+
+% Noise points occupy the last element of the clusters cell array.
 [numLoc(end), ~] = size(clusters{end});
 
 %% Filter the clusters by number of localizations.
@@ -89,3 +91,32 @@ hold off
 axis equal
 grid on
 
+%% Plot clustered points on top of wide field images.
+dateLength = 11;
+removeLength = 9;
+fType = '.jp2';
+fNameImg = [fName(1:dateLength) 'WF' fName(dateLength:end-removeLength) fType];
+
+img = imread(fNameImg);
+imshow(img, [min(img(:)) max(img(:))])
+hold on
+for ctr = 1:numClustersF
+    scatter(clustersF{end}(:,1), clustersF{end}(:,2), 'filled')
+end
+hold off
+
+%% Find moments of the distribution of localizations within the clusters.
+% Rows of M1 are the first moments of the distribution for each coordinate
+% of the localizations within a single cluster.
+%
+% M2 is the diagonal of the covariance matrix computed from the
+% (Xc, Yc, Zc) positions of the points within a cluster. Each row is the
+% covariance matrix diagonal of a different cluster.
+M1 = cell2mat(cellfun(@mean, clustersF, 'UniformOutput', false));
+M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false));
+
+% Magnitude of the second moment
+M2Mag = sqrt(sum(M2,2));
+
+%% Plot histogram of second central moments
+hist(M2(1:end-1, :))
