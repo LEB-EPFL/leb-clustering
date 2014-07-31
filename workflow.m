@@ -165,3 +165,24 @@ title('Distribution of the volumes of the complex hulls of the clusters')
 xlabel('Volume, nm^3')
 ylabel('Number of occurrences')
 grid on
+
+%% Make a scatter plot of the magnitude of M2 vs. the cube root of volume.
+x = volume.^(1/3);
+y = M2Mag(1:end-1);
+
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+scatter(volume.^(1/3),M2Mag(1:end-1))
+hold on
+plot(volume.^(1/3), linearFit, 'k')
+hold off
+title('Second central moments vs the cube root of volume of clusters')
+xlabel('Cube root of volume, nm')
+ylabel('(|M^2|)^{1/2}, nm')
+legend('Size of clusters', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
+grid on
