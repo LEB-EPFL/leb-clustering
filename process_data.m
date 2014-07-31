@@ -76,11 +76,11 @@ for ctr = 1:numClustersF
     volume(ctr) = sum(V);
 end
 
-%% Assign computed values to data structure for return.
-distr.M1 = M1;
-distr.M2 = M2;
-distr.M2Mag = M2Mag;
-distr.numLoc = numLoc;
+%% Assign computed values to data structure for return (without noise).
+distr.M1 = M1(1:end-1,:);
+distr.M2 = M2(1:end-1,:);
+distr.M2Mag = M2Mag(1:end-1,:);
+distr.numLoc = numLoc(1:end-1,:);
 distr.volume = volume;
 distr.fileName = fileName;
 distr.shortName = 0;
