@@ -1,6 +1,6 @@
-% Workflow for analysis of the telomere data.
+% Script for data mining in the telomere data.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/29 $ $REVISION: 0.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/31 $ $REVISION: 0.3 $
 % 
 %% Read localization data into memory.
 %workDir = 'Z:\LEB\Users\Kyle-Michael-Douglass\Projects\Telomeres\';
@@ -116,7 +116,7 @@ M2Mag = sqrt(sum(M2,2));
 %% Count the number of localizations within each cluster and noise points.
 numLoc = zeros(numClustersF + 1,1);
 
-for ctr = 1:numClusters
+for ctr = 1:numClustersF
     [numLoc(ctr), ~] = size(clustersF{ctr});
 end
 
