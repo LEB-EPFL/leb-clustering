@@ -81,14 +81,11 @@ M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false)
 M2Mag = sqrt(sum(M2,2));
 
 %% Count the number of localizations within each cluster and noise points.
-numLoc = zeros(numClustersF + 1,1);
+numLoc = zeros(numClustersF,1);
 
 for ctr = 1:numClustersF
     [numLoc(ctr), ~] = size(clustersF{ctr});
 end
-
-% Noise points occupy the last element of the clusters cell array.
-[numLoc(end), ~] = size(clustersF{end});
 
 %% Determine the volume of the complex hull defined by the clusters.
 % See: <http://scicomp.stackexchange.com/questions/8089/volume-of-3d-convex-hull-of-small-point-sets-all-on-the-hull>
