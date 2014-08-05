@@ -1,27 +1,29 @@
 % Script for data mining in the telomere data.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/31 $ $REVISION: 0.3 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/05 $ $REVISION: 0.4 $
 % 
 %% Read localization data into memory.
 %workDir = 'Z:\LEB\Users\Kyle-Michael-Douglass\Projects\Telomeres\';
 workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 
 %fName = '11_06_2014_FISH_HelaL_8_list.txt';
-fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
+%fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
+fName = 'test_data.txt';
 
 data = tdfread([workDir fName]);
 
 %% Filter out unnecessary columns and condition data for input to DBSCAN.
-dataF = [data.Xc data.Yc data.Zc];
+%dataF = [data.Xc data.Yc data.Zc];
+dataF = [data.x data.y data.z];
 
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)
 % Eps - neighborhood radius, if not known avoid this parameter or put []
-k = 8;
-Eps = 65;
+k = 5;
+Eps = 500;
 tic
 [class, type] = dbscan(dataF, k, Eps);
 toc
@@ -36,15 +38,14 @@ toc
 
 %% Separate clusters.
 numClusters = max(class);
-clusters = cell(numClusters + 1,1);
-clustersUnshifted = cell(numClusters + 1,1);
+clusters = cell(numClusters,1);
 
 for ctr = 1:numClusters
     clusters{ctr} = dataF(class == ctr, :);
 end
 
-% Save noise points in the last element of the 'clusters' array.
-clusters{end} = dataF(class == -1, :);
+% Save noise points in a separate array.
+noise = dataF(class == -1, :);
 
 %% Filter the clusters by number of localizations.
 % Remove clusters with fewer than minLoc localizations
@@ -53,7 +54,7 @@ clusters{end} = dataF(class == -1, :);
 minLoc = 50;
 
 clustersF = clusters(cellfun(@length, clusters) > minLoc);
-numClustersF = length(clustersF) - 1;
+numClustersF = length(clustersF);
 
 %% Plot 3D scatter plot of all data points.
 % scatter3(dataF(:,1),dataF(:,2),dataF(:,3), '.k')
@@ -78,7 +79,8 @@ hold on
 for ctr = 1:numClustersF
     scatter3(clustersF{ctr}(:,1), clustersF{ctr}(:,2), clustersF{ctr}(:,3),'.')
 end
-scatter3(clustersF{end}(:,1), clustersF{end}(:,2), clustersF{end}(:,3),'k+','SizeData',10)
+% This also assumes that noise is the last row.
+scatter3(noise(:,1), noise(:,2), noise(:,3),'k+','SizeData',10)
 hold off
 axis equal
 grid on
@@ -114,14 +116,11 @@ M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false)
 M2Mag = sqrt(sum(M2,2));
 
 %% Count the number of localizations within each cluster and noise points.
-numLoc = zeros(numClustersF + 1,1);
+numLoc = zeros(numClustersF,1);
 
 for ctr = 1:numClustersF
     [numLoc(ctr), ~] = size(clustersF{ctr});
 end
-
-% Noise points occupy the last element of the clusters cell array.
-[numLoc(end), ~] = size(clustersF{end});
 
 %% Determine the volume of the complex hull defined by the clusters.
 % See: <http://scicomp.stackexchange.com/questions/8089/volume-of-3d-convex-hull-of-small-point-sets-all-on-the-hull>

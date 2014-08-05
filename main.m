@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/31 $ $REVISION: 0.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/31 $ $REVISION: 0.2 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -63,7 +63,7 @@ end
 LAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
 SAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
 
-for ctr = 1:length(LFiles) % CHANGE TO length(LFiles)
+for ctr = 1:length(LFiles)
     LAllData.M1 = cat(1, LAllData.M1, LProcData(ctr).M1);
     LAllData.M2 = cat(1, LAllData.M2, LProcData(ctr).M2);
     LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
@@ -112,9 +112,9 @@ xlabel('M^2, nm')
 ylabel('Normalized frequency')
 grid on
 
-%% Plot the normalized distributions.
-% Plots normalized distributions for the magnitude of the second central
-% moment, the number of localizations, and the volume.
+% Plot the normalized distributions of other quantities.
+% (Plots normalized distributions for the magnitude of the second central
+% moment, the number of localizations, and the volume.)
 for ctr = 3:4
     figure;
     [LN, LBIN] = histc(LAllData.(fields{ctr}), bins.(fields{ctr}));
@@ -163,3 +163,27 @@ xlabel('Volume^{(1/3)}, nm')
 ylabel('Normalized frequency')
 legend('L dataset', 'S dataset')
 grid on
+
+%% Report statistics from distributions.
+disp(['Number of clusters, L dataset: ' num2str(length(LAllData.numLoc), '%.2f')])
+disp([' '])
+disp(['Mean second moment size, L dataset: ' num2str(mean(LAllData.M2Mag), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(LAllData.M2Mag), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean cube root of volume, L dataset: ' num2str(mean(LAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(LAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean number of localizations, L dataset: ' num2str(mean(LAllData.numLoc), '%.2f')])
+disp(['Standard deviation: ' num2str(std(LAllData.numLoc), '%.2f')])
+disp('-------------------------------------------------------')
+disp(['Number of clusters, S dataset: ' num2str(length(SAllData.numLoc), '%.2f') ])
+disp([' '])
+disp(['Mean second moment size, S dataset: ' num2str(mean(SAllData.M2Mag), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(SAllData.M2Mag), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean cube root of volume, S dataset: ' num2str(mean(SAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(SAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean number of localizations, S dataset: ' num2str(mean(SAllData.numLoc), '%.2f')])
+disp(['Standard deviation: ' num2str(std(SAllData.numLoc), '%.2f')])
+disp(' ')

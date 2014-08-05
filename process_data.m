@@ -1,6 +1,6 @@
 % Process the data from the telomere experiments.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/31 $ $REVISION: 0.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/05 $ $REVISION: 0.2 $
 %
 
 function [distr] = process_data(fileName)
@@ -21,14 +21,14 @@ Eps = 65;
 
 %% Separate clusters.
 numClusters = max(class);
-clusters = cell(numClusters + 1,1);
+clusters = cell(numClusters,1);
 
 for ctr = 1:numClusters
     clusters{ctr} = dataF(class == ctr, :);
 end
 
-% Save noise points in the last element of the 'clusters' array.
-clusters{end} = dataF(class == -1, :);
+% Save noise points in a separate array.
+noise = dataF(class == -1, :);
 
 %% Filter the clusters by number of localizations.
 % Remove clusters with fewer than minLoc localizations
@@ -37,7 +37,7 @@ clusters{end} = dataF(class == -1, :);
 minLoc = 50;
 
 clustersF = clusters(cellfun(@length, clusters) > minLoc);
-numClustersF = length(clustersF) - 1;
+numClustersF = length(clustersF);
 
 %% Find moments of the distribution of localizations within the clusters.
 % Rows of M1 are the first moments of the distribution for each coordinate
@@ -53,14 +53,11 @@ M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false)
 M2Mag = sqrt(sum(M2,2));
 
 %% Count the number of localizations within each cluster and noise points.
-numLoc = zeros(numClustersF + 1,1);
+numLoc = zeros(numClustersF,1);
 
 for ctr = 1:numClustersF
     [numLoc(ctr), ~] = size(clustersF{ctr});
 end
-
-% Noise points occupy the last element of the clusters cell array.
-[numLoc(end), ~] = size(clustersF{end});
 
 %% Determine the volume of the complex hull defined by the clusters.
 % See: <http://scicomp.stackexchange.com/questions/8089/volume-of-3d-convex-hull-of-small-point-sets-all-on-the-hull>
@@ -76,11 +73,11 @@ for ctr = 1:numClustersF
     volume(ctr) = sum(V);
 end
 
-%% Assign computed values to data structure for return (without noise).
-distr.M1 = M1(1:end-1,:);
-distr.M2 = M2(1:end-1,:);
-distr.M2Mag = M2Mag(1:end-1,:);
-distr.numLoc = numLoc(1:end-1,:);
+%% Assign computed values to data structure for return.
+distr.M1 = M1;
+distr.M2 = M2;
+distr.M2Mag = M2Mag;
+distr.numLoc = numLoc;
 distr.volume = volume;
 distr.fileName = fileName;
 distr.shortName = 0;
