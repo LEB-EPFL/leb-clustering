@@ -7,23 +7,22 @@
 workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 
 %fName = '11_06_2014_FISH_HelaL_8_list.txt';
-%fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
+fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
-fName = 'test_data.txt';
+%fName = 'test_data.txt';
 
 data = tdfread([workDir fName]);
 
 %% Filter out unnecessary columns and condition data for input to DBSCAN.
-%dataF = [data.Xc data.Yc data.Zc];
-dataF = [data.x data.y data.z];
+dataF = [data.Xc data.Yc data.Zc];
 
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)
 % Eps - neighborhood radius, if not known avoid this parameter or put []
-k = 5;
-Eps = 500;
+k = 8;
+Eps = 65;
 tic
 [class, type] = dbscan(dataF, k, Eps);
 toc

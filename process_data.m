@@ -1,22 +1,19 @@
 % Process the data from the telomere experiments.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/05 $ $REVISION: 0.2 $
+% Arguments:
+%   dataF  - N X 3 array of unclustered point coordinates.
+%   k      - Number of objects in a neighborhood of an cluster
+%   Eps    - Neighborhood radius, if not known put []
+%   minLoc - Minimum number of points in a cluster
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/06 $ $REVISION: 0.3 $
 %
 
-function [distr] = process_data(fileName)
-%% Read the text file into memory.
-data = tdfread(fileName);
-
-%% Filter out unnecessary columns and condition data for input to DBSCAN.
-dataF = [data.Xc data.Yc data.Zc];
-clear data
-
+function [distr] = process_data(dataF, k, Eps, minLoc)
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)
 % Eps - neighborhood radius, if not known avoid this parameter or put []
-k = 8;
-Eps = 65;
 [class, ~] = dbscan(dataF, k, Eps);
 
 %% Separate clusters.
@@ -32,10 +29,6 @@ noise = dataF(class == -1, :);
 
 %% Filter the clusters by number of localizations.
 % Remove clusters with fewer than minLoc localizations
-% Minimum number of labels/telomere assuming 100% labeling efficiency: 220
-% Maximum number of labels/telomere assuming 100% labeling efficiency: 1670
-minLoc = 50;
-
 clustersF = clusters(cellfun(@length, clusters) > minLoc);
 numClustersF = length(clustersF);
 
@@ -79,7 +72,4 @@ distr.M2 = M2;
 distr.M2Mag = M2Mag;
 distr.numLoc = numLoc;
 distr.volume = volume;
-distr.fileName = fileName;
-distr.shortName = 0;
-
 end

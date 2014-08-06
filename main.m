@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/05 $ $REVISION: 0.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/06 $ $REVISION: 0.3 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -29,33 +29,41 @@ LProcData(length(LFiles),1).M2 = 0;
 LProcData(length(LFiles),1).M2Mag = 0;
 LProcData(length(LFiles),1).numLoc = 0;
 LProcData(length(LFiles),1).volume = 0;
-LProcData(length(LFiles),1).fileName = 0;
-LProcData(length(LFiles),1).shortName = 0;
 SProcData = LProcData;
 
 
 % process_data(fileName) is custom function call.
 if useParallel
     parfor ctr = 1:length(LFiles)
+        disp(num2str(ctr))
         LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
         SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
         
-        LProcData(ctr) = process_data(LFileName);
-        SProcData(ctr) = process_data(SFileName);
+        LData = tdfread(LFileName);
+        SData = tdfread(SFileName);
 
-        LProcData(ctr).shortName = LFiles(ctr).name;
-        SProcData(ctr).shortName = SFiles(ctr).name;
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        
+        LProcData(ctr) = process_data(LDataF, 8, 65, 50);
+        SProcData(ctr) = process_data(SDataF, 8, 65, 50);
     end    
 else
     for ctr = 1:length(LFiles)
         LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
         SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        
+        LData = tdfread(LFileName);
+        SData = tdfread(SFileName);
+
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        
+        LProcData(ctr) = process_data(LDataF, 8, 65, 50);
+        SProcData(ctr) = process_data(SDataF, 8, 65, 50);
 
         LProcData(ctr) = process_data(LFileName);
         SProcData(ctr) = process_data(SFileName);
-
-        LProcData(ctr).shortName = LFiles(ctr).name;
-        SProcData(ctr).shortName = SFiles(ctr).name;
     end
 end
 
