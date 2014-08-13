@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/08 $ $REVISION: 0.4 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/13 $ $REVISION: 0.5 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -13,12 +13,18 @@ if useParallel
 end
 
 %% Define clustering and filtering parameters.
-
+% k - number of objects in a neighborhood of an object 
+% (minimal number of objects considered as a cluster)
+% Eps - neighborhood radius, if not known avoid this parameter or put []
+% minLoc - Discard all clusters with localizations fewer than this number.
+k = 8;
+Eps = 65;
+minLoc = 50;
 
 %% Designate the files for analysis.
-dataRootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/';
-dataSetLDir = '11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
-dataSetSDir = '11_06_2014_Hela_S_FISH/Hela S FISH molecule lists/';
+dataRootDir = '~/Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/';
+dataSetLDir = '30_07_2014_HelaL_SmchD1_pSuper_mol_list/';
+dataSetSDir = '30_07_2014_HelaS_SmchD1_pSuper_mol_list/';
 
 LFiles = dir([dataRootDir dataSetLDir]);
 SFiles = dir([dataRootDir dataSetSDir]);
@@ -47,8 +53,8 @@ if useParallel
         LDataF = [LData.Xc LData.Yc LData.Zc];
         SDataF = [SData.Xc SData.Yc SData.Zc];
         
-        LProcData(ctr) = process_data(LDataF, 8, 65, 50);
-        SProcData(ctr) = process_data(SDataF, 8, 65, 50);
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
     end    
 else
     for ctr = 1:length(LFiles)
@@ -61,8 +67,8 @@ else
         LDataF = [LData.Xc LData.Yc LData.Zc];
         SDataF = [SData.Xc SData.Yc SData.Zc];
         
-        LProcData(ctr) = process_data(LDataF, 8, 65, 50);
-        SProcData(ctr) = process_data(SDataF, 8, 65, 50);
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
 
         LProcData(ctr) = process_data(LFileName);
         SProcData(ctr) = process_data(SFileName);
