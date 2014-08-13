@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/13 $ $REVISION: 0.5 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/13 $ $REVISION: 0.6 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -23,14 +23,14 @@ minLoc = 50;
 
 %% Designate the files for analysis.
 dataRootDir = '~/Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/';
-dataSetLDir = '30_07_2014_HelaL_SmchD1_pSuper_mol_list/';
-dataSetSDir = '30_07_2014_HelaS_SmchD1_pSuper_mol_list/';
+dataSetLDir = '30_07_2014_HelaL_SmchD1_pLVP042_mol_list/';
+dataSetSDir = '30_07_2014_HelaS_SmchD1_pLVP042_mol_list/';
 
 LFiles = dir([dataRootDir dataSetLDir]);
 SFiles = dir([dataRootDir dataSetSDir]);
-%% Filter out anomalously long file name and upper level directors.
-LFiles = LFiles(3:end-1);
-SFiles = SFiles(3:end-1);
+%% Filter out upper level directors.
+LFiles = LFiles(3:end);
+SFiles = SFiles(3:end);
 
 %% Process the data within each file.
 LProcData(length(LFiles),1).M1 = 0;
@@ -38,40 +38,41 @@ LProcData(length(LFiles),1).M2 = 0;
 LProcData(length(LFiles),1).M2Mag = 0;
 LProcData(length(LFiles),1).numLoc = 0;
 LProcData(length(LFiles),1).volume = 0;
-SProcData = LProcData;
+
+SProcData(length(SFiles),1).M1 = 0;
+SProcData(length(SFiles),1).M2 = 0;
+SProcData(length(SFiles),1).M2Mag = 0;
+SProcData(length(SFiles),1).numLoc = 0;
+SProcData(length(SFiles),1).volume = 0;
 
 
 % process_data(fileName) is custom function call.
 if useParallel
     parfor ctr = 1:length(LFiles)
         LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
-        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
-        
         LData = tdfread(LFileName);
-        SData = tdfread(SFileName);
-
         LDataF = [LData.Xc LData.Yc LData.Zc];
-        SDataF = [SData.Xc SData.Yc SData.Zc];
-        
         LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+    end
+    parfor ctr = 1:length(SFiles)
+        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
         SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
-    end    
+        
+    end
 else
     for ctr = 1:length(LFiles)
         LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
-        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
-        
         LData = tdfread(LFileName);
-        SData = tdfread(SFileName);
-
         LDataF = [LData.Xc LData.Yc LData.Zc];
-        SDataF = [SData.Xc SData.Yc SData.Zc];
-        
         LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+    end
+    for ctr = 1:length(SFiles)
+        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
         SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
-
-        LProcData(ctr) = process_data(LFileName);
-        SProcData(ctr) = process_data(SFileName);
     end
 end
 
@@ -85,7 +86,9 @@ for ctr = 1:length(LFiles)
     LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
     LAllData.numLoc = cat(1, LAllData.numLoc, LProcData(ctr).numLoc);
     LAllData.volume = cat(1, LAllData.volume, LProcData(ctr).volume);
-    
+end
+
+for ctr = 1:length(SFiles)
     SAllData.M1 = cat(1, SAllData.M1, SProcData(ctr).M1);
     SAllData.M2 = cat(1, SAllData.M2, SProcData(ctr).M2);
     SAllData.M2Mag = cat(1, SAllData.M2Mag, SProcData(ctr).M2Mag);
