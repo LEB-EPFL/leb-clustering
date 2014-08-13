@@ -136,7 +136,7 @@ for ctr = 1:numClustersF
 end
 
 %% Plot the histogram of second central moments.
-hist(M2(1:end-1, :))
+hist(M2)
 title('Distribution of the variances from clustered groups of localizations about the x, y, and z axes')
 xlabel('Variance, nm^2')
 ylabel('Number of occurrences')
@@ -144,14 +144,14 @@ legend('M_x^2', 'M_y^2', 'M_z^2')
 grid on
 
 %% Plot the histogram of magnitude of second moments.
-hist(M2Mag(1:end-1))
+hist(M2Mag)
 title('Distribution of the magnitudes of the standard deviation from clustered groups of localizations')
 xlabel('Standard deviation, nm')
 ylabel('Number of occurrences')
 grid on
 
 %% Plot the histogram of the number of localizations.
-hist(numLoc(1:end-1))
+hist(numLoc)
 title('Distribution of the number of localizations per cluster')
 xlabel('Number of localizations')
 ylabel('Number of occurrences')
@@ -166,7 +166,7 @@ grid on
 
 %% Make a scatter plot of the magnitude of M2 vs. the cube root of volume.
 x = volume.^(1/3);
-y = M2Mag(1:end-1);
+y = M2Mag;
 
 p = polyfit(x, y, 1);
 linearFit = polyval(p, x);
@@ -175,7 +175,7 @@ SSresid = sum(resid.^2);
 SStotal = (length(y) -1) * var(y);
 Rsq = 1 - SSresid/SStotal;
 
-scatter(volume.^(1/3),M2Mag(1:end-1))
+scatter(volume.^(1/3),M2Mag)
 hold on
 plot(volume.^(1/3), linearFit, 'k')
 hold off
