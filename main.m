@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/13 $ $REVISION: 0.6 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/21 $ $REVISION: 0.7 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -21,10 +21,13 @@ k = 8;
 Eps = 65;
 minLoc = 50;
 
+% Remove outliers in Rg vs. numLoc scaling curves.
+removeOutliers = true;
+
 %% Designate the files for analysis.
-dataRootDir = '~/Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/';
-dataSetLDir = '30_07_2014_HelaL_SmchD1_pLVP042_mol_list/';
-dataSetSDir = '30_07_2014_HelaS_SmchD1_pLVP042_mol_list/';
+dataRootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/';
+dataSetLDir = '11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
+dataSetSDir = '11_06_2014_Hela_S_FISH/Hela S FISH molecule lists/';
 
 LFiles = dir([dataRootDir dataSetLDir]);
 SFiles = dir([dataRootDir dataSetSDir]);
@@ -197,7 +200,6 @@ set(hFig, 'Position', [100, 100, 1200, 1000])
 
 x = LAllData.numLoc;
 y = LAllData.M2Mag;
-scatter(x, y, '.')
 
 % Linear regression
 p = polyfit(x, y, 1);
@@ -206,6 +208,22 @@ resid = y - linearFit;
 SSresid = sum(resid.^2);
 SStotal = (length(y) -1) * var(y);
 Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
+scatter(x, y, '.')
 
 hold on
 plot(x, linearFit, 'k')
@@ -219,6 +237,29 @@ grid on
 subplot(2,1,2)
 x = SAllData.numLoc;
 y = SAllData.M2Mag;
+
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
 scatter(x, y, 'r.')
 
 p = polyfit(x, y, 1);
@@ -249,6 +290,28 @@ set(hFig, 'Position', [100, 100, 1200, 1000])
 x = log(LAllData.numLoc);
 y = log(LAllData.M2Mag);
 
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
 % Plot the logarithmic data.
 plot(x,y,'.')
 
@@ -265,14 +328,6 @@ hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
 vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
 hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
 vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
-
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
 
 hold on
 plot(x, linearFit, 'k')
@@ -295,9 +350,30 @@ subplot(2,1,2)
 x = log(SAllData.numLoc);
 y = log(SAllData.M2Mag);
 
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
 % Plot the logarithmic data.
 plot(x,y,'r.')
-
 
 % Set scale to same as L dataset
 ylim([3 6])
@@ -315,14 +391,6 @@ vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
 hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
 vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
 
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
-
 hold on
 plot(x, linearFit, 'k')
 hold off
@@ -330,105 +398,6 @@ legend('S Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Loc
 xlabel('log number of localizations')
 ylabel('log R_g')
 text(4, 5.5, ['Slope of line: ' num2str(p(1), '%0.4f')])
-grid on
-
-% Move axis labels
-xlabh = get(gca, 'XLabel');
-set(xlabh, 'Position', get(xlabh, 'Position') - [0 .2 0])
-ylabh = get(gca, 'YLabel');
-set(ylabh, 'Position', get(ylabh, 'Position') - [.1 0 0])
-
-%% Plot the number of localizations vs cube root of volume  in a log-log plot.
-% Find the base e logarithm of the data.
-close all
-subplot(2,1,1)
-hFig = gcf();
-set(hFig, 'Position', [100, 100, 1200, 1000])
-
-x = log(LAllData.numLoc);
-y = log(LAllData.volume.^(1/3));
-
-% Plot the logarithmic data.
-plot(x,y,'.')
-
-pause(1)
-% The following renames the tick labels since Matlab does not allow for
-% easy tick labeling in logarithmic plots.
-xt = get(gca, 'XTick');
-yt = get(gca, 'YTick');
-xl = get(gca, 'XLim');
-yl = get(gca, 'YLim');
-set(gca, 'XTickLabel', [])
-set(gca, 'YTickLabel', [])
-hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
-vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
-hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
-vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
-
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
-
-hold on
-plot(x, linearFit, 'k')
-hold off
-legend('L Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
-xlabel('log number of localizations')
-ylabel('log volume^{(1/3)}')
-title('Size of clusters vs. the number of localizations, log-log plot')
-text(4, 5.6, ['Slope of line: ' num2str(p(1), '%0.4f')])
-grid on
-
-% Move axis labels
-xlabh = get(gca, 'XLabel');
-set(xlabh, 'Position', get(xlabh, 'Position') - [0 .2 0])
-ylabh = get(gca, 'YLabel');
-set(ylabh, 'Position', get(ylabh, 'Position') - [.1 0 0])
-
-% S dataset
-subplot(2,1,2)
-x = log(SAllData.numLoc);
-y = log(SAllData.volume.^(1/3));
-
-% Plot the logarithmic data.
-plot(x,y,'r.')
-
-
-% Set scale to same as L dataset
-ylim([3.5 6])
-
-% The following renames the tick labels since Matlab does not allow for
-% easy tick labeling in logarithmic plots.
-set(gca, 'XTickLabel', [])
-set(gca, 'YTickLabel', [])
-xt = get(gca, 'XTick');
-yt = get(gca, 'YTick');
-xl = get(gca, 'XLim');
-yl = get(gca, 'YLim');
-hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
-vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
-hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
-vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
-
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
-
-hold on
-plot(x, linearFit, 'k')
-hold off
-legend('S Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
-xlabel('log number of localizations')
-ylabel('log volume^{(1/3)}')
-text(4, 5.6, ['Slope of line: ' num2str(p(1), '%0.4f')])
 grid on
 
 % Move axis labels
