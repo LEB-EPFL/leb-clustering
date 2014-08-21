@@ -6,7 +6,7 @@
 %   Eps    - Neighborhood radius, if not known put []
 %   minLoc - Minimum number of points in a cluster
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/06 $ $REVISION: 0.3 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/21 $ $REVISION: 0.4 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc)
@@ -58,12 +58,18 @@ volume = zeros(numClustersF,1);
 
 for ctr = 1:numClustersF
     DT = DelaunayTri(clustersF{ctr});
-    t = DT.Triangulation;
-    e1 = clustersF{ctr}(t(:,2),:) - clustersF{ctr}(t(:,1),:);
-    e2 = clustersF{ctr}(t(:,3),:) - clustersF{ctr}(t(:,1),:);
-    e3 = clustersF{ctr}(t(:,4),:) - clustersF{ctr}(t(:,1),:);
-    V = abs(dot(cross(e1,e2,2),e3,2))/6;
-    volume(ctr) = sum(V);
+    try
+        t = DT.Triangulation;
+        e1 = clustersF{ctr}(t(:,2),:) - clustersF{ctr}(t(:,1),:);
+        e2 = clustersF{ctr}(t(:,3),:) - clustersF{ctr}(t(:,1),:);
+        e3 = clustersF{ctr}(t(:,4),:) - clustersF{ctr}(t(:,1),:);
+        V = abs(dot(cross(e1,e2,2),e3,2))/6;
+        volume(ctr) = sum(V);
+    catch
+        display('Unable to compute volume of the current cluster. Delaunay triangulation may not exist.')
+        display('Setting volume of current cluster to 0...')
+        volume(ctr) = 0;
+    end
 end
 
 %% Assign computed values to data structure for return.
