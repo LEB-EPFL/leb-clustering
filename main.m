@@ -25,16 +25,41 @@ minLoc = 50;
 % All datasets are comparisons between two populations, typically Hela L
 % cells and Hela S cells, or between two different transfections.
 % Therefore, each experiment consists of two datasets.
-data(1).shortName = '11-08-2014 HelaL pLVP042';
+data(1).shortName = '11-08-2014 pSuper';
 data(1).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
-data(1).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP042_non filtered/';
-data(1).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/';
+data(1).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pSuper_non filtered/';
+data(1).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pSuper_non filtered/';
 data(1).dataset1ShortName = 'L dataset';
 data(1).dataset2ShortName = 'S dataset';
+data(1).distributions1 = [];
+data(1).distributions2 = [];
+data(1).fits = [];
+
+data(2).shortName = '11-08-2014 pLVP041';
+data(2).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+data(2).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP041_non filtered/';
+data(2).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP041_non filtered/';
+data(2).dataset1ShortName = 'L dataset';
+data(2).dataset2ShortName = 'S dataset';
+data(2).distributions1 = [];
+data(2).distributions2 = [];
+data(2).fits = [];
+
+data(3).shortName = '11-08-2014 pLVP042';
+data(3).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+data(3).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP042_non filtered/';
+data(3).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/';
+data(3).dataset1ShortName = 'L dataset';
+data(3).dataset2ShortName = 'S dataset';
+data(3).distributions1 = [];
+data(3).distributions2 = [];
+data(3).fits = [];
 
 for dataCtr = 1:length(data)
-completeDir1 = [data(1).rootDir data(1).dataset1Dir];
-completeDir2 = [data(1).rootDir data(1).dataset2Dir];
+% Loops over all the data files defined above.
+
+completeDir1 = [data(dataCtr).rootDir data(dataCtr).dataset1Dir];
+completeDir2 = [data(dataCtr).rootDir data(dataCtr).dataset2Dir];
 
 LFiles = dir(completeDir1);
 SFiles = dir(completeDir2);
@@ -44,6 +69,7 @@ LFiles = LFiles(3:end);
 SFiles = SFiles(3:end);
 
 %% Process the data within each file.
+clear LProcData SProcData
 LProcData(length(LFiles),1).M1 = 0;
 LProcData(length(LFiles),1).M2 = 0;
 LProcData(length(LFiles),1).M2Mag = 0;
@@ -122,7 +148,12 @@ for ctr = 1:numel(fields)
     bins.(fields{ctr}) = linspace(minBin, maxBin, numBins);    
 end
 
+% Write distributions out to the external data structure.
+data(dataCtr).distributions1 = LAllData;
+data(dataCtr).distributions2 = SAllData;
+
 %% Plot the normalized distributions of the cluster statistics.
+close all
 [LN, LBIN] = histc(LAllData.M2, bins.M2);
 [SN, SBIN] = histc(SAllData.M2, bins.M2);
 
@@ -241,6 +272,7 @@ xlim([0 700])
 ylim([0 300])
 
 % Work with the second dataset.
+pause(1)
 subplot(2,1,2)
 x2 = SAllData.numLoc;
 y2 = SAllData.M2Mag;
@@ -269,9 +301,13 @@ ylabel('R_g, nm')
 xlim([0 700])
 ylim([0 300])
 
-% Store fits into a cell array.
-fitDataset1 = {fit1, fitNoOutliers1, fitRobust1};
-fitDataset2 = {fit2, fitNoOutliers2, fitRobust2};
+% Store fits in the external data array.
+data(dataCtr).fits.fit1 = fit1;
+data(dataCtr).fits.fitNoOutliers1 = fitNoOutliers1;
+data(dataCtr).fits.fitRobust1 = fitRobust1;
+data(dataCtr).fits.fit2 = fit2;
+data(dataCtr).fits.fitNoOutliers2 = fitNoOutliers2;
+data(dataCtr).fits.fitRobust2 = fitRobust2;
 
 %% Report statistics from distributions.
 disp(['Statistics for experiment ' data(dataCtr).shortName '.'])
