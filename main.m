@@ -3,7 +3,11 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
+<<<<<<< HEAD
 % $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/25 $ $REVISION: 0.8 $
+=======
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/22 $ $REVISION: 0.8 $
+>>>>>>> 0ac52d959f81c45064dfc2c3bbba5006892e0275
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -22,6 +26,7 @@ Eps = 65;
 minLoc = 50;
 
 %% Designate the files for analysis.
+<<<<<<< HEAD
 % All datasets are comparisons between two populations, typically Hela L
 % cells and Hela S cells, or between two different transfections.
 % Therefore, each experiment consists of two datasets.
@@ -31,6 +36,14 @@ data(1).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/';
 
 LFiles = dir([data(1).rootDir data(1).dataset1Dir]);
 SFiles = dir([data(1).rootDir data(1).dataset2Dir]);
+=======
+dataRootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+dataSetLDir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP042_non filtered/';
+dataSetSDir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/';
+
+LFiles = dir([dataRootDir dataSetLDir]);
+SFiles = dir([dataRootDir dataSetSDir]);
+>>>>>>> 0ac52d959f81c45064dfc2c3bbba5006892e0275
 %% Filter out upper level directors.
 LFiles = LFiles(3:end);
 SFiles = SFiles(3:end);
@@ -237,7 +250,11 @@ subplot(2,1,2)
 x2 = SAllData.numLoc;
 y2 = SAllData.M2Mag;
 
+<<<<<<< HEAD
 [fit2,gof2,fitinfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
+=======
+[fit1,gof2,fitinfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
+>>>>>>> 0ac52d959f81c45064dfc2c3bbba5006892e0275
 
 residuals = fitinfo2.residuals;
 
@@ -248,7 +265,11 @@ fitNoOutliers2 = fit(x2,y2,f,'StartPoint', [17 0.33], 'Exclude',outliers);
 
 fitRobust2 = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
 
+<<<<<<< HEAD
 plot(fit2,'b-', x2, y2, 'k.', outliers, 'm*')
+=======
+plot(fit1,'b-', x2, y2, 'k.', outliers, 'm*')
+>>>>>>> 0ac52d959f81c45064dfc2c3bbba5006892e0275
 hold on
 plot(fitNoOutliers2,'r--')
 plot(fitRobust2,'g-')
@@ -260,10 +281,13 @@ xlabel('Number of localizations')
 ylabel('R_g, nm')
 xlim([0 700])
 ylim([0 300])
+<<<<<<< HEAD
 
 % Store fits into a cell array.
 fitDataset1 = {fit1, fitNoOutliers1, fitRobust1};
 fitDataset2 = {fit2, fitNoOutliers2, fitRobust2};
+=======
+>>>>>>> 0ac52d959f81c45064dfc2c3bbba5006892e0275
 
 %% Report statistics from distributions.
 disp(['Number of clusters, L dataset: ' num2str(length(LAllData.numLoc), '%d')])
