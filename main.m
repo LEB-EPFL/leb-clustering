@@ -3,14 +3,14 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/21 $ $REVISION: 0.7 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/22 $ $REVISION: 0.8 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
 
-if useParallel
-    matlabpool open
-end
+% if useParallel
+%     matlabpool open
+% end
 
 %% Define clustering and filtering parameters.
 % k - number of objects in a neighborhood of an object 
@@ -25,9 +25,9 @@ minLoc = 50;
 removeOutliers = true;
 
 %% Designate the files for analysis.
-dataRootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/';
-dataSetLDir = '11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
-dataSetSDir = '11_06_2014_Hela_S_FISH/Hela S FISH molecule lists/';
+dataRootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+dataSetLDir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP042_non filtered/';
+dataSetSDir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/';
 
 LFiles = dir([dataRootDir dataSetLDir]);
 SFiles = dir([dataRootDir dataSetSDir]);
@@ -62,7 +62,6 @@ if useParallel
         SData = tdfread(SFileName);
         SDataF = [SData.Xc SData.Yc SData.Zc];
         SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
-        
     end
 else
     for ctr = 1:length(LFiles)
@@ -192,219 +191,75 @@ ylabel('Normalized frequency')
 legend('L dataset', 'S dataset')
 grid on
 
-%% Plot square root of the radius of gyration vs number of localizations.
-% Set the size of the figure window.
+%% Perform a nonlinear least squares regression on Rg vs. number of localizations
+% For a good discussion on fitting in Matlab, particularly robust fitting,
+% see:
+% <http://www.mathworks.ch/ch/help/curvefit/least-squares-fitting.html>
+
+% For analytical expressions of the coefficients from nonlinear least
+% squares fitting to a power law, see:
+% <http://mathworld.wolfram.com/LeastSquaresFittingPowerLaw.html>
+
+% Work with the first dataset.
+f = fittype('a*x.^b');
+
+FigHandle = figure('Position', [100, 100, 800, 800]);
 subplot(2,1,1)
-hFig = gcf();
-set(hFig, 'Position', [100, 100, 1200, 1000])
+x1 = LAllData.numLoc;
+y1 = LAllData.M2Mag;
 
-x = LAllData.numLoc;
-y = LAllData.M2Mag;
+[fit1,gof1,fitinfo1] = fit(x1,y1,f,'StartPoint',[17 0.33]);
 
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
+residuals = fitinfo1.residuals;
 
-if removeOutliers
-    % Filter points outside three standard deviations from the best fit line.
-    x = x(abs(resid) < 3 * std(resid));
-    y = y(abs(resid) < 3 * std(resid));
+I = abs(residuals) > 1.5 * std(residuals);
+outliers = excludedata(x1,y1,'indices',I);
 
-    % Linear regression again after outliers are removed.
-    p = polyfit(x, y, 1);
-    linearFit = polyval(p, x);
-    resid = y - linearFit;
-    SSresid = sum(resid.^2);
-    SStotal = (length(y) -1) * var(y);
-    Rsq = 1 - SSresid/SStotal;
-end
+fitNoOutliers1 = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
 
-scatter(x, y, '.')
+fitRobust1 = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
 
+plot(fit1,'b-', x1, y1, 'k.', outliers, 'm*')
 hold on
-plot(x, linearFit, 'k')
+plot(fitNoOutliers1,'r--')
+plot(fitRobust1,'g-')
+legend( 'Data', 'Outliers', 'Original fit', 'Fit with outliers excluded', 'Robust fit' )
 hold off
-legend('L Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
+grid on
+title('L dataset') % CHANGE TO VARIABLE
 xlabel('Number of localizations')
 ylabel('R_g, nm')
-title('Size of clusters vs. the number of localizations')
-grid on
-
-subplot(2,1,2)
-x = SAllData.numLoc;
-y = SAllData.M2Mag;
-
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
-
-if removeOutliers
-    % Filter points outside three standard deviations from the best fit line.
-    x = x(abs(resid) < 3 * std(resid));
-    y = y(abs(resid) < 3 * std(resid));
-
-    % Linear regression again after outliers are removed.
-    p = polyfit(x, y, 1);
-    linearFit = polyval(p, x);
-    resid = y - linearFit;
-    SSresid = sum(resid.^2);
-    SStotal = (length(y) -1) * var(y);
-    Rsq = 1 - SSresid/SStotal;
-end
-
-scatter(x, y, 'r.')
-
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
-
-hold on
-plot(x, linearFit, 'k')
-hold off
-legend('S Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
-xlabel('Number of localizations')
-ylabel('R_g, nm')
-grid on
-
-% Sets y-limit to the same as the first graph.
+xlim([0 700])
 ylim([0 300])
 
-%% Plot the number of localizations vs Rg  in a log-log plot.
-% Find the base e logarithm of the data.
-close all
-subplot(2,1,1)
-hFig = gcf();
-set(hFig, 'Position', [100, 100, 1200, 1000])
-
-x = log(LAllData.numLoc);
-y = log(LAllData.M2Mag);
-
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
-
-if removeOutliers
-    % Filter points outside three standard deviations from the best fit line.
-    x = x(abs(resid) < 3 * std(resid));
-    y = y(abs(resid) < 3 * std(resid));
-
-    % Linear regression again after outliers are removed.
-    p = polyfit(x, y, 1);
-    linearFit = polyval(p, x);
-    resid = y - linearFit;
-    SSresid = sum(resid.^2);
-    SStotal = (length(y) -1) * var(y);
-    Rsq = 1 - SSresid/SStotal;
-end
-
-% Plot the logarithmic data.
-plot(x,y,'.')
-
-pause(1)
-% The following renames the tick labels since Matlab does not allow for
-% easy tick labeling in logarithmic plots.
-xt = get(gca, 'XTick');
-yt = get(gca, 'YTick');
-xl = get(gca, 'XLim');
-yl = get(gca, 'YLim');
-set(gca, 'XTickLabel', [])
-set(gca, 'YTickLabel', [])
-hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
-vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
-hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
-vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
-
-hold on
-plot(x, linearFit, 'k')
-hold off
-legend('L Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
-xlabel('log number of localizations')
-ylabel('log R_g')
-title('Size of clusters vs. the number of localizations, log-log plot')
-text(4, 5.5, ['Slope of line: ' num2str(p(1), '%0.4f')])
-grid on
-
-% Move axis labels
-xlabh = get(gca, 'XLabel');
-set(xlabh, 'Position', get(xlabh, 'Position') - [0 .2 0])
-ylabh = get(gca, 'YLabel');
-set(ylabh, 'Position', get(ylabh, 'Position') - [.1 0 0])
-
-% S dataset
+% Work with the second dataset.
 subplot(2,1,2)
-x = log(SAllData.numLoc);
-y = log(SAllData.M2Mag);
+x2 = SAllData.numLoc;
+y2 = SAllData.M2Mag;
 
-% Linear regression
-p = polyfit(x, y, 1);
-linearFit = polyval(p, x);
-resid = y - linearFit;
-SSresid = sum(resid.^2);
-SStotal = (length(y) -1) * var(y);
-Rsq = 1 - SSresid/SStotal;
+[fit1,gof2,fitinfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
 
-if removeOutliers
-    % Filter points outside three standard deviations from the best fit line.
-    x = x(abs(resid) < 3 * std(resid));
-    y = y(abs(resid) < 3 * std(resid));
+residuals = fitinfo2.residuals;
 
-    % Linear regression again after outliers are removed.
-    p = polyfit(x, y, 1);
-    linearFit = polyval(p, x);
-    resid = y - linearFit;
-    SSresid = sum(resid.^2);
-    SStotal = (length(y) -1) * var(y);
-    Rsq = 1 - SSresid/SStotal;
-end
+I = abs(residuals) > 1.5 * std(residuals);
+outliers = excludedata(x2,y2,'indices',I);
 
-% Plot the logarithmic data.
-plot(x,y,'r.')
+fitNoOutliers2 = fit(x2,y2,f,'StartPoint', [17 0.33], 'Exclude',outliers);
 
-% Set scale to same as L dataset
-ylim([3 6])
+fitRobust2 = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
 
-% The following renames the tick labels since Matlab does not allow for
-% easy tick labeling in logarithmic plots.
-set(gca, 'XTickLabel', [])
-set(gca, 'YTickLabel', [])
-xt = get(gca, 'XTick');
-yt = get(gca, 'YTick');
-xl = get(gca, 'XLim');
-yl = get(gca, 'YLim');
-hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
-vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
-hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
-vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
-
+plot(fit1,'b-', x2, y2, 'k.', outliers, 'm*')
 hold on
-plot(x, linearFit, 'k')
+plot(fitNoOutliers2,'r--')
+plot(fitRobust2,'g-')
+legend( 'Data', 'Outliers', 'Original fit', 'Fit with outliers excluded', 'Robust fit' )
 hold off
-legend('S Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
-xlabel('log number of localizations')
-ylabel('log R_g')
-text(4, 5.5, ['Slope of line: ' num2str(p(1), '%0.4f')])
 grid on
-
-% Move axis labels
-xlabh = get(gca, 'XLabel');
-set(xlabh, 'Position', get(xlabh, 'Position') - [0 .2 0])
-ylabh = get(gca, 'YLabel');
-set(ylabh, 'Position', get(ylabh, 'Position') - [.1 0 0])
+title('S dataset') % CHANGE TO VARIABLE
+xlabel('Number of localizations')
+ylabel('R_g, nm')
+xlim([0 700])
+ylim([0 300])
 
 %% Report statistics from distributions.
 disp(['Number of clusters, L dataset: ' num2str(length(LAllData.numLoc), '%d')])
