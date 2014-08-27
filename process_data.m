@@ -6,10 +6,10 @@
 %   Eps    - Neighborhood radius, if not known put []
 %   minLoc - Minimum number of points in a cluster
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/21 $ $REVISION: 0.4 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/27 $ $REVISION: 0.5 $
 %
 
-function [distr] = process_data(dataF, k, Eps, minLoc)
+function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)
@@ -29,7 +29,8 @@ noise = dataF(class == -1, :);
 
 %% Filter the clusters by number of localizations.
 % Remove clusters with fewer than minLoc localizations
-clustersF = clusters(cellfun(@length, clusters) > minLoc);
+cellLength = cellfun(@length, clusters);
+clustersF = clusters(cellLength > minLoc & cellLength < maxLoc);
 numClustersF = length(clustersF);
 
 %% Find moments of the distribution of localizations within the clusters.

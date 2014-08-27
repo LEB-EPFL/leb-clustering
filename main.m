@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/26 $ $REVISION: 0.8 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/27 $ $REVISION: 0.9 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -20,6 +20,7 @@ useParallel = true;
 k = 8;
 Eps = 65;
 minLoc = 50;
+maxLoc = 1000;
 
 %% Designate the files for analysis.
 % All datasets are comparisons between two populations, typically Hela L
@@ -276,26 +277,26 @@ if useParallel
         LFileName = [completeDir1 LFiles(ctr).name];
         LData = tdfread(LFileName);
         LDataF = [LData.Xc LData.Yc LData.Zc];
-        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc, maxLoc);
     end
     parfor ctr = 1:length(SFiles)
         SFileName = [completeDir2 SFiles(ctr).name];
         SData = tdfread(SFileName);
         SDataF = [SData.Xc SData.Yc SData.Zc];
-        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc, maxLoc);
     end
 else
     for ctr = 1:length(LFiles)
         LFileName = [completeDir1 LFiles(ctr).name];
         LData = tdfread(LFileName);
         LDataF = [LData.Xc LData.Yc LData.Zc];
-        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc, maxLoc);
     end
     for ctr = 1:length(SFiles)
         SFileName = [completeDir2 SFiles(ctr).name];
         SData = tdfread(SFileName);
         SDataF = [SData.Xc SData.Yc SData.Zc];
-        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc, maxLoc);
     end
 end
 
@@ -439,16 +440,16 @@ subplot(2,1,1)
 x1 = LAllData.numLoc;
 y1 = LAllData.M2Mag;
 
-[fit1,gof1,fitinfo1] = fit(x1,y1,f,'StartPoint',[17 0.33]);
+[fit1,gof1,fitInfo1] = fit(x1,y1,f,'StartPoint',[17 0.33]);
 
-residuals = fitinfo1.residuals;
+residuals = fitInfo1.residuals;
 
 I = abs(residuals) > 1.5 * std(residuals);
 outliers = excludedata(x1,y1,'indices',I);
 
-fitNoOutliers1 = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
+[fitNoOutliers1, gofNoOutliers1, fitInfoNoOutliers1] = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
 
-fitRobust1 = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
+[fitRobust1, gofRobust1, fitInfoRobust1] = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
 
 plot(fit1,'b-', x1, y1, 'k.', outliers, 'm*')
 hold on
@@ -460,7 +461,7 @@ grid on
 title(data(dataCtr).dataset1ShortName)
 xlabel('Number of localizations')
 ylabel('R_g, nm')
-xlim([0 700])
+xlim([0 maxLoc])
 ylim([0 300])
 
 % Work with the second dataset.
@@ -468,16 +469,16 @@ subplot(2,1,2)
 x2 = SAllData.numLoc;
 y2 = SAllData.M2Mag;
 
-[fit2,gof2,fitinfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
+[fit2,gof2,fitInfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
 
-residuals = fitinfo2.residuals;
+residuals = fitInfo2.residuals;
 
 I = abs(residuals) > 1.5 * std(residuals);
 outliers = excludedata(x2,y2,'indices',I);
 
-fitNoOutliers2 = fit(x2,y2,f,'StartPoint', [17 0.33], 'Exclude',outliers);
+[fitNoOutliers2, gofNoOutliers2, fitInfoNoOutliers2] = fit(x2,y2,f,'StartPoint', [17 0.33], 'Exclude',outliers);
 
-fitRobust2 = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
+[fitRobust2, gofRobust2, fitInfoRobust2] = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
 
 pause(1) % Ensures that the fit has time to work before plotted.
 plot(fit2,'b-', x2, y2, 'k.', outliers, 'm*')
@@ -490,17 +491,33 @@ grid on
 title(data(dataCtr).dataset2ShortName)
 xlabel('Number of localizations')
 ylabel('R_g, nm')
-xlim([0 700])
+xlim([0 maxLoc])
 ylim([0 300])
 
 % Store fits in the external data array.
-clear fits
 data(dataCtr).fits.fit1 = fit1;
+data(dataCtr).fits.gof1 = gof1;
+data(dataCtr).fits.fitInfo1 = fitInfo1;
+
 data(dataCtr).fits.fitNoOutliers1 = fitNoOutliers1;
+data(dataCtr).fits.gofNoOutliers1 = gofNoOutliers1;
+data(dataCtr).fits.fitInfoNoOutliers1 = fitInfoNoOutliers1;
+
 data(dataCtr).fits.fitRobust1 = fitRobust1;
+data(dataCtr).fits.gofRobust1 = gofRobust1;
+data(dataCtr).fits.fitInfoRobust1 = fitInfoRobust1;
+
 data(dataCtr).fits.fit2 = fit2;
+data(dataCtr).fits.gof2 = gof2;
+data(dataCtr).fits.fitInfo2 = fitInfo2;
+
 data(dataCtr).fits.fitNoOutliers2 = fitNoOutliers2;
+data(dataCtr).fits.gofNoOutliers2 = gofNoOutliers2;
+data(dataCtr).fits.fitInfoNoOutliers2 = fitInfoNoOutliers2;
+
 data(dataCtr).fits.fitRobust2 = fitRobust2;
+data(dataCtr).fits.gofRobust2 = gofRobust2;
+data(dataCtr).fits.fitInfoRobust2 = fitInfoRobust2;
 
 %% Report statistics from distributions.
 disp(['Statistics for experiment ' data(dataCtr).shortName '.'])
