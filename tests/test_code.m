@@ -15,7 +15,7 @@ fName = 'test_data.txt';
 data = tdfread([workDir fName]);
 
 %% Filter out unnecessary columns and condition data for input to DBSCAN.
-dataF = [data.x data.y data.z];
+dataF = [data.Xc data.Yc data.Zc];
 
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 

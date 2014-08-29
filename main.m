@@ -19,9 +19,12 @@ useParallel = true;
 % minLoc - Discard all clusters with localizations fewer than this number.
 k = 8;
 Eps = 65;
-minLoc = 50;
-maxLoc = 1000;
 
+minLoc1 = 100;
+maxLoc1 = 500;
+
+minLoc2 = 100;
+maxLoc2 = 400;
 %% Designate the files for analysis.
 % All datasets are comparisons between two populations, typically Hela L
 % cells and Hela S cells, or between two different transfections.
@@ -277,26 +280,26 @@ if useParallel
         LFileName = [completeDir1 LFiles(ctr).name];
         LData = tdfread(LFileName);
         LDataF = [LData.Xc LData.Yc LData.Zc];
-        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc, maxLoc);
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
     end
     parfor ctr = 1:length(SFiles)
         SFileName = [completeDir2 SFiles(ctr).name];
         SData = tdfread(SFileName);
         SDataF = [SData.Xc SData.Yc SData.Zc];
-        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc, maxLoc);
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
     end
 else
     for ctr = 1:length(LFiles)
         LFileName = [completeDir1 LFiles(ctr).name];
         LData = tdfread(LFileName);
         LDataF = [LData.Xc LData.Yc LData.Zc];
-        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc, maxLoc);
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
     end
     for ctr = 1:length(SFiles)
         SFileName = [completeDir2 SFiles(ctr).name];
         SData = tdfread(SFileName);
         SDataF = [SData.Xc SData.Yc SData.Zc];
-        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc, maxLoc);
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
     end
 end
 
@@ -393,6 +396,7 @@ title('Square root of the radius of gyration of the clusters of points for L and
 xlabel('Square root of radius of gyration, nm')
 ylabel('Normalized frequency')
 legend('L dataset', 'S dataset')
+xlim([0 350])
 
 % Number of localizations
 subplot(2,2,3)
@@ -400,6 +404,7 @@ title('Number of localizations per cluster')
 xlabel('Number of localizations')
 ylabel('Normalized frequency')
 legend('L dataset', 'S dataset')
+xlim([min([minLoc1 minLoc2]), max([maxLoc1, maxLoc2])])
 
 % Volume
 subplot(2,2,4)
@@ -419,6 +424,7 @@ title('Cube root of cluster volumes (characteristic linear size)')
 xlabel('Volume^{(1/3)}, nm')
 ylabel('Normalized frequency')
 legend('L dataset', 'S dataset')
+xlim([0 450])
 grid on
 
 %% Perform a nonlinear least squares regression on Rg vs. number of localizations
@@ -461,7 +467,7 @@ grid on
 title(data(dataCtr).dataset1ShortName)
 xlabel('Number of localizations')
 ylabel('R_g, nm')
-xlim([0 maxLoc])
+xlim([0 max([maxLoc1 maxLoc2])])
 ylim([0 300])
 
 % Work with the second dataset.
@@ -480,7 +486,6 @@ outliers = excludedata(x2,y2,'indices',I);
 
 [fitRobust2, gofRobust2, fitInfoRobust2] = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
 
-pause(1) % Ensures that the fit has time to work before plotted.
 plot(fit2,'b-', x2, y2, 'k.', outliers, 'm*')
 hold on
 plot(fitNoOutliers2,'r--')
@@ -491,8 +496,9 @@ grid on
 title(data(dataCtr).dataset2ShortName)
 xlabel('Number of localizations')
 ylabel('R_g, nm')
-xlim([0 maxLoc])
+xlim([0 max([maxLoc1, maxLoc2])])
 ylim([0 300])
+pause(2) % Ensures that the fit has time to work before plotted.
 
 % Store fits in the external data array.
 data(dataCtr).fits.fit1 = fit1;
