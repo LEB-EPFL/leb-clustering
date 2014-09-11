@@ -5,8 +5,10 @@
 %   k      - Number of objects in a neighborhood of an cluster
 %   Eps    - Neighborhood radius, if not known put []
 %   minLoc - Minimum number of points in a cluster
+%   maxLoc - Maximum number of points in a cluster
+%            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/27 $ $REVISION: 0.5 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/10 $ $REVISION: 0.6 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
