@@ -8,7 +8,7 @@
 %   maxLoc - Maximum number of points in a cluster
 %            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/12 $ $REVISION: 1.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
@@ -81,4 +81,17 @@ distr.M2 = M2;
 distr.Rg = Rg;
 distr.numLoc = numLoc;
 distr.volume = volume;
+end
+
+function M2 = second_central_moment(X)
+% second_central_moment Determines the second central moment of an array.
+%
+% M2 = second_central_moment(X) returns the second central moment of the
+% data in the columns of the array X.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/29 $ $REVISION: 0.1 $
+% 
+    N = size(X,1);
+    Xbar = mean(X);
+    M2 = sum((X - repmat(Xbar, N, 1)).^2) / N;
 end
