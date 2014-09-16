@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/15 $ $REVISION: 1.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -23,10 +23,10 @@ k = 8;
 Eps = 65;
 
 minLoc1 = 50;
-maxLoc1 = Inf;
+maxLoc1 = 1000;
 
 minLoc2 = 50;
-maxLoc2 = Inf;
+maxLoc2 = 1000;
 %% Setup the data structure and designate files for analysis.
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.

@@ -4,7 +4,7 @@
 % These functions require a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/15 $ $REVISION: 1.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
 
 %% Primary function for generating plots from a set of experimental data.
 function data_visualization(data)
