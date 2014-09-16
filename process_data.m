@@ -8,7 +8,7 @@
 %   maxLoc - Maximum number of points in a cluster
 %            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/10 $ $REVISION: 0.6 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/12 $ $REVISION: 1.0 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
@@ -45,8 +45,8 @@ numClustersF = length(clustersF);
 M1 = cell2mat(cellfun(@mean, clustersF, 'UniformOutput', false));
 M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false));
 
-% Magnitude of the second moment
-M2Mag = sqrt(sum(M2,2));
+% Radius of gyration
+Rg = sqrt(sum(M2,2));
 
 %% Count the number of localizations within each cluster and noise points.
 numLoc = zeros(numClustersF,1);
@@ -78,7 +78,7 @@ end
 %% Assign computed values to data structure for return.
 distr.M1 = M1;
 distr.M2 = M2;
-distr.M2Mag = M2Mag;
+distr.Rg = Rg;
 distr.numLoc = numLoc;
 distr.volume = volume;
 end

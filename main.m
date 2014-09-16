@@ -3,20 +3,22 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/10 $ $REVISION: 0.10 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/15 $ $REVISION: 1.0 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
 
-% if useParallel
-%     matlabpool open
-% end
+if useParallel
+    matlabpool open
+end
 
 %% Define clustering and filtering parameters.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)
 % Eps - neighborhood radius, if not known avoid this parameter or put []
 % minLoc - Discard all clusters with localizations fewer than this number.
+% maxLoc - Discard all clusters with localizations greater than this
+%          number. (Set to Inf if there you don't want an upper cutoff.)
 k = 8;
 Eps = 65;
 
@@ -33,16 +35,12 @@ data = orig_data_struct();
 
 %% Verify that all directories are correct.
 for dirCtr = 1:length(data)
-    completeDir1 = [data(dirCtr).rootDir data(dirCtr).dataset1Dir];
-    completeDir2 = [data(dirCtr).rootDir data(dirCtr).dataset2Dir];
+    completeDir = [data(dirCtr).rootDir data(dirCtr).datasetDir];
     
-    A = exist(completeDir1, 'dir');
-    B = exist(completeDir2, 'dir');
+    A = exist(completeDir, 'dir');
     
     if A == 0
-        error(['Error: directory ' completeDir1 ' does not exist.'])
-    elseif B == 0
-        error(['Error: directory ' completeDir2 ' does not exist.'])
+        error(['Error: directory ' completeDir ' does not exist.'])
     end
 end
 clear dirCtr
@@ -51,184 +49,53 @@ clear dirCtr
 
 for dataCtr = 1:length(data)
 % Loops over all the data files defined above.
-disp(['Processing dataset ' data(dataCtr).shortName])
+disp(['Processing experiment ' data(dataCtr).experimentShortName ' / ' data(dataCtr).datasetShortName])
 
-completeDir1 = [data(dataCtr).rootDir data(dataCtr).dataset1Dir];
-completeDir2 = [data(dataCtr).rootDir data(dataCtr).dataset2Dir];
+completeDir = [data(dataCtr).rootDir data(dataCtr).datasetDir];
 
-LFiles = dir(completeDir1);
-SFiles = dir(completeDir2);
+files = dir(completeDir);
 
 %% Filter out upper level directors.
-LFiles = LFiles(3:end);
-SFiles = SFiles(3:end);
+files = files(3:end);
 
 %% Process the data within each file.
-clear LProcData SProcData
-LProcData(length(LFiles),1).M1 = 0;
-LProcData(length(LFiles),1).M2 = 0;
-LProcData(length(LFiles),1).M2Mag = 0;
-LProcData(length(LFiles),1).numLoc = 0;
-LProcData(length(LFiles),1).volume = 0;
-
-SProcData(length(SFiles),1).M1 = 0;
-SProcData(length(SFiles),1).M2 = 0;
-SProcData(length(SFiles),1).M2Mag = 0;
-SProcData(length(SFiles),1).numLoc = 0;
-SProcData(length(SFiles),1).volume = 0;
+clear procData
+procData(length(files),1).M1 = 0;
+procData(length(files),1).M2 = 0;
+procData(length(files),1).Rg = 0;
+procData(length(files),1).numLoc = 0;
+procData(length(files),1).volume = 0;
 
 % process_data(fileName) is custom function call.
 if useParallel
-    parfor ctr = 1:length(LFiles)
-        LFileName = [completeDir1 LFiles(ctr).name];
-        LData = tdfread(LFileName);
-        LDataF = [LData.Xc LData.Yc LData.Zc];
-        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
-    end
-    parfor ctr = 1:length(SFiles)
-        SFileName = [completeDir2 SFiles(ctr).name];
-        SData = tdfread(SFileName);
-        SDataF = [SData.Xc SData.Yc SData.Zc];
-        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
+    parfor ctr = 1:length(files)
+        fileName = [completeDir files(ctr).name];
+        currData = tdfread(fileName);
+        currDataF = [currData.Xc currData.Yc currData.Zc];
+        procData(ctr) = process_data(currDataF, k, Eps, minLoc1, maxLoc1);
     end
 else
-    for ctr = 1:length(LFiles)
-        LFileName = [completeDir1 LFiles(ctr).name];
-        LData = tdfread(LFileName);
-        LDataF = [LData.Xc LData.Yc LData.Zc];
-        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
-    end
-    for ctr = 1:length(SFiles)
-        SFileName = [completeDir2 SFiles(ctr).name];
-        SData = tdfread(SFileName);
-        SDataF = [SData.Xc SData.Yc SData.Zc];
-        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
+    for ctr = 1:length(files)
+        fileName = [completeDir files(ctr).name];
+        currData = tdfread(fileName);
+        currDataF = [currData.Xc currData.Yc currData.Zc];
+        procData(ctr) = process_data(currDataF, k, Eps, minLoc1, maxLoc1);
     end
 end
 
 %% Combine distrubtions from all elements of the data structures.
-LAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
-SAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+allData = struct('M1', [], 'M2', [], 'Rg', [], 'numLoc', [], 'volume', []);
 
-for ctr = 1:length(LFiles)
-    LAllData.M1 = cat(1, LAllData.M1, LProcData(ctr).M1);
-    LAllData.M2 = cat(1, LAllData.M2, LProcData(ctr).M2);
-    LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
-    LAllData.numLoc = cat(1, LAllData.numLoc, LProcData(ctr).numLoc);
-    LAllData.volume = cat(1, LAllData.volume, LProcData(ctr).volume);
+for ctr = 1:length(files)
+    allData.M1 = cat(1, allData.M1, procData(ctr).M1);
+    allData.M2 = cat(1, allData.M2, procData(ctr).M2);
+    allData.Rg = cat(1, allData.Rg, procData(ctr).Rg);
+    allData.numLoc = cat(1, allData.numLoc, procData(ctr).numLoc);
+    allData.volume = cat(1, allData.volume, procData(ctr).volume);
 end
 
-for ctr = 1:length(SFiles)
-    SAllData.M1 = cat(1, SAllData.M1, SProcData(ctr).M1);
-    SAllData.M2 = cat(1, SAllData.M2, SProcData(ctr).M2);
-    SAllData.M2Mag = cat(1, SAllData.M2Mag, SProcData(ctr).M2Mag);
-    SAllData.numLoc = cat(1, SAllData.numLoc, SProcData(ctr).numLoc);
-    SAllData.volume = cat(1, SAllData.volume, SProcData(ctr).volume);
-end
-
-%% Create the bins for plotting the distributions from above.
-% First, it is determined which of the two datasets, S or L, has the
-% largest and smallest values in each field. Next, the bins are determined
-% by partitioning the range between between these values into numBins
-% equally-sized intervals. These bins are used to normalize the
-% distributions.
-numBins = 20;
-bins = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
-fields = fieldnames(bins);
-
-for ctr = 1:numel(fields)
-    minBin = min([min(LAllData.(fields{ctr})(:)) min(SAllData.(fields{ctr})(:))]);
-    maxBin = max([max(LAllData.(fields{ctr})(:)) max(SAllData.(fields{ctr})(:))]);
-    bins.(fields{ctr}) = linspace(minBin, maxBin, numBins);    
-end
-
-% Write distributions out to the external data structure.
-clear distributions1 distributions2
-data(dataCtr).distributions1 = LAllData;
-data(dataCtr).distributions2 = SAllData;
-
-%% Plot the normalized distributions of the cluster statistics.
-close all
-[LN, LBIN] = histc(LAllData.M2, bins.M2);
-[SN, SBIN] = histc(SAllData.M2, bins.M2);
-
-disp(['Distributions for data set ' data(dataCtr).shortName])
-
-% Set the size of the figure window.
-subplot(2,2,1)
-hFig = gcf();
-set(hFig, 'Position', [100, 100, 1600, 1000])
-
-% Second order moments along x, y, and z.
-% Compute the normalization factor.
-dx = diff(bins.M2);
-dx = dx(1);
-
-LNorm = sum(dx * LN);
-SNorm = sum(dx * SN);
-
-bar(bins.M2, [LN ./ repmat(LNorm, size(LN,1), 1), SN ./ repmat(SNorm, size(SN,1), 1)], 'histc')
-legend('Long M_x^2', 'Long M_y^2', 'Long M_z^2', 'Short M_x^2', 'Short M_y^2', 'Short M_z^2')
-title('Second moments about x,y, and z for long and short data sets')
-xlabel('M^2, nm^2')
-ylabel('Normalized frequency')
-grid on
-
-% Plot the normalized distributions of other quantities. (Plots normalized
-% distributions for the magnitude of the square root of the radius of
-% gyration, the number of localizations, and the volume.)
-for ctr = 3:4
-    [LN, LBIN] = histc(LAllData.(fields{ctr}), bins.(fields{ctr}));
-    [SN, SBIN] = histc(SAllData.(fields{ctr}), bins.(fields{ctr}));
-    
-    % Compute the normalization factor.
-    dx = diff(bins.(fields{ctr}));
-    dx = dx(1);
-    LNorm = sum(dx * LN);
-    SNorm = sum(dx * SN);
-    
-    % Write to subplots 2 and 3.
-    subplot(2,2, ctr - 1)
-    bar(bins.(fields{ctr}), [LN / LNorm, SN / SNorm], 'histc')
-    grid on
-end
-
-% Radius of gyration
-subplot(2,2,2)
-title('Square root of the radius of gyration of the clusters of points for L and S datasets')
-xlabel('Square root of radius of gyration, nm')
-ylabel('Normalized frequency')
-legend('L dataset', 'S dataset')
-xlim([0 350])
-
-% Number of localizations
-subplot(2,2,3)
-title('Number of localizations per cluster')
-xlabel('Number of localizations')
-ylabel('Normalized frequency')
-legend('L dataset', 'S dataset')
-xlim([min([minLoc1 minLoc2]), max([maxLoc1, maxLoc2])])
-
-% Volume
-subplot(2,2,4)
-minBin = min([min(LAllData.volume.^(1/3)) min(SAllData.volume.^(1/3))]);
-maxBin = max([max(LAllData.volume.^(1/3)) max(SAllData.volume.^(1/3))]);
-binsVol3 = linspace(minBin, maxBin, numBins); 
-[LN, LBIN] = histc((LAllData.volume).^(1/3), binsVol3);
-[SN, SBIN] = histc((SAllData.volume).^(1/3), binsVol3);
-
-dx = diff(binsVol3);
-dx = dx(1);
-LNorm = sum(dx * LN);
-SNorm = sum(dx * SN);
-
-bar(binsVol3, [LN/ LNorm, SN / SNorm], 'histc')
-title('Cube root of cluster volumes (characteristic linear size)')
-xlabel('Volume^{(1/3)}, nm')
-ylabel('Normalized frequency')
-legend('L dataset', 'S dataset')
-xlim([0 450])
-grid on
+% Write distributions out to the large data structure for the experiment.
+data(dataCtr).distributions = allData;
 
 %% Perform a nonlinear least squares regression on Rg vs. number of localizations
 % For a good discussion on fitting in Matlab, particularly robust fitting,
@@ -240,117 +107,37 @@ grid on
 % <http://mathworld.wolfram.com/LeastSquaresFittingPowerLaw.html>
 
 f = fittype('a*x.^b');
+x1 = allData.numLoc;
+y1 = allData.Rg;
 
-disp(['Scaling for data set ' data(dataCtr).shortName])
+% Nonlinear least squares fit to all data points.
+[fitNormal,gofNormal,fitInfoNormal] = fit(x1,y1,f,'StartPoint',[17 0.33]);
 
-% Work with the first dataset.
-FigHandle = figure('Position', [100, 100, 800, 800]);
-subplot(2,1,1)
-x1 = LAllData.numLoc;
-y1 = LAllData.M2Mag;
-
-[fit1,gof1,fitInfo1] = fit(x1,y1,f,'StartPoint',[17 0.33]);
-
-residuals = fitInfo1.residuals;
-
+% Nonlinear least squares fit to data points without outliers.
+% Outliers lie more than 1.5 standard deviations from the first fit curve.
+residuals = fitInfoNormal.residuals;
 I = abs(residuals) > 1.5 * std(residuals);
 outliers = excludedata(x1,y1,'indices',I);
+[fitNoOutliers, gofNoOutliers, fitInfoNoOutliers] = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
 
-[fitNoOutliers1, gofNoOutliers1, fitInfoNoOutliers1] = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
-
-[fitRobust1, gofRobust1, fitInfoRobust1] = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
-
-plot(fit1,'b-', x1, y1, 'k.', outliers, 'm*')
-hold on
-plot(fitNoOutliers1,'r--')
-plot(fitRobust1,'g-')
-legend( 'Data', 'Outliers', 'Original fit', 'Fit with outliers excluded', 'Robust fit' )
-hold off
-grid on
-title(data(dataCtr).dataset1ShortName)
-xlabel('Number of localizations')
-ylabel('R_g, nm')
-xlim([0 max([maxLoc1 maxLoc2])])
-ylim([0 300])
-
-% Work with the second dataset.
-subplot(2,1,2)
-x2 = SAllData.numLoc;
-y2 = SAllData.M2Mag;
-
-[fit2,gof2,fitInfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
-
-residuals = fitInfo2.residuals;
-
-I = abs(residuals) > 1.5 * std(residuals);
-outliers = excludedata(x2,y2,'indices',I);
-
-[fitNoOutliers2, gofNoOutliers2, fitInfoNoOutliers2] = fit(x2,y2,f,'StartPoint', [17 0.33], 'Exclude',outliers);
-
-[fitRobust2, gofRobust2, fitInfoRobust2] = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
-
-plot(fit2,'b-', x2, y2, 'k.', outliers, 'm*')
-hold on
-plot(fitNoOutliers2,'r--')
-plot(fitRobust2,'g-')
-legend( 'Data', 'Outliers', 'Original fit', 'Fit with outliers excluded', 'Robust fit' )
-hold off
-grid on
-title(data(dataCtr).dataset2ShortName)
-xlabel('Number of localizations')
-ylabel('R_g, nm')
-xlim([0 max([maxLoc1, maxLoc2])])
-ylim([0 300])
-pause(2) % Ensures that the fit has time to work before plotted.
+% Robust fit to all data points (points are weighted by distance from
+% curve.)
+[fitRobust, gofRobust, fitInfoRobust] = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
 
 % Store fits in the external data array.
-data(dataCtr).fits.fit1 = fit1;
-data(dataCtr).fits.gof1 = gof1;
-data(dataCtr).fits.fitInfo1 = fitInfo1;
+data(dataCtr).fits.fitNormal = fitNormal;
+data(dataCtr).fits.gofNormal = gofNormal;
+data(dataCtr).fits.fitInfoNormal = fitInfoNormal;
 
-data(dataCtr).fits.fitNoOutliers1 = fitNoOutliers1;
-data(dataCtr).fits.gofNoOutliers1 = gofNoOutliers1;
-data(dataCtr).fits.fitInfoNoOutliers1 = fitInfoNoOutliers1;
+data(dataCtr).fits.fitNoOutliers = fitNoOutliers;
+data(dataCtr).fits.gofNoOutliers = gofNoOutliers;
+data(dataCtr).fits.fitInfoNoOutliers = fitInfoNoOutliers;
 
-data(dataCtr).fits.fitRobust1 = fitRobust1;
-data(dataCtr).fits.gofRobust1 = gofRobust1;
-data(dataCtr).fits.fitInfoRobust1 = fitInfoRobust1;
-
-data(dataCtr).fits.fit2 = fit2;
-data(dataCtr).fits.gof2 = gof2;
-data(dataCtr).fits.fitInfo2 = fitInfo2;
-
-data(dataCtr).fits.fitNoOutliers2 = fitNoOutliers2;
-data(dataCtr).fits.gofNoOutliers2 = gofNoOutliers2;
-data(dataCtr).fits.fitInfoNoOutliers2 = fitInfoNoOutliers2;
-
-data(dataCtr).fits.fitRobust2 = fitRobust2;
-data(dataCtr).fits.gofRobust2 = gofRobust2;
-data(dataCtr).fits.fitInfoRobust2 = fitInfoRobust2;
-
-%% Report statistics from distributions.
-disp(['Statistics for experiment ' data(dataCtr).shortName '.'])
-disp(['Number of clusters, L dataset: ' num2str(length(LAllData.numLoc), '%d')])
-disp([' '])
-disp(['Mean square root of the radius of gyration, L dataset: ' num2str(mean(LAllData.M2Mag), '%.2f') ' nm'])
-disp(['Standard deviation: ' num2str(std(LAllData.M2Mag), '%.2f') ' nm'])
-disp(' ')
-disp(['Mean cube root of volume, L dataset: ' num2str(mean(LAllData.volume.^(1/3)), '%.2f') ' nm'])
-disp(['Standard deviation: ' num2str(std(LAllData.volume.^(1/3)), '%.2f') ' nm'])
-disp(' ')
-disp(['Mean number of localizations, L dataset: ' num2str(mean(LAllData.numLoc), '%.2f')])
-disp(['Standard deviation: ' num2str(std(LAllData.numLoc), '%.2f')])
-disp('-------------------------------------------------------')
-disp(['Number of clusters, S dataset: ' num2str(length(SAllData.numLoc), '%d') ])
-disp([' '])
-disp(['Mean square root of the radius of gyration, S dataset: ' num2str(mean(SAllData.M2Mag), '%.2f') ' nm'])
-disp(['Standard deviation: ' num2str(std(SAllData.M2Mag), '%.2f') ' nm'])
-disp(' ')
-disp(['Mean cube root of volume, S dataset: ' num2str(mean(SAllData.volume.^(1/3)), '%.2f') ' nm'])
-disp(['Standard deviation: ' num2str(std(SAllData.volume.^(1/3)), '%.2f') ' nm'])
-disp(' ')
-disp(['Mean number of localizations, S dataset: ' num2str(mean(SAllData.numLoc), '%.2f')])
-disp(['Standard deviation: ' num2str(std(SAllData.numLoc), '%.2f')])
-disp(' ')
+data(dataCtr).fits.fitRobust = fitRobust;
+data(dataCtr).fits.gofRobust = gofRobust;
+data(dataCtr).fits.fitInfoRobust = fitInfoRobust;
 
 end % Ends loop over datasets.
+
+%% Saves the workspace automatically.
+
