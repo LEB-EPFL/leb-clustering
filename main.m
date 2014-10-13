@@ -8,9 +8,9 @@
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
 
-% if useParallel
-%     matlabpool open
-% end
+if useParallel
+    matlabpool open
+end
 
 %% Define clustering and filtering parameters.
 % k - number of objects in a neighborhood of an object 
