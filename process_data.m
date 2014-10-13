@@ -5,8 +5,10 @@
 %   k      - Number of objects in a neighborhood of an cluster
 %   Eps    - Neighborhood radius, if not known put []
 %   minLoc - Minimum number of points in a cluster
+%   maxLoc - Maximum number of points in a cluster
+%            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/27 $ $REVISION: 0.5 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
@@ -43,8 +45,8 @@ numClustersF = length(clustersF);
 M1 = cell2mat(cellfun(@mean, clustersF, 'UniformOutput', false));
 M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false));
 
-% Magnitude of the second moment
-M2Mag = sqrt(sum(M2,2));
+% Radius of gyration
+Rg = sqrt(sum(M2,2));
 
 %% Count the number of localizations within each cluster and noise points.
 numLoc = zeros(numClustersF,1);
@@ -76,7 +78,20 @@ end
 %% Assign computed values to data structure for return.
 distr.M1 = M1;
 distr.M2 = M2;
-distr.M2Mag = M2Mag;
+distr.Rg = Rg;
 distr.numLoc = numLoc;
 distr.volume = volume;
+end
+
+function M2 = second_central_moment(X)
+% second_central_moment Determines the second central moment of an array.
+%
+% M2 = second_central_moment(X) returns the second central moment of the
+% data in the columns of the array X.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/07/29 $ $REVISION: 0.1 $
+% 
+    N = size(X,1);
+    Xbar = mean(X);
+    M2 = sum((X - repmat(Xbar, N, 1)).^2) / N;
 end
