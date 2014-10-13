@@ -5,19 +5,26 @@
 %% Read localization data into memory.
 %workDir = 'Z:\LEB\Users\Kyle-Michael-Douglass\Projects\Telomeres\';
 %workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
-workDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/11_08_2014_HeLaS_KD_Smchd1_TRF2_pSuper_non filtered/';
+workDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2/';
 
 %fName = '11_06_2014_FISH_HelaL_8_list.txt';
 %fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
 %fName = 'test_data.txt';
-%fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pLVP Trf2_2.txt';
+%fName = '11_08_2014_HeLa L_SmchD1_Trf2_KD_FISH_pLVP Trf2_2.txt';
 %fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pLVP Trf2_1_list.txt';
-fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pSuper_1.txt';
+%fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pSuper_1.txt';
+fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pLVP Trf2_5_list.txt';
 
-imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pSuper/';
-fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pSuper_1.jp2'];
+%imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pSuper/';
+%fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pSuper_1.jp2'];
+
+imgDir = 'file:///media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pLVP0 Trf2/';
+fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pLVTP Trf2_5.jp2'];
+
+% imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa L_SMCHD1_Trf2_KD_FISH_pLVPTrf2/';
+% fNameImg = [imgDir '11_08_2014_WF_HeLa L_SMCHD1_Trf2_KD_pLVTP Trf2_2.jp2'];
 
 data = tdfread([workDir fName]);
 

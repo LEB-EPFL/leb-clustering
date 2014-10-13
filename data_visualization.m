@@ -4,212 +4,363 @@
 % These functions require a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/17 $ $REVISION: 1.0 $
 
 %% Primary function for generating plots from a set of experimental data.
 function data_visualization(data)
+
 numBins = 20;
 
+%==========================================================================
+% Compare FISH and TRF1 IF
+%==========================================================================
+
 % Plot all distributions
-for ctr = 1:2:length(data)
-    figParams.title = data(ctr).experimentShortName;
-    plotAllDist(data(ctr:ctr+1), figParams, numBins);
-    pause(2)
-end
-
-% Plot distributions from separate experiments
-% Original data
-filterData = findData(data, '11-06-2014 FISH');
-
-clear figParams
-figParams.title = '11-06-2014 FISH';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-% 29-07-2014 data
-filterDataNames = {'29-07-2014 SmchD1 pSuper'; 
-                   '29-07-2014 SmchD1 pLVP041';
-                   '29-07-2014 SmchD1 pLVP042'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = '29-07-2014 SmchD1 / Hela L';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-filterData = findData(data, filterDataNames, 'S dataset');
-
-clear figParams
-figParams.title = '29-07-2014 SmchD1 / Hela S';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-% 30-07-2014 data
-filterDataNames = {'30-07-2014 SmchD1 pSuper'; 
-                   '30-07-2014 SmchD1 pLVP041';
-                   '30-07-2014 SmchD1 pLVP042'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = '30-07-2014 SmchD1 / Hela L';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-filterData = findData(data, filterDataNames, 'S dataset');
-
-clear figParams
-figParams.title = '30-07-2014 SmchD1 / Hela S';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-% 05-08-2014 Hela L LRif1
-filterDataNames = {'05-08-2014 Hela L siGfp'; 
-                   '05-08-2014 Hela L si1LRif1';
-                   '05-08-2014 Hela L si6LRif1'};
-filterData = findData(data, filterDataNames, '1st transfection');
-
-clear figParams
-figParams.title = '05-08-2014 / 1st transfection';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-filterData = findData(data, filterDataNames, '2nd transfection');
-
-clear figParams
-figParams.title = '05-08-2014 / 2nd transfection';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-% 11-08-2014 TRF2
-filterDataNames = {'11-08-2014 pSuper'; 
-                   '11-08-2014 pLVP041';
-                   '11-08-2014 pLVP042';
-                   '11-08-2014 TrF2'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = '11-08-2014 / Hela L';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-filterData = findData(data, filterDataNames, 'S dataset');
-
-clear figParams
-figParams.title = '11-08-2014 / Hela S';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-% 13-08-2014 TRF2
-filterDataNames = {'13-08-2014 pSuper'; 
-                   '13-08-2014 pLVP041';
-                   '13-08-2014 pLVP042';
-                   '13-08-2014 TrF2'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = '13-08-2014 / Hela L';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
-
-filterData = findData(data, filterDataNames, 'S dataset');
-
-clear figParams
-figParams.title = '13-08-2014 / Hela S';
-figParams.xlabel = 'R_g, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 250];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'Rg', numBins, figParams)
+figParams.title = 'Compare FISH and TRF1 IF / Hela L';
+plotData = data(1:3);
+plotAllDist(plotData, figParams, numBins)
 
 % Scatter plots with fits
 clear figParams
 figParams.xlim = [0 700];
 figParams.ylim = [0 300];
-for ctr = 1:length(data)
-    plotScatter(data(ctr), figParams)
+for ctr = 1:length(plotData)
+    plotScatter(plotData(ctr), figParams)
 end
+
+%==========================================================================
+% Does 405 nm laser change results?
+%==========================================================================
+plotData = data(4:11);
+for ctr = 1:2:length(plotData)
+    figParams.title = plotData(ctr).experimentShortName;
+    plotAllDist(plotData(ctr:ctr+1), figParams, numBins);
+    pause(2)
+end
+
+% Plot separate distributions for only Hela L or Hela S
+filterDataNames = {'13-08-2014 pSuper';
+                   '18-08-2014 pSuper';
+                   '13-08-2014 TRF2';
+                   '18-08-2014 TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Testing 405 nm activation laser / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 250];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'Rg', numBins, figParams)
+
+clear figParams
+figParams.title = 'Testing 405 nm activation laser / Hela L';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+clear figParams
+figParams.title = 'Testing 405 nm activation laser / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 4e7];
+figParams.ylim = [0 5e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Testing 405 nm activation laser / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 250];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'Rg', numBins, figParams)
+
+clear figParams
+figParams.title = 'Testing 405 nm activation laser / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+clear figParams
+figParams.title = 'Testing 405 nm activation laser / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 4e7];
+figParams.ylim = [0 5e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+% Scatter plots with fits
+clear figParams
+figParams.xlim = [0 700];
+figParams.ylim = [0 300];
+for ctr = 1:length(plotData)
+    plotScatter(plotData(ctr), figParams)
+end
+
+% ==========================================================================
+% Pooled SmchD1 KD data
+% ==========================================================================
+plotData = data(14:19);
+for ctr = 1:2:length(plotData)
+    figParams.title = plotData(ctr).experimentShortName;
+    plotAllDist(plotData(ctr:ctr+1), figParams, numBins);
+    pause(2)
+end
+
+% Plot separate distributions for only Hela L or Hela S
+filterDataNames = {'SmchD1 Pooled pSuper';
+                   'SmchD1 Pooled pLVP041';
+                   'SmchD1 Pooled pLVP042'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'SmchD1 Pooled Data / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 250];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'Rg', numBins, figParams)
+
+clear figParams
+figParams.title = 'SmchD1 Pooled Data / Hela L';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+clear figParams
+figParams.title = 'SmchD1 Pooled Data / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 4e7];
+figParams.ylim = [0 5e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'SmchD1 Pooled Data / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 250];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'Rg', numBins, figParams)
+
+clear figParams
+figParams.title = 'SmchD1 Pooled Data / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+clear figParams
+figParams.title = 'SmchD1 Pooled Data / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 4e7];
+figParams.ylim = [0 5e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+% Scatter plots with fits
+clear figParams
+figParams.xlim = [0 700];
+figParams.ylim = [0 300];
+for ctr = 1:length(plotData)
+    plotScatter(plotData(ctr), figParams)
+end
+
+%==========================================================================
+% Pooled TRF2 data
+%==========================================================================
+plotData = data(20:23);
+for ctr = 1:2:length(plotData)
+    figParams.title = plotData(ctr).experimentShortName;
+    plotAllDist(plotData(ctr:ctr+1), figParams, numBins);
+    pause(2)
+end
+
+% Plot separate distributions for only Hela L or Hela S
+filterDataNames = {'TRF2 Pooled pSuper';
+                   'TRF2 Pooled TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'TRF2 Pooled Data / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 250];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'Rg', numBins, figParams)
+
+clear figParams
+figParams.title = 'TRF2 Pooled Data / Hela L';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+clear figParams
+figParams.title = 'TRF2 Pooled Data / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 4e7];
+figParams.ylim = [0 5e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'TRF2 Pooled Data / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 250];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'Rg', numBins, figParams)
+
+clear figParams
+figParams.title = 'TRF2 Pooled Data / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+clear figParams
+figParams.title = 'TRF2 Pooled Data / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 4e7];
+figParams.ylim = [0 5e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+% Scatter plots with fits
+clear figParams
+figParams.xlim = [0 700];
+figParams.ylim = [0 300];
+for ctr = 1:length(plotData)
+    plotScatter(plotData(ctr), figParams)
+end
+
+%==========================================================================
+% Comparison of all datasets
+%==========================================================================
+
+tempData = data;
+
+%---------------------------
+% First three data sets
+%---------------------------
+data = data(1:3);
 
 % Mean scaling exponents of all datasets
 clear figParams
-figParams.title = 'Scaling exponents for all datasets.';
+figParams.title = 'Scaling exponents for TRF1 IF datasets.';
 figParams.ylim = [0 0.6];
 figParams.ylabel = 'Scaling exponent \nu ^*';
-figParams.legend = {'Hela L'; 'Hela S'};
 fullScreen = true;
 plotScalingExp(data, figParams, fullScreen)
 
 % Mean Rg's for all datasets
 clear figParams
-figParams.title = 'Mean R_g for all datasets';
+figParams.title = 'Mean R_g for TRF1 IF datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
-figParams.legend = {'Hela L', 'Hela S'};
-figParams.dividers = [1.5, 4.5, 7.5, 10.5, 14.5]; % x-locations of vertical dividing lines
-errorBar = 'stdErr';
 fullScreen = true;
+errorBar = 'stdErr';
 plotMeans(data, 'Rg', figParams, errorBar, fullScreen);
 
 % Mean number of localizations for all datasets
 clear figParams
-figParams.title = 'Mean number of localizations for all datasets';
+figParams.title = 'Mean number of localizations for TRF1 IF datasets';
 figParams.ylim = [0 300];
 figParams.ylabel = 'Mean number of localizations';
-figParams.legend = {'Hela L', 'Hela S'};
-figParams.dividers = [1.5, 4.5, 7.5, 10.5, 14.5]; % x-locations of vertical dividing lines
-errorBar = 'stdErr';
 fullScreen = true;
+errorBar = 'stdErr';
 plotMeans(data, 'numLoc', figParams, errorBar, fullScreen);
 
 % Mean volume for all datasets
 clear figParams
-figParams.title = 'Mean volume for all datasets';
+figParams.title = 'Mean volume for TRF1 IF datasets';
 figParams.ylim = [0 11e6];
 figParams.ylabel = 'Mean volume, nm^3';
-figParams.legend = {'Hela L', 'Hela S'};
-figParams.dividers = [1.5, 4.5, 7.5, 10.5, 14.5]; % x-locations of vertical dividing lines
+fullScreen = true;
+errorBar = 'stdErr';
+plotMeans(data, 'volume', figParams, errorBar, fullScreen);
+
+data = tempData(4:end);
+
+% Mean scaling exponents of all datasets
+clear figParams
+figParams.title = 'Scaling exponents for all other datasets.';
+figParams.ylim = [0 0.6];
+figParams.ylabel = 'Scaling exponent \nu ^*';
+figParams.legend = {'Hela L'; 'Hela S'};
+figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
+fullScreen = true;
+plotScalingExpPaired(data, figParams, fullScreen)
+
+% Mean Rg's for all datasets
+clear figParams
+figParams.title = 'Mean R_g for all other datasets';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
 errorBar = 'stdErr';
 fullScreen = true;
-plotMeans(data, 'volume', figParams, errorBar, fullScreen);
+plotMeansPaired(data, 'Rg', figParams, errorBar, fullScreen);
+
+% Mean number of localizations for all datasets
+clear figParams
+figParams.title = 'Mean number of localizations for all other datasets';
+figParams.ylim = [0 300];
+figParams.ylabel = 'Mean number of localizations';
+figParams.legend = {'Hela L'; 'Hela S'};
+figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
+errorBar = 'stdErr';
+fullScreen = true;
+plotMeansPaired(data, 'numLoc', figParams, errorBar, fullScreen);
+
+% Mean volume for all datasets
+clear figParams
+figParams.title = 'Mean volume for all other datasets';
+figParams.ylim = [0 11e6];
+figParams.ylabel = 'Mean volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
+errorBar = 'stdErr';
+fullScreen = true;
+plotMeansPaired(data, 'volume', figParams, errorBar, fullScreen);
+
+data = tempData;
+clear tempData;
 
 end
 
@@ -392,6 +543,89 @@ end
 
 %% Plot mean values.
 function plotMeans(data, fieldName, figParams, errorBar, fullScreen)
+% For plotting means when data is not paired.
+% data - Structure containing distributions from processed clusters
+% fieldName - String representing which distribution to plot
+% figParams - Structure of figure parameters for plotting
+%   .title - String
+%   .ylabel - String
+%   .xlim - (Optional) Double array of minimum and maximum x-values
+%   .ylim - (Optional) Double array of minimum and maximum y-values
+%   .dividers - (Optional) X-locations of vertical lines to divide sets
+% errorBar - String specifying the error bar; must be 'stdErr' or 'stdDev'
+% fullScreen - Boolean that tells Matlab whether figure is full screen.
+
+
+dataFields = fieldnames(data(1).distributions); % Fields of data.distributions
+numDatasets = length(data);
+tickLabels = cell(numDatasets,1);
+xTicks = 1:numDatasets;
+
+% Is the supplied field name a field inside the data structure?
+assert(ismember(fieldName, dataFields), 'Error: The supplied field name must be a field of the data structure.')
+ 
+assert(~(strcmp(fieldName, 'M1') | strcmp(fieldName, 'M2')), ...
+       [fieldName ' supplied as fieldName parameter, but this function will not plot the individual first or second moments.']);
+
+meanVal = zeros(numDatasets,1); err = zeros(numDatasets,1);
+
+for ctr = 1:numDatasets
+    meanVal(ctr) = mean(data(ctr).distributions.(fieldName));
+    
+    % Plot the standard error or standard deviation?
+    if strcmp(errorBar, 'stdDev')
+        err(ctr) = std(data(ctr).distributions.(fieldName));
+    elseif strcmp(errorBar, 'stdErr')
+        err(ctr) = std(data(ctr).distributions.(fieldName)) / sqrt(length(data(ctr).distributions.(fieldName)));
+    else
+        error(['Argument: ' errorBar ' for the type of errorbar not recognized. It must be stdErr or stdDev.'])
+    end
+    
+    tickLabels{ctr} = data(ctr).experimentShortName;
+end
+
+if fullScreen
+    h = figure('units','normalized','outerposition',[0 0 1 1]); hold;
+    pause(2)
+else
+    h = figure; hold;
+end
+barwitherr(err, xTicks , meanVal)
+title(figParams.title)
+ylabel(figParams.ylabel);
+
+% Checks if xlim or ylim were supplied in figParam structure.
+if isfield(figParams, 'xlim')
+    xlim(figParams.xlim)
+else
+    xlim([0.5 (numDatasets + 0.5)])
+end
+
+if isfield(figParams, 'ylim')
+    ylim(figParams.ylim)
+else
+    ylim([0 max(meanVal + err)])
+end
+
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+xticklabel_rotate(xTicks, 25, tickLabels)
+set(findall(gcf,'type','text'),'FontSize',14,'fontWeight','bold')
+grid on
+
+% Place vertical divders on the plot to separate datasets
+hold on
+if isfield(figParams, 'dividers')
+    for x = figParams.dividers
+        plot([x, x], get(gca,'YLim'), 'k--');
+    end
+end
+hold off
+
+pause(2)
+end
+
+function plotMeansPaired(data, fieldName, figParams, errorBar, fullScreen)
+% For plotting means when all data are paired L and S datasets.
 % data - Structure containing distributions from processed clusters
 % fieldName - String representing which distribution to plot
 % figParams - Structure of figure parameters for plotting
@@ -461,6 +695,7 @@ end
 
 if fullScreen
     h = figure('units','normalized','outerposition',[0 0 1 1]); hold;
+    pause(2)
 else
     h = figure; hold;
 end
@@ -496,10 +731,84 @@ if isfield(figParams, 'dividers')
 end
 hold off
 
+pause(2)
 end
 
 %% Plots the scaling exponents for each dataset from the robust fits.
 function plotScalingExp(data, figParams, fullScreen)
+% For plotting scaling exponents for unpaired datasets.
+%
+% Plots the scaling exponents for each dataset as determined from the
+% robust fits.
+%
+%
+% data - Structure containing distributions from processed clusters
+% figParams - Structure of figure parameters for plotting
+%   .title - String
+%   .ylabel - String
+%   .xlim - (Optional) Double array of minimum and maximum x-values
+%   .ylim - (Optional) Double array of minimum and maximum y-values
+%   .dividers - (Optional) X-locations of vertical lines to divide sets
+% fullScreen - Boolean that tells Matlab whether figure is full screen
+
+numDatasets = length(data);
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp = zeros(numDatasets,1);
+confInt = zeros(numDatasets,1);
+
+for ctr = 1:numDatasets
+    currData = data(ctr).fits;
+    tickLabels{ctr} = data(ctr).experimentShortName;
+    scalingExp(ctr) = currData.fitRobust.b;
+    confIntTemp = abs(confint(currData.fitRobust) - scalingExp(ctr));
+    confInt(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+if fullScreen
+    h = figure('units','normalized','outerposition',[0 0 1 1]); hold;
+    pause(2)
+else
+    h = figure; hold;
+end
+barwitherr(confInt, xTicks ,scalingExp)
+title(figParams.title, 'FontSize', 14)
+ylabel(figParams.ylabel, 'FontSize', 14)
+
+% Checks if xlim or ylim were supplied in figParam structure.
+if isfield(figParams, 'xlim')
+    xlim(figParams.xlim)
+else
+    xlim([0.5 (numDatasets + 0.5)])
+end
+
+if isfield(figParams, 'ylim')
+    ylim(figParams.ylim)
+else
+    ylim([0 0.5])
+end
+
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+xticklabel_rotate(xTicks, 25, tickLabels)
+set(findall(gcf,'type','text'),'FontSize',14,'fontWeight','bold')
+grid on
+
+% Place vertical divders on the plot to separate datasets
+hold on
+if isfield(figParams, 'dividers')
+    for x = figParams.dividers
+        plot([x, x], get(gca,'YLim'), 'k--');
+    end
+end
+hold off
+
+pause(2)
+end
+
+function plotScalingExpPaired(data, figParams, fullScreen)
+% For plotting means when all datasets are paired.
+%
 % Plots the scaling exponents for each dataset as determined from the
 % robust fits. Note that since we always compare two datasets, the
 % data structure array must contain an even number of elements with
@@ -566,6 +875,110 @@ else
     h = figure; hold;
 end
 barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+legend(figParams.legend)
+title(figParams.title, 'FontSize', 14)
+ylabel(figParams.ylabel, 'FontSize', 14)
+
+% Checks if xlim or ylim were supplied in figParam structure.
+if isfield(figParams, 'xlim')
+    xlim(figParams.xlim)
+else
+    xlim([0.5 (numDatasets/2 + 0.5)])
+end
+
+if isfield(figParams, 'ylim')
+    ylim(figParams.ylim)
+else
+    ylim([0 0.5])
+end
+
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+xticklabel_rotate(xTicks, 25, tickLabels)
+set(findall(gcf,'type','text'),'FontSize',14,'fontWeight','bold')
+grid on
+
+% Place vertical divders on the plot to separate datasets
+hold on
+if isfield(figParams, 'dividers')
+    for x = figParams.dividers
+        plot([x, x], get(gca,'YLim'), 'k--');
+    end
+end
+hold off
+
+pause(2)
+end
+
+%% Plots the fit constants for each dataset from the robust fits.
+function plotFitConst(data, figParams, fullScreen)
+% Plots fit constants for each dataset as determined from the robust fits.
+% These constants are the value 'a' in the fit model a*x^b.
+
+% Note that since we always compare two datasets, the data structure array
+% must contain an even number of elements with datasets for comparison
+% located next to one another.
+%
+% For example, if length(data) = 4, data(1) and data(2) scaling exponents
+% will be grouped, as will data(3) and data(4).
+
+% data - Structure containing distributions from processed clusters
+% figParams - Structure of figure parameters for plotting
+%   .title - String
+%   .ylabel - String
+%   .legend - Cell array of strings for legend titles
+%   .xlim - (Optional) Double array of minimum and maximum x-values
+%   .ylim - (Optional) Double array of minimum and maximum y-values
+%   .dividers - (Optional) X-locations of vertical lines to divide sets
+% fullScreen - Boolean that tells Matlab whether figure is full screen
+
+% Ensure that there are a multiple of two datasets.
+assert(mod(length(data), 2) == 0, ...
+    'Error: The function plotFitConst requires a data structure with an even number of elements.')
+
+numDatasets = length(data);
+xTicks = 1:numDatasets/2;
+tickLabels = cell(numDatasets,1);
+
+fitConst1 = zeros(numDatasets,1); fitConst2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = 1:2:numDatasets
+    currData1 = data(ctr).fits;
+    tickLabels{ctr} = data(ctr).experimentShortName;
+    fitConst1(ctr) = currData1.fitRobust.a;
+    confIntTemp = abs(confint(currData1.fitRobust) - fitConst1(ctr));
+    confInt1(ctr) = confIntTemp(1,1); % Isolate confidence interval of the constant.
+    
+    currData2 = data(ctr + 1).fits;
+    fitConst2(ctr) = currData2.fitRobust.a;
+    confIntTemp = abs(confint(currData2.fitRobust) - fitConst2(ctr));
+    confInt2(ctr) = confIntTemp(1,1); % Isolate confidence interval of the constant.
+end
+
+% Remove empty elements that were left in each array due to the ctr values
+% in the foor loop.
+fitConst1 = fitConst1(fitConst1 ~= 0); fitConst2 = fitConst2(fitConst2 ~=0);
+confInt1 = confInt1(confInt1 ~=0); confInt2 = confInt2(confInt2 ~= 0);
+tickLabels = tickLabels(~cellfun(@isempty, tickLabels));
+
+% If the length of data is two, append zeros to the end of the scalingExp
+% and confInt2 arrays to get the two bars to appear as different colors.
+% This is because barwitherr will create two bars of the same color if its
+% arguments are not arrays, as is the case with only two datasets
+% (fitConst1 and fitConst2 would be two scalars in this case).
+if length(fitConst1) == 1
+    fitConst1 = [fitConst1; 0]; fitConst2 = [fitConst2; 0];
+    confInt1 = [confInt1; 0]; confInt2 = [confInt2; 0];
+    tickLabels{2} = [];
+    xTicks = [1, 2];
+end
+
+if fullScreen
+    h = figure('units','normalized','outerposition',[0 0 1 1]); hold;
+else
+    h = figure; hold;
+end
+barwitherr([confInt1 confInt2], xTicks ,[fitConst1 fitConst2])
 legend(figParams.legend)
 title(figParams.title, 'FontSize', 14)
 ylabel(figParams.ylabel, 'FontSize', 14)
