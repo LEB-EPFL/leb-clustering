@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/13 $ $REVISION: 1.1 $
 %
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
@@ -28,7 +28,7 @@ maxLoc = 1000;
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
 
-data = repeat_TRF2_experiments();
+data = very_first_data_struct();
 
 %% Verify that all directories are correct.
 for dirCtr = 1:length(data)
@@ -59,6 +59,7 @@ files = files(3:end);
 clear procData
 procData(length(files),1).M1 = 0;
 procData(length(files),1).M2 = 0;
+procData(length(files),1).RgTrans = 0;
 procData(length(files),1).Rg = 0;
 procData(length(files),1).numLoc = 0;
 procData(length(files),1).volume = 0;
@@ -81,11 +82,12 @@ else
 end
 
 %% Combine distrubtions from all elements of the data structures.
-allData = struct('M1', [], 'M2', [], 'Rg', [], 'numLoc', [], 'volume', []);
+allData = struct('M1', [], 'M2', [], 'RgTrans', [], 'Rg', [], 'numLoc', [], 'volume', []);
 
 for ctr = 1:length(files)
     allData.M1 = cat(1, allData.M1, procData(ctr).M1);
     allData.M2 = cat(1, allData.M2, procData(ctr).M2);
+    allData.RgTrans = cat(1, allData.RgTrans, procData(ctr).RgTrans);
     allData.Rg = cat(1, allData.Rg, procData(ctr).Rg);
     allData.numLoc = cat(1, allData.numLoc, procData(ctr).numLoc);
     allData.volume = cat(1, allData.volume, procData(ctr).volume);
@@ -133,6 +135,41 @@ data(dataCtr).fits.fitInfoNoOutliers = fitInfoNoOutliers;
 data(dataCtr).fits.fitRobust = fitRobust;
 data(dataCtr).fits.gofRobust = gofRobust;
 data(dataCtr).fits.fitInfoRobust = fitInfoRobust;
+
+%% Perform fits to the transverse second moments
+
+clear x1 y1 residuals I outliers
+x1 = allData.numLoc;
+yTrans = allData.RgTrans;
+%yAx = sqrt(allData.M2(:,3));  For later updates.
+
+% Nonlinear least squares fit to all data points.
+[fitRgTransNormal,gofRgTransNormal,fitRgTransInfoNormal] = fit(x1,yTrans,f,'StartPoint',[17 0.33]);
+
+% Nonlinear least squares fit to data points without outliers.
+% Outliers lie more than 1.5 standard deviations from the first fit curve.
+residuals = fitRgTransInfoNormal.residuals;
+I = abs(residuals) > 1.5 * std(residuals);
+outliers = excludedata(x1,yTrans,'indices',I);
+[fitRgTransNoOutliers, gofRgTransNoOutliers, fitRgTransInfoNoOutliers] = fit(x1,yTrans,f,'StartPoint', [17 0.33], 'Exclude',outliers);
+
+% Robust fit to all data points (points are weighted by distance from
+% curve.)
+[fitRgTransRobust, gofRgTransRobust, fitRgTransInfoRobust] = fit(x1,yTrans,f,'StartPoint',[17 0.33],'Robust','on');
+
+% Store fits in the external data array.
+data(dataCtr).fits.fitRgTransNormal = fitRgTransNormal;
+data(dataCtr).fits.gofRgTransNormal = gofRgTransNormal;
+data(dataCtr).fits.fitRgTransInfoNormal = fitRgTransInfoNormal;
+
+data(dataCtr).fits.fitRgTransNoOutliers = fitRgTransNoOutliers;
+data(dataCtr).fits.gofRgTransNoOutliers = gofRgTransNoOutliers;
+data(dataCtr).fits.fitRgTransInfoNoOutliers = fitRgTransInfoNoOutliers;
+
+data(dataCtr).fits.fitRgTransRobust = fitRgTransRobust;
+data(dataCtr).fits.gofRgTransRobust = gofRgTransRobust;
+data(dataCtr).fits.fitRgTransInfoRobust = fitRgTransInfoRobust;
+
 
 end % Ends loop over datasets.
 

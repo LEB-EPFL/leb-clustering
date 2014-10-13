@@ -78,6 +78,7 @@ end
 %% Assign computed values to data structure for return.
 distr.M1 = M1;
 distr.M2 = M2;
+distr.RgTrans = sqrt(M2(:,1) + M2(:,2));
 distr.Rg = Rg;
 distr.numLoc = numLoc;
 distr.volume = volume;
