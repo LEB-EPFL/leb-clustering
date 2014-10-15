@@ -8,7 +8,7 @@
 %   maxLoc - Maximum number of points in a cluster
 %            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/09/16 $ $REVISION: 1.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/15 $ $REVISION: 1.2 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
@@ -78,7 +78,12 @@ end
 %% Assign computed values to data structure for return.
 distr.M1 = M1;
 distr.M2 = M2;
-distr.RgTrans = sqrt(M2(:,1) + M2(:,2));
+% Error handling in case M2 is empty
+if isempty(M2)
+    distr.RgTrans = [];
+else
+    distr.RgTrans = sqrt(M2(:,1) + M2(:,2)); 
+end
 distr.Rg = Rg;
 distr.numLoc = numLoc;
 distr.volume = volume;
