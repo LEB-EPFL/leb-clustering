@@ -1,0 +1,179 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Pooled data for TRF1/TRF2 double KD experiment</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-10-16"><meta name="DC.source" content="makePlots.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Pooled data for TRF1/TRF2 double KD experiment</h1><p>These data come from the 08-09-2014 and the 09-09-2014 datasets.</p><pre class="codeinput">data_visualization(data);
+
+disp([<span class="string">'Mean value of RgTrans / pSuper / Hela L: '</span> num2str(mean(data(1).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation of RgTrans / pSuper/ Hela L: '</span> num2str(std(data(1).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean value of RgTrans / TRF1 and TRF2 KD / Hela L: '</span> num2str(mean(data(3).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela L: '</span> num2str(std(data(3).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean value of RgTrans / pSuper / Hela S: '</span> num2str(mean(data(2).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation of RgTrans / pSuper/ Hela S: '</span> num2str(std(data(2).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean value of RgTrans / TRF1 and TRF2 KD / Hela S: '</span> num2str(mean(data(4).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela S: '</span> num2str(std(data(4).distributions.RgTrans)) <span class="string">' nm'</span>])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean number of localizations / pSuper / Hela L: '</span> num2str(mean(data(1).distributions.numLoc))])
+disp([<span class="string">'Standard deviation of number of localizations / pSuper/ Hela L: '</span> num2str(std(data(1).distributions.numLoc))])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean number of localizations / TRF1 and TRF2 KD / Hela L: '</span> num2str(mean(data(3).distributions.numLoc))])
+disp([<span class="string">'Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela L: '</span> num2str(std(data(3).distributions.numLoc))])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean number of localizations / pSuper / Hela S: '</span> num2str(mean(data(2).distributions.numLoc))])
+disp([<span class="string">'Standard deviation of number of localizations / pSuper/ Hela S: '</span> num2str(std(data(2).distributions.numLoc))])
+disp([<span class="string">'-----------------------------------------------------------------'</span>])
+disp([<span class="string">'Mean number of localizations / TRF1 and TRF2 KD / Hela S: '</span> num2str(mean(data(4).distributions.numLoc))])
+disp([<span class="string">'Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela S: '</span> num2str(std(data(4).distributions.numLoc))])
+</pre><pre class="codeoutput">Current plot held
+
+newpos =
+
+   1.0e+03 *
+
+    0.4999    0.1851    2.8425    0.8510
+
+Current plot held
+
+newpos =
+
+   1.0e+03 *
+
+    0.2506    0.1821    1.3560    0.8290
+
+Current plot held
+
+newpos =
+
+   1.0e+03 *
+
+    0.2506    0.1821    1.3560    0.8290
+
+Current plot held
+
+newpos =
+
+   1.0e+03 *
+
+    0.2506    0.1821    1.3560    0.8290
+
+Mean value of RgTrans / pSuper / Hela L: 78.8126 nm
+Standard deviation of RgTrans / pSuper/ Hela L: 22.67 nm
+-----------------------------------------------------------------
+Mean value of RgTrans / TRF1 and TRF2 KD / Hela L: 79.8566 nm
+Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela L: 26.4931 nm
+-----------------------------------------------------------------
+Mean value of RgTrans / pSuper / Hela S: 65.6623 nm
+Standard deviation of RgTrans / pSuper/ Hela S: 22.0463 nm
+-----------------------------------------------------------------
+Mean value of RgTrans / TRF1 and TRF2 KD / Hela S: 68.6347 nm
+Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela S: 23.0559 nm
+-----------------------------------------------------------------
+Mean number of localizations / pSuper / Hela L: 108.4294
+Standard deviation of number of localizations / pSuper/ Hela L: 49.8753
+-----------------------------------------------------------------
+Mean number of localizations / TRF1 and TRF2 KD / Hela L: 94.1425
+Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela L: 44.1674
+-----------------------------------------------------------------
+Mean number of localizations / pSuper / Hela S: 151.0833
+Standard deviation of number of localizations / pSuper/ Hela S: 70.7241
+-----------------------------------------------------------------
+Mean number of localizations / TRF1 and TRF2 KD / Hela S: 90.7202
+Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela S: 44.0072
+</pre><img vspace="5" hspace="5" src="makePlots_01.png" alt=""> <img vspace="5" hspace="5" src="makePlots_02.png" alt=""> <img vspace="5" hspace="5" src="makePlots_03.png" alt=""> <img vspace="5" hspace="5" src="makePlots_04.png" alt=""> <img vspace="5" hspace="5" src="makePlots_05.png" alt=""> <img vspace="5" hspace="5" src="makePlots_06.png" alt=""> <img vspace="5" hspace="5" src="makePlots_07.png" alt=""> <img vspace="5" hspace="5" src="makePlots_08.png" alt=""> <img vspace="5" hspace="5" src="makePlots_09.png" alt=""> <img vspace="5" hspace="5" src="makePlots_10.png" alt=""> <img vspace="5" hspace="5" src="makePlots_11.png" alt=""> <img vspace="5" hspace="5" src="makePlots_12.png" alt=""> <img vspace="5" hspace="5" src="makePlots_13.png" alt=""> <img vspace="5" hspace="5" src="makePlots_14.png" alt=""> <img vspace="5" hspace="5" src="makePlots_15.png" alt=""> <img vspace="5" hspace="5" src="makePlots_16.png" alt=""> <img vspace="5" hspace="5" src="makePlots_17.png" alt=""> <img vspace="5" hspace="5" src="makePlots_18.png" alt=""> <img vspace="5" hspace="5" src="makePlots_19.png" alt=""> <img vspace="5" hspace="5" src="makePlots_20.png" alt=""> <img vspace="5" hspace="5" src="makePlots_21.png" alt=""> <img vspace="5" hspace="5" src="makePlots_22.png" alt=""> <img vspace="5" hspace="5" src="makePlots_23.png" alt=""> <img vspace="5" hspace="5" src="makePlots_24.png" alt=""> <img vspace="5" hspace="5" src="makePlots_25.png" alt=""> <img vspace="5" hspace="5" src="makePlots_26.png" alt=""> <img vspace="5" hspace="5" src="makePlots_27.png" alt=""> <img vspace="5" hspace="5" src="makePlots_28.png" alt=""> <img vspace="5" hspace="5" src="makePlots_29.png" alt=""> <img vspace="5" hspace="5" src="makePlots_30.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Pooled data for TRF1/TRF2 double KD experiment
+% These data come from the 08-09-2014 and the 09-09-2014 datasets.
+data_visualization(data);
+
+disp(['Mean value of RgTrans / pSuper / Hela L: ' num2str(mean(data(1).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation of RgTrans / pSuper/ Hela L: ' num2str(std(data(1).distributions.RgTrans)) ' nm'])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean value of RgTrans / TRF1 and TRF2 KD / Hela L: ' num2str(mean(data(3).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela L: ' num2str(std(data(3).distributions.RgTrans)) ' nm'])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean value of RgTrans / pSuper / Hela S: ' num2str(mean(data(2).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation of RgTrans / pSuper/ Hela S: ' num2str(std(data(2).distributions.RgTrans)) ' nm'])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean value of RgTrans / TRF1 and TRF2 KD / Hela S: ' num2str(mean(data(4).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela S: ' num2str(std(data(4).distributions.RgTrans)) ' nm'])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean number of localizations / pSuper / Hela L: ' num2str(mean(data(1).distributions.numLoc))])
+disp(['Standard deviation of number of localizations / pSuper/ Hela L: ' num2str(std(data(1).distributions.numLoc))])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean number of localizations / TRF1 and TRF2 KD / Hela L: ' num2str(mean(data(3).distributions.numLoc))])
+disp(['Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela L: ' num2str(std(data(3).distributions.numLoc))])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean number of localizations / pSuper / Hela S: ' num2str(mean(data(2).distributions.numLoc))])
+disp(['Standard deviation of number of localizations / pSuper/ Hela S: ' num2str(std(data(2).distributions.numLoc))])
+disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
+disp(['Mean number of localizations / TRF1 and TRF2 KD / Hela S: ' num2str(mean(data(4).distributions.numLoc))])
+disp(['Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela S: ' num2str(std(data(4).distributions.numLoc))])
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,27 @@
+%% Pooled data for TRF1/TRF2 double KD experiment
+% These data come from the 08-09-2014 and the 09-09-2014 datasets.
+data_visualization(data);
+
+disp(['Mean value of RgTrans / pSuper / Hela L: ' num2str(mean(data(1).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation of RgTrans / pSuper/ Hela L: ' num2str(std(data(1).distributions.RgTrans)) ' nm'])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean value of RgTrans / TRF1 and TRF2 KD / Hela L: ' num2str(mean(data(3).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela L: ' num2str(std(data(3).distributions.RgTrans)) ' nm'])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean value of RgTrans / pSuper / Hela S: ' num2str(mean(data(2).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation of RgTrans / pSuper/ Hela S: ' num2str(std(data(2).distributions.RgTrans)) ' nm'])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean value of RgTrans / TRF1 and TRF2 KD / Hela S: ' num2str(mean(data(4).distributions.RgTrans)) ' nm'])
+disp(['Standard deviation value of RgTrans / TRF1 and TRF2 KD / Hela S: ' num2str(std(data(4).distributions.RgTrans)) ' nm'])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean number of localizations / pSuper / Hela L: ' num2str(mean(data(1).distributions.numLoc))])
+disp(['Standard deviation of number of localizations / pSuper/ Hela L: ' num2str(std(data(1).distributions.numLoc))])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean number of localizations / TRF1 and TRF2 KD / Hela L: ' num2str(mean(data(3).distributions.numLoc))])
+disp(['Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela L: ' num2str(std(data(3).distributions.numLoc))])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean number of localizations / pSuper / Hela S: ' num2str(mean(data(2).distributions.numLoc))])
+disp(['Standard deviation of number of localizations / pSuper/ Hela S: ' num2str(std(data(2).distributions.numLoc))])
+disp(['-----------------------------------------------------------------'])
+disp(['Mean number of localizations / TRF1 and TRF2 KD / Hela S: ' num2str(mean(data(4).distributions.numLoc))])
+disp(['Standard deviation value of number of localizations / TRF1 and TRF2 KD / Hela S: ' num2str(std(data(4).distributions.numLoc))])

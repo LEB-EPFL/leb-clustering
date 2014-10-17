@@ -1,0 +1,938 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-08-22"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Use parallel processing to speed up computation? (use 'false' if unsure)</a></li><li><a href="#3">Define clustering and filtering parameters.</a></li><li><a href="#4">Designate the files for analysis.</a></li><li><a href="#5">Filter out upper level directors.</a></li><li><a href="#6">Process the data within each file.</a></li><li><a href="#7">Combine distrubtions from all elements of the data structures.</a></li><li><a href="#8">Create the bins for plotting the distributions from above.</a></li><li><a href="#9">Plot the normalized distributions of the cluster statistics.</a></li><li><a href="#10">Plot square root of the radius of gyration vs number of localizations.</a></li><li><a href="#11">Plot the number of localizations vs Rg  in a log-log plot.</a></li><li><a href="#12">Report statistics from distributions.</a></li></ul></div><pre class="codeinput"><span class="comment">% The main script for analyzing the telomere data and producing reports.</span>
+<span class="comment">%</span>
+<span class="comment">% This script should be run after the analysis workflow is determined from</span>
+<span class="comment">% data_mining.m.</span>
+<span class="comment">%</span>
+<span class="comment">% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/21 $ $REVISION: 0.7 $</span>
+<span class="comment">%</span>
+</pre><h2>Use parallel processing to speed up computation? (use 'false' if unsure)<a name="2"></a></h2><pre class="codeinput">useParallel = true;
+
+<span class="keyword">if</span> useParallel
+    matlabpool <span class="string">open</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: matlabpool will be removed in a future release.
+Use parpool instead. 
+Starting matlabpool using the 'local' profile ... connected to 12 workers.
+</pre><h2>Define clustering and filtering parameters.<a name="3"></a></h2><p>k - number of objects in a neighborhood of an object (minimal number of objects considered as a cluster) Eps - neighborhood radius, if not known avoid this parameter or put [] minLoc - Discard all clusters with localizations fewer than this number.</p><pre class="codeinput">k = 8;
+Eps = 65;
+minLoc = 50;
+
+<span class="comment">% Remove outliers in Rg vs. numLoc scaling curves.</span>
+removeOutliers = true;
+</pre><h2>Designate the files for analysis.<a name="4"></a></h2><pre class="codeinput">dataRootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/'</span>;
+dataSetLDir = <span class="string">'11_08_2014_HeLaL_KD_Smchd1_TRF2_pSuper_non filtered/'</span>;
+dataSetSDir = <span class="string">'11_08_2014_HeLaS_KD_Smchd1_TRF2_pSuper_non filtered/'</span>;
+
+LFiles = dir([dataRootDir dataSetLDir]);
+SFiles = dir([dataRootDir dataSetSDir]);
+</pre><h2>Filter out upper level directors.<a name="5"></a></h2><pre class="codeinput">LFiles = LFiles(3:end);
+SFiles = SFiles(3:end);
+</pre><h2>Process the data within each file.<a name="6"></a></h2><pre class="codeinput">LProcData(length(LFiles),1).M1 = 0;
+LProcData(length(LFiles),1).M2 = 0;
+LProcData(length(LFiles),1).M2Mag = 0;
+LProcData(length(LFiles),1).numLoc = 0;
+LProcData(length(LFiles),1).volume = 0;
+
+SProcData(length(SFiles),1).M1 = 0;
+SProcData(length(SFiles),1).M2 = 0;
+SProcData(length(SFiles),1).M2Mag = 0;
+SProcData(length(SFiles),1).numLoc = 0;
+SProcData(length(SFiles),1).volume = 0;
+
+
+<span class="comment">% process_data(fileName) is custom function call.</span>
+<span class="keyword">if</span> useParallel
+    <span class="keyword">parfor</span> ctr = 1:length(LFiles)
+        LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+    <span class="keyword">end</span>
+    <span class="keyword">parfor</span> ctr = 1:length(SFiles)
+        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="keyword">for</span> ctr = 1:length(LFiles)
+        LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+    <span class="keyword">end</span>
+    <span class="keyword">for</span> ctr = 1:length(SFiles)
+        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 62
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 62
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+</pre><h2>Combine distrubtions from all elements of the data structures.<a name="7"></a></h2><pre class="codeinput">LAllData = struct(<span class="string">'M1'</span>, [], <span class="string">'M2'</span>, [], <span class="string">'M2Mag'</span>, [], <span class="string">'numLoc'</span>, [], <span class="string">'volume'</span>, []);
+SAllData = struct(<span class="string">'M1'</span>, [], <span class="string">'M2'</span>, [], <span class="string">'M2Mag'</span>, [], <span class="string">'numLoc'</span>, [], <span class="string">'volume'</span>, []);
+
+<span class="keyword">for</span> ctr = 1:length(LFiles)
+    LAllData.M1 = cat(1, LAllData.M1, LProcData(ctr).M1);
+    LAllData.M2 = cat(1, LAllData.M2, LProcData(ctr).M2);
+    LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
+    LAllData.numLoc = cat(1, LAllData.numLoc, LProcData(ctr).numLoc);
+    LAllData.volume = cat(1, LAllData.volume, LProcData(ctr).volume);
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> ctr = 1:length(SFiles)
+    SAllData.M1 = cat(1, SAllData.M1, SProcData(ctr).M1);
+    SAllData.M2 = cat(1, SAllData.M2, SProcData(ctr).M2);
+    SAllData.M2Mag = cat(1, SAllData.M2Mag, SProcData(ctr).M2Mag);
+    SAllData.numLoc = cat(1, SAllData.numLoc, SProcData(ctr).numLoc);
+    SAllData.volume = cat(1, SAllData.volume, SProcData(ctr).volume);
+<span class="keyword">end</span>
+</pre><h2>Create the bins for plotting the distributions from above.<a name="8"></a></h2><p>First, it is determined which of the two datasets, S or L, has the largest and smallest values in each field. Next, the bins are determined by partitioning the range between between these values into numBins equally-sized intervals. These bins are used to normalize the distributions.</p><pre class="codeinput">numBins = 20;
+bins = struct(<span class="string">'M1'</span>, [], <span class="string">'M2'</span>, [], <span class="string">'M2Mag'</span>, [], <span class="string">'numLoc'</span>, [], <span class="string">'volume'</span>, []);
+fields = fieldnames(bins);
+
+<span class="keyword">for</span> ctr = 1:numel(fields)
+    minBin = min([min(LAllData.(fields{ctr})(:)) min(SAllData.(fields{ctr})(:))]);
+    maxBin = max([max(LAllData.(fields{ctr})(:)) max(SAllData.(fields{ctr})(:))]);
+    bins.(fields{ctr}) = linspace(minBin, maxBin, numBins);
+<span class="keyword">end</span>
+</pre><h2>Plot the normalized distributions of the cluster statistics.<a name="9"></a></h2><pre class="codeinput">[LN, LBIN] = histc(LAllData.M2, bins.M2);
+[SN, SBIN] = histc(SAllData.M2, bins.M2);
+
+<span class="comment">% Set the size of the figure window.</span>
+subplot(2,2,1)
+hFig = gcf();
+set(hFig, <span class="string">'Position'</span>, [100, 100, 1600, 1000])
+
+<span class="comment">% Second order moments along x, y, and z.</span>
+<span class="comment">% Compute the normalization factor.</span>
+dx = diff(bins.M2);
+dx = dx(1);
+
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(bins.M2, [LN ./ repmat(LNorm, size(LN,1), 1), SN ./ repmat(SNorm, size(SN,1), 1)], <span class="string">'histc'</span>)
+legend(<span class="string">'Long M_x^2'</span>, <span class="string">'Long M_y^2'</span>, <span class="string">'Long M_z^2'</span>, <span class="string">'Short M_x^2'</span>, <span class="string">'Short M_y^2'</span>, <span class="string">'Short M_z^2'</span>)
+title(<span class="string">'Second moments about x,y, and z for long and short data sets'</span>)
+xlabel(<span class="string">'M^2, nm^2'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+grid <span class="string">on</span>
+
+<span class="comment">% Plot the normalized distributions of other quantities. (Plots normalized</span>
+<span class="comment">% distributions for the magnitude of the square root of the radius of</span>
+<span class="comment">% gyration, the number of localizations, and the volume.)</span>
+<span class="keyword">for</span> ctr = 3:4
+    [LN, LBIN] = histc(LAllData.(fields{ctr}), bins.(fields{ctr}));
+    [SN, SBIN] = histc(SAllData.(fields{ctr}), bins.(fields{ctr}));
+
+    <span class="comment">% Compute the normalization factor.</span>
+    dx = diff(bins.(fields{ctr}));
+    dx = dx(1);
+    LNorm = sum(dx * LN);
+    SNorm = sum(dx * SN);
+
+    <span class="comment">% Write to subplots 2 and 3.</span>
+    subplot(2,2, ctr - 1)
+    bar(bins.(fields{ctr}), [LN / LNorm, SN / SNorm], <span class="string">'histc'</span>)
+    grid <span class="string">on</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Radius of gyration</span>
+subplot(2,2,2)
+title(<span class="string">'Square root of the radius of gyration of the clusters of points for L and S datasets'</span>)
+xlabel(<span class="string">'Square root of radius of gyration, nm'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+legend(<span class="string">'L dataset'</span>, <span class="string">'S dataset'</span>)
+
+<span class="comment">% Number of localizations</span>
+subplot(2,2,3)
+title(<span class="string">'Number of localizations per cluster'</span>)
+xlabel(<span class="string">'Number of localizations'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+legend(<span class="string">'L dataset'</span>, <span class="string">'S dataset'</span>)
+
+<span class="comment">% Volume</span>
+subplot(2,2,4)
+minBin = min([min(LAllData.volume.^(1/3)) min(SAllData.volume.^(1/3))]);
+maxBin = max([max(LAllData.volume.^(1/3)) max(SAllData.volume.^(1/3))]);
+binsVol3 = linspace(minBin, maxBin, numBins);
+[LN, LBIN] = histc((LAllData.volume).^(1/3), binsVol3);
+[SN, SBIN] = histc((SAllData.volume).^(1/3), binsVol3);
+
+dx = diff(binsVol3);
+dx = dx(1);
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(binsVol3, [LN/ LNorm, SN / SNorm], <span class="string">'histc'</span>)
+title(<span class="string">'Cube root of cluster volumes (characteristic linear size)'</span>)
+xlabel(<span class="string">'Volume^{(1/3)}, nm'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+legend(<span class="string">'L dataset'</span>, <span class="string">'S dataset'</span>)
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2>Plot square root of the radius of gyration vs number of localizations.<a name="10"></a></h2><p>Set the size of the figure window.</p><pre class="codeinput">subplot(2,1,1)
+hFig = gcf();
+set(hFig, <span class="string">'Position'</span>, [100, 100, 1200, 1000])
+
+x = LAllData.numLoc;
+y = LAllData.M2Mag;
+
+<span class="comment">% Linear regression</span>
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+<span class="keyword">if</span> removeOutliers
+    <span class="comment">% Filter points outside three standard deviations from the best fit line.</span>
+    x = x(abs(resid) &lt; 3 * std(resid));
+    y = y(abs(resid) &lt; 3 * std(resid));
+
+    <span class="comment">% Linear regression again after outliers are removed.</span>
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+<span class="keyword">end</span>
+
+scatter(x, y, <span class="string">'.'</span>)
+
+hold <span class="string">on</span>
+plot(x, linearFit, <span class="string">'k'</span>)
+hold <span class="string">off</span>
+legend(<span class="string">'L Dataset'</span>, [<span class="string">'Linear regression (R^2 = '</span> num2str(Rsq, <span class="string">'%.2f'</span>) <span class="string">')'</span>], <span class="string">'Location'</span>, <span class="string">'SouthEast'</span>)
+xlabel(<span class="string">'Number of localizations'</span>)
+ylabel(<span class="string">'R_g, nm'</span>)
+title(<span class="string">'Size of clusters vs. the number of localizations'</span>)
+grid <span class="string">on</span>
+
+subplot(2,1,2)
+x = SAllData.numLoc;
+y = SAllData.M2Mag;
+
+<span class="comment">% Linear regression</span>
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+<span class="keyword">if</span> removeOutliers
+    <span class="comment">% Filter points outside three standard deviations from the best fit line.</span>
+    x = x(abs(resid) &lt; 3 * std(resid));
+    y = y(abs(resid) &lt; 3 * std(resid));
+
+    <span class="comment">% Linear regression again after outliers are removed.</span>
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+<span class="keyword">end</span>
+
+scatter(x, y, <span class="string">'r.'</span>)
+
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+hold <span class="string">on</span>
+plot(x, linearFit, <span class="string">'k'</span>)
+hold <span class="string">off</span>
+legend(<span class="string">'S Dataset'</span>, [<span class="string">'Linear regression (R^2 = '</span> num2str(Rsq, <span class="string">'%.2f'</span>) <span class="string">')'</span>], <span class="string">'Location'</span>, <span class="string">'SouthEast'</span>)
+xlabel(<span class="string">'Number of localizations'</span>)
+ylabel(<span class="string">'R_g, nm'</span>)
+grid <span class="string">on</span>
+
+<span class="comment">% Sets y-limit to the same as the first graph.</span>
+ylim([0 300])
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <h2>Plot the number of localizations vs Rg  in a log-log plot.<a name="11"></a></h2><p>Find the base e logarithm of the data.</p><pre class="codeinput">close <span class="string">all</span>
+subplot(2,1,1)
+hFig = gcf();
+set(hFig, <span class="string">'Position'</span>, [100, 100, 1200, 1000])
+
+x = log(LAllData.numLoc);
+y = log(LAllData.M2Mag);
+
+<span class="comment">% Linear regression</span>
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+<span class="keyword">if</span> removeOutliers
+    <span class="comment">% Filter points outside three standard deviations from the best fit line.</span>
+    x = x(abs(resid) &lt; 3 * std(resid));
+    y = y(abs(resid) &lt; 3 * std(resid));
+
+    <span class="comment">% Linear regression again after outliers are removed.</span>
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+<span class="keyword">end</span>
+
+<span class="comment">% Plot the logarithmic data.</span>
+plot(x,y,<span class="string">'.'</span>)
+
+pause(1)
+<span class="comment">% The following renames the tick labels since Matlab does not allow for</span>
+<span class="comment">% easy tick labeling in logarithmic plots.</span>
+xt = get(gca, <span class="string">'XTick'</span>);
+yt = get(gca, <span class="string">'YTick'</span>);
+xl = get(gca, <span class="string">'XLim'</span>);
+yl = get(gca, <span class="string">'YLim'</span>);
+set(gca, <span class="string">'XTickLabel'</span>, [])
+set(gca, <span class="string">'YTickLabel'</span>, [])
+hStr = cellstr(num2str(xt(:), <span class="string">'e^{%0.1f}'</span>));
+vStr = cellstr(num2str(yt(:), <span class="string">'e^{%0.1f}'</span>));
+hTxt = text(xt, yl(ones(size(xt))), hStr, <span class="string">'Interpreter'</span>, <span class="string">'tex'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="string">'Horizontal'</span>, <span class="string">'center'</span>);
+vTxt = text(xl(ones(size(yt))), yt, vStr, <span class="string">'Interpreter'</span>, <span class="string">'tex'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'bottom'</span>, <span class="string">'Horizontal'</span>, <span class="string">'right'</span>);
+
+hold <span class="string">on</span>
+plot(x, linearFit, <span class="string">'k'</span>)
+hold <span class="string">off</span>
+legend(<span class="string">'L Dataset'</span>, [<span class="string">'Linear regression (R^2 = '</span> num2str(Rsq, <span class="string">'%.2f'</span>) <span class="string">')'</span>], <span class="string">'Location'</span>, <span class="string">'SouthEast'</span>)
+xlabel(<span class="string">'log number of localizations'</span>)
+ylabel(<span class="string">'log R_g'</span>)
+title(<span class="string">'Size of clusters vs. the number of localizations, log-log plot'</span>)
+text(4, 5.5, [<span class="string">'Slope of line: '</span> num2str(p(1), <span class="string">'%0.4f'</span>)])
+grid <span class="string">on</span>
+
+<span class="comment">% Move axis labels</span>
+xlabh = get(gca, <span class="string">'XLabel'</span>);
+set(xlabh, <span class="string">'Position'</span>, get(xlabh, <span class="string">'Position'</span>) - [0 .2 0])
+ylabh = get(gca, <span class="string">'YLabel'</span>);
+set(ylabh, <span class="string">'Position'</span>, get(ylabh, <span class="string">'Position'</span>) - [.1 0 0])
+
+<span class="comment">% S dataset</span>
+subplot(2,1,2)
+x = log(SAllData.numLoc);
+y = log(SAllData.M2Mag);
+
+<span class="comment">% Linear regression</span>
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+<span class="keyword">if</span> removeOutliers
+    <span class="comment">% Filter points outside three standard deviations from the best fit line.</span>
+    x = x(abs(resid) &lt; 3 * std(resid));
+    y = y(abs(resid) &lt; 3 * std(resid));
+
+    <span class="comment">% Linear regression again after outliers are removed.</span>
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+<span class="keyword">end</span>
+
+<span class="comment">% Plot the logarithmic data.</span>
+plot(x,y,<span class="string">'r.'</span>)
+
+<span class="comment">% Set scale to same as L dataset</span>
+ylim([3 6])
+
+<span class="comment">% The following renames the tick labels since Matlab does not allow for</span>
+<span class="comment">% easy tick labeling in logarithmic plots.</span>
+set(gca, <span class="string">'XTickLabel'</span>, [])
+set(gca, <span class="string">'YTickLabel'</span>, [])
+xt = get(gca, <span class="string">'XTick'</span>);
+yt = get(gca, <span class="string">'YTick'</span>);
+xl = get(gca, <span class="string">'XLim'</span>);
+yl = get(gca, <span class="string">'YLim'</span>);
+hStr = cellstr(num2str(xt(:), <span class="string">'e^{%0.1f}'</span>));
+vStr = cellstr(num2str(yt(:), <span class="string">'e^{%0.1f}'</span>));
+hTxt = text(xt, yl(ones(size(xt))), hStr, <span class="string">'Interpreter'</span>, <span class="string">'tex'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="string">'Horizontal'</span>, <span class="string">'center'</span>);
+vTxt = text(xl(ones(size(yt))), yt, vStr, <span class="string">'Interpreter'</span>, <span class="string">'tex'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'bottom'</span>, <span class="string">'Horizontal'</span>, <span class="string">'right'</span>);
+
+hold <span class="string">on</span>
+plot(x, linearFit, <span class="string">'k'</span>)
+hold <span class="string">off</span>
+legend(<span class="string">'S Dataset'</span>, [<span class="string">'Linear regression (R^2 = '</span> num2str(Rsq, <span class="string">'%.2f'</span>) <span class="string">')'</span>], <span class="string">'Location'</span>, <span class="string">'SouthEast'</span>)
+xlabel(<span class="string">'log number of localizations'</span>)
+ylabel(<span class="string">'log R_g'</span>)
+text(4, 5.5, [<span class="string">'Slope of line: '</span> num2str(p(1), <span class="string">'%0.4f'</span>)])
+grid <span class="string">on</span>
+
+<span class="comment">% Move axis labels</span>
+xlabh = get(gca, <span class="string">'XLabel'</span>);
+set(xlabh, <span class="string">'Position'</span>, get(xlabh, <span class="string">'Position'</span>) - [0 .2 0])
+ylabh = get(gca, <span class="string">'YLabel'</span>);
+set(ylabh, <span class="string">'Position'</span>, get(ylabh, <span class="string">'Position'</span>) - [.1 0 0])
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <h2>Report statistics from distributions.<a name="12"></a></h2><pre class="codeinput">disp([<span class="string">'Number of clusters, L dataset: '</span> num2str(length(LAllData.numLoc), <span class="string">'%d'</span>)])
+disp([<span class="string">' '</span>])
+disp([<span class="string">'Mean square root of the radius of gyration, L dataset: '</span> num2str(mean(LAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(LAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean cube root of volume, L dataset: '</span> num2str(mean(LAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(LAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean number of localizations, L dataset: '</span> num2str(mean(LAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(LAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp(<span class="string">'-------------------------------------------------------'</span>)
+disp([<span class="string">'Number of clusters, S dataset: '</span> num2str(length(SAllData.numLoc), <span class="string">'%d'</span>) ])
+disp([<span class="string">' '</span>])
+disp([<span class="string">'Mean square root of the radius of gyration, S dataset: '</span> num2str(mean(SAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(SAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean cube root of volume, S dataset: '</span> num2str(mean(SAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(SAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean number of localizations, S dataset: '</span> num2str(mean(SAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(SAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp(<span class="string">' '</span>)
+</pre><pre class="codeoutput">Number of clusters, L dataset: 600
+ 
+Mean square root of the radius of gyration, L dataset: 94.09 nm
+Standard deviation: 31.34 nm
+ 
+Mean cube root of volume, L dataset: 158.16 nm
+Standard deviation: 61.81 nm
+ 
+Mean number of localizations, L dataset: 171.89
+Standard deviation: 103.56
+-------------------------------------------------------
+Number of clusters, S dataset: 613
+ 
+Mean square root of the radius of gyration, S dataset: 78.66 nm
+Standard deviation: 24.25 nm
+ 
+Mean cube root of volume, S dataset: 136.90 nm
+Standard deviation: 50.05 nm
+ 
+Mean number of localizations, S dataset: 154.87
+Standard deviation: 109.56
+ 
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% The main script for analyzing the telomere data and producing reports.
+%
+% This script should be run after the analysis workflow is determined from
+% data_mining.m.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/21 $ $REVISION: 0.7 $
+%
+%% Use parallel processing to speed up computation? (use 'false' if unsure)
+useParallel = true;
+
+if useParallel
+    matlabpool open
+end
+
+%% Define clustering and filtering parameters.
+% k - number of objects in a neighborhood of an object 
+% (minimal number of objects considered as a cluster)
+% Eps - neighborhood radius, if not known avoid this parameter or put []
+% minLoc - Discard all clusters with localizations fewer than this number.
+k = 8;
+Eps = 65;
+minLoc = 50;
+
+% Remove outliers in Rg vs. numLoc scaling curves.
+removeOutliers = true;
+
+%% Designate the files for analysis.
+dataRootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+dataSetLDir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pSuper_non filtered/';
+dataSetSDir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pSuper_non filtered/';
+
+LFiles = dir([dataRootDir dataSetLDir]);
+SFiles = dir([dataRootDir dataSetSDir]);
+%% Filter out upper level directors.
+LFiles = LFiles(3:end);
+SFiles = SFiles(3:end);
+
+%% Process the data within each file.
+LProcData(length(LFiles),1).M1 = 0;
+LProcData(length(LFiles),1).M2 = 0;
+LProcData(length(LFiles),1).M2Mag = 0;
+LProcData(length(LFiles),1).numLoc = 0;
+LProcData(length(LFiles),1).volume = 0;
+
+SProcData(length(SFiles),1).M1 = 0;
+SProcData(length(SFiles),1).M2 = 0;
+SProcData(length(SFiles),1).M2Mag = 0;
+SProcData(length(SFiles),1).numLoc = 0;
+SProcData(length(SFiles),1).volume = 0;
+
+
+% process_data(fileName) is custom function call.
+if useParallel
+    parfor ctr = 1:length(LFiles)
+        LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+    end
+    parfor ctr = 1:length(SFiles)
+        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
+    end
+else
+    for ctr = 1:length(LFiles)
+        LFileName = [dataRootDir dataSetLDir LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc);
+    end
+    for ctr = 1:length(SFiles)
+        SFileName = [dataRootDir dataSetSDir SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc);
+    end
+end
+
+%% Combine distrubtions from all elements of the data structures.
+LAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+SAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+
+for ctr = 1:length(LFiles)
+    LAllData.M1 = cat(1, LAllData.M1, LProcData(ctr).M1);
+    LAllData.M2 = cat(1, LAllData.M2, LProcData(ctr).M2);
+    LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
+    LAllData.numLoc = cat(1, LAllData.numLoc, LProcData(ctr).numLoc);
+    LAllData.volume = cat(1, LAllData.volume, LProcData(ctr).volume);
+end
+
+for ctr = 1:length(SFiles)
+    SAllData.M1 = cat(1, SAllData.M1, SProcData(ctr).M1);
+    SAllData.M2 = cat(1, SAllData.M2, SProcData(ctr).M2);
+    SAllData.M2Mag = cat(1, SAllData.M2Mag, SProcData(ctr).M2Mag);
+    SAllData.numLoc = cat(1, SAllData.numLoc, SProcData(ctr).numLoc);
+    SAllData.volume = cat(1, SAllData.volume, SProcData(ctr).volume);
+end
+
+%% Create the bins for plotting the distributions from above.
+% First, it is determined which of the two datasets, S or L, has the
+% largest and smallest values in each field. Next, the bins are determined
+% by partitioning the range between between these values into numBins
+% equally-sized intervals. These bins are used to normalize the
+% distributions.
+numBins = 20;
+bins = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+fields = fieldnames(bins);
+
+for ctr = 1:numel(fields)
+    minBin = min([min(LAllData.(fields{ctr})(:)) min(SAllData.(fields{ctr})(:))]);
+    maxBin = max([max(LAllData.(fields{ctr})(:)) max(SAllData.(fields{ctr})(:))]);
+    bins.(fields{ctr}) = linspace(minBin, maxBin, numBins);    
+end
+
+%% Plot the normalized distributions of the cluster statistics.
+[LN, LBIN] = histc(LAllData.M2, bins.M2);
+[SN, SBIN] = histc(SAllData.M2, bins.M2);
+
+% Set the size of the figure window.
+subplot(2,2,1)
+hFig = gcf();
+set(hFig, 'Position', [100, 100, 1600, 1000])
+
+% Second order moments along x, y, and z.
+% Compute the normalization factor.
+dx = diff(bins.M2);
+dx = dx(1);
+
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(bins.M2, [LN ./ repmat(LNorm, size(LN,1), 1), SN ./ repmat(SNorm, size(SN,1), 1)], 'histc')
+legend('Long M_x^2', 'Long M_y^2', 'Long M_z^2', 'Short M_x^2', 'Short M_y^2', 'Short M_z^2')
+title('Second moments about x,y, and z for long and short data sets')
+xlabel('M^2, nm^2')
+ylabel('Normalized frequency')
+grid on
+
+% Plot the normalized distributions of other quantities. (Plots normalized
+% distributions for the magnitude of the square root of the radius of
+% gyration, the number of localizations, and the volume.)
+for ctr = 3:4
+    [LN, LBIN] = histc(LAllData.(fields{ctr}), bins.(fields{ctr}));
+    [SN, SBIN] = histc(SAllData.(fields{ctr}), bins.(fields{ctr}));
+    
+    % Compute the normalization factor.
+    dx = diff(bins.(fields{ctr}));
+    dx = dx(1);
+    LNorm = sum(dx * LN);
+    SNorm = sum(dx * SN);
+    
+    % Write to subplots 2 and 3.
+    subplot(2,2, ctr - 1)
+    bar(bins.(fields{ctr}), [LN / LNorm, SN / SNorm], 'histc')
+    grid on
+end
+
+% Radius of gyration
+subplot(2,2,2)
+title('Square root of the radius of gyration of the clusters of points for L and S datasets')
+xlabel('Square root of radius of gyration, nm')
+ylabel('Normalized frequency')
+legend('L dataset', 'S dataset')
+
+% Number of localizations
+subplot(2,2,3)
+title('Number of localizations per cluster')
+xlabel('Number of localizations')
+ylabel('Normalized frequency')
+legend('L dataset', 'S dataset')
+
+% Volume
+subplot(2,2,4)
+minBin = min([min(LAllData.volume.^(1/3)) min(SAllData.volume.^(1/3))]);
+maxBin = max([max(LAllData.volume.^(1/3)) max(SAllData.volume.^(1/3))]);
+binsVol3 = linspace(minBin, maxBin, numBins); 
+[LN, LBIN] = histc((LAllData.volume).^(1/3), binsVol3);
+[SN, SBIN] = histc((SAllData.volume).^(1/3), binsVol3);
+
+dx = diff(binsVol3);
+dx = dx(1);
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(binsVol3, [LN/ LNorm, SN / SNorm], 'histc')
+title('Cube root of cluster volumes (characteristic linear size)')
+xlabel('Volume^{(1/3)}, nm')
+ylabel('Normalized frequency')
+legend('L dataset', 'S dataset')
+grid on
+
+%% Plot square root of the radius of gyration vs number of localizations.
+% Set the size of the figure window.
+subplot(2,1,1)
+hFig = gcf();
+set(hFig, 'Position', [100, 100, 1200, 1000])
+
+x = LAllData.numLoc;
+y = LAllData.M2Mag;
+
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
+scatter(x, y, '.')
+
+hold on
+plot(x, linearFit, 'k')
+hold off
+legend('L Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
+xlabel('Number of localizations')
+ylabel('R_g, nm')
+title('Size of clusters vs. the number of localizations')
+grid on
+
+subplot(2,1,2)
+x = SAllData.numLoc;
+y = SAllData.M2Mag;
+
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
+scatter(x, y, 'r.')
+
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+hold on
+plot(x, linearFit, 'k')
+hold off
+legend('S Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
+xlabel('Number of localizations')
+ylabel('R_g, nm')
+grid on
+
+% Sets y-limit to the same as the first graph.
+ylim([0 300])
+
+%% Plot the number of localizations vs Rg  in a log-log plot.
+% Find the base e logarithm of the data.
+close all
+subplot(2,1,1)
+hFig = gcf();
+set(hFig, 'Position', [100, 100, 1200, 1000])
+
+x = log(LAllData.numLoc);
+y = log(LAllData.M2Mag);
+
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
+% Plot the logarithmic data.
+plot(x,y,'.')
+
+pause(1)
+% The following renames the tick labels since Matlab does not allow for
+% easy tick labeling in logarithmic plots.
+xt = get(gca, 'XTick');
+yt = get(gca, 'YTick');
+xl = get(gca, 'XLim');
+yl = get(gca, 'YLim');
+set(gca, 'XTickLabel', [])
+set(gca, 'YTickLabel', [])
+hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
+vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
+hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
+vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
+
+hold on
+plot(x, linearFit, 'k')
+hold off
+legend('L Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
+xlabel('log number of localizations')
+ylabel('log R_g')
+title('Size of clusters vs. the number of localizations, log-log plot')
+text(4, 5.5, ['Slope of line: ' num2str(p(1), '%0.4f')])
+grid on
+
+% Move axis labels
+xlabh = get(gca, 'XLabel');
+set(xlabh, 'Position', get(xlabh, 'Position') - [0 .2 0])
+ylabh = get(gca, 'YLabel');
+set(ylabh, 'Position', get(ylabh, 'Position') - [.1 0 0])
+
+% S dataset
+subplot(2,1,2)
+x = log(SAllData.numLoc);
+y = log(SAllData.M2Mag);
+
+% Linear regression
+p = polyfit(x, y, 1);
+linearFit = polyval(p, x);
+resid = y - linearFit;
+SSresid = sum(resid.^2);
+SStotal = (length(y) -1) * var(y);
+Rsq = 1 - SSresid/SStotal;
+
+if removeOutliers
+    % Filter points outside three standard deviations from the best fit line.
+    x = x(abs(resid) < 3 * std(resid));
+    y = y(abs(resid) < 3 * std(resid));
+
+    % Linear regression again after outliers are removed.
+    p = polyfit(x, y, 1);
+    linearFit = polyval(p, x);
+    resid = y - linearFit;
+    SSresid = sum(resid.^2);
+    SStotal = (length(y) -1) * var(y);
+    Rsq = 1 - SSresid/SStotal;
+end
+
+% Plot the logarithmic data.
+plot(x,y,'r.')
+
+% Set scale to same as L dataset
+ylim([3 6])
+
+% The following renames the tick labels since Matlab does not allow for
+% easy tick labeling in logarithmic plots.
+set(gca, 'XTickLabel', [])
+set(gca, 'YTickLabel', [])
+xt = get(gca, 'XTick');
+yt = get(gca, 'YTick');
+xl = get(gca, 'XLim');
+yl = get(gca, 'YLim');
+hStr = cellstr(num2str(xt(:), 'e^{%0.1f}'));
+vStr = cellstr(num2str(yt(:), 'e^{%0.1f}'));
+hTxt = text(xt, yl(ones(size(xt))), hStr, 'Interpreter', 'tex', 'VerticalAlignment', 'top', 'Horizontal', 'center');
+vTxt = text(xl(ones(size(yt))), yt, vStr, 'Interpreter', 'tex', 'VerticalAlignment', 'bottom', 'Horizontal', 'right');
+
+hold on
+plot(x, linearFit, 'k')
+hold off
+legend('S Dataset', ['Linear regression (R^2 = ' num2str(Rsq, '%.2f') ')'], 'Location', 'SouthEast')
+xlabel('log number of localizations')
+ylabel('log R_g')
+text(4, 5.5, ['Slope of line: ' num2str(p(1), '%0.4f')])
+grid on
+
+% Move axis labels
+xlabh = get(gca, 'XLabel');
+set(xlabh, 'Position', get(xlabh, 'Position') - [0 .2 0])
+ylabh = get(gca, 'YLabel');
+set(ylabh, 'Position', get(ylabh, 'Position') - [.1 0 0])
+
+%% Report statistics from distributions.
+disp(['Number of clusters, L dataset: ' num2str(length(LAllData.numLoc), '%d')])
+disp([' '])
+disp(['Mean square root of the radius of gyration, L dataset: ' num2str(mean(LAllData.M2Mag), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(LAllData.M2Mag), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean cube root of volume, L dataset: ' num2str(mean(LAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(LAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean number of localizations, L dataset: ' num2str(mean(LAllData.numLoc), '%.2f')])
+disp(['Standard deviation: ' num2str(std(LAllData.numLoc), '%.2f')])
+disp('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-')
+disp(['Number of clusters, S dataset: ' num2str(length(SAllData.numLoc), '%d') ])
+disp([' '])
+disp(['Mean square root of the radius of gyration, S dataset: ' num2str(mean(SAllData.M2Mag), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(SAllData.M2Mag), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean cube root of volume, S dataset: ' num2str(mean(SAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(SAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean number of localizations, S dataset: ' num2str(mean(SAllData.numLoc), '%.2f')])
+disp(['Standard deviation: ' num2str(std(SAllData.numLoc), '%.2f')])
+disp(' ')
+##### SOURCE END #####
+--></body></html>

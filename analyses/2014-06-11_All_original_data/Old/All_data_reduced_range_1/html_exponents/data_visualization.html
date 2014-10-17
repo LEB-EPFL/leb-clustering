@@ -1,0 +1,629 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>data_visualization</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-08-27"><meta name="DC.source" content="data_visualization.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Group fitted exponents from experiments for plotting.</a></li><li><a href="#3">29-07-2014 SmchD1</a></li><li><a href="#4">30-07-2014 SmchD1</a></li><li><a href="#5">05-08-2014 Hela L LRif1</a></li><li><a href="#6">11-08-2014 TrF2</a></li><li><a href="#7">11-08-2014 TrF2</a></li><li><a href="#8">All data</a></li></ul></div><pre class="codeinput"><span class="comment">% Helper functions for plotting and consolidating statistics from the fully</span>
+<span class="comment">% processed data structure.</span>
+<span class="comment">%</span>
+<span class="comment">% These functions require a .mat file containing the relevant data loaded</span>
+<span class="comment">% into the workspace.</span>
+<span class="comment">%</span>
+<span class="comment">% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/26 $ $REVISION: 0.1 $</span>
+</pre><h2>Group fitted exponents from experiments for plotting.<a name="2"></a></h2><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 11-06-2014 FISH Original data</span>
+<span class="comment">%==========================================================================</span>
+currData = data(1).fits;
+currDataName = data(1).shortName;
+scalingExp1 = currData.fitRobust1.b;
+confInt1 = abs(confint(currData.fitRobust1) - scalingExp1);
+confInt1 = confInt1(:,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+scalingExp2 = currData.fitRobust2.b;
+confInt2 = abs(confint(currData.fitRobust2) - scalingExp2);
+confInt2 = confInt2(:,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+h = figure; hold;
+barwitherr([[confInt1(1) confInt1(1)]' [confInt2(1) confInt2(1)]'], [1 5],[[scalingExp1 scalingExp1]' [scalingExp2 scalingExp2]'])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; <span class="comment">%[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+colormap(barmap);
+title(currDataName, <span class="string">'FontSize'</span>, 14)
+ylabel(<span class="string">'Scaling exponent \nu*'</span>, <span class="string">'FontSize'</span>, 14)
+legend(<span class="string">'Hela L'</span>, <span class="string">'Hela S'</span>)
+set(gca, <span class="string">'XTick'</span>, [1], <span class="string">'XTickLabel'</span>, {<span class="string">''</span>})
+xlim([-1 3])
+ylim([0 0.5])
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_01.png" alt=""> <h2>29-07-2014 SmchD1<a name="3"></a></h2><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 29-07-2014 SmchD1</span>
+<span class="comment">%==========================================================================</span>
+dataOffset = 1;
+numDatasets = 3;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+<span class="keyword">for</span> ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(19:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+<span class="keyword">end</span>
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; <span class="comment">%[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+colormap(barmap);
+title(<span class="string">'29-07-2014 SmchD1'</span>, <span class="string">'FontSize'</span>, 14)
+ylabel(<span class="string">'Scaling exponent \nu*'</span>, <span class="string">'FontSize'</span>, 14)
+legend(<span class="string">'Hela L'</span>, <span class="string">'Hela S'</span>)
+set(gca, <span class="string">'XTick'</span>, xTicks, <span class="string">'XTickLabel'</span>, tickLabels)
+ylim([0 0.5])
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_02.png" alt=""> <h2>30-07-2014 SmchD1<a name="4"></a></h2><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 30-07-2014 SmchD1</span>
+<span class="comment">%==========================================================================</span>
+dataOffset = 4;
+numDatasets = 3;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+<span class="keyword">for</span> ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(19:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+<span class="keyword">end</span>
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; <span class="comment">%[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+colormap(barmap);
+title(<span class="string">'30-07-2014 SmchD1'</span>, <span class="string">'FontSize'</span>, 14)
+ylabel(<span class="string">'Scaling exponent \nu*'</span>, <span class="string">'FontSize'</span>, 14)
+legend(<span class="string">'Hela L'</span>, <span class="string">'Hela S'</span>)
+set(gca, <span class="string">'XTick'</span>, xTicks, <span class="string">'XTickLabel'</span>, tickLabels)
+ylim([0 0.5])
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_03.png" alt=""> <h2>05-08-2014 Hela L LRif1<a name="5"></a></h2><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 05-08-2014 Hela L LRif1</span>
+<span class="comment">%==========================================================================</span>
+dataOffset = 7;
+numDatasets = 3;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+<span class="keyword">for</span> ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(19:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+<span class="keyword">end</span>
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; <span class="comment">%[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+colormap(barmap);
+title(<span class="string">'05-08-2014 Hela L LRif1'</span>, <span class="string">'FontSize'</span>, 14)
+ylabel(<span class="string">'Scaling exponent \nu*'</span>, <span class="string">'FontSize'</span>, 14)
+legend(<span class="string">'Transfection 1'</span>, <span class="string">'Transfection 2'</span>)
+set(gca, <span class="string">'XTick'</span>, xTicks, <span class="string">'XTickLabel'</span>, tickLabels)
+ylim([0 0.5])
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_04.png" alt=""> <h2>11-08-2014 TrF2<a name="6"></a></h2><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 11-08-2014 TrF2</span>
+<span class="comment">%==========================================================================</span>
+dataOffset = 10;
+numDatasets = 4;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+<span class="keyword">for</span> ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(12:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+<span class="keyword">end</span>
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; <span class="comment">%[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+colormap(barmap);
+title(<span class="string">'11-08-2014 TrF2'</span>, <span class="string">'FontSize'</span>, 14)
+ylabel(<span class="string">'Scaling exponent \nu*'</span>, <span class="string">'FontSize'</span>, 14)
+legend(<span class="string">'Hela L'</span>, <span class="string">'Hela S'</span>)
+set(gca, <span class="string">'XTick'</span>, xTicks, <span class="string">'XTickLabel'</span>, tickLabels)
+ylim([0 0.5])
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_05.png" alt=""> <h2>11-08-2014 TrF2<a name="7"></a></h2><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 13-08-2014 TrF2</span>
+<span class="comment">%==========================================================================</span>
+dataOffset = 14;
+numDatasets = 4;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+<span class="keyword">for</span> ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(12:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+<span class="keyword">end</span>
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; <span class="comment">%[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+colormap(barmap);
+title(<span class="string">'13-08-2014 TrF2'</span>, <span class="string">'FontSize'</span>, 14)
+ylabel(<span class="string">'Scaling exponent \nu*'</span>, <span class="string">'FontSize'</span>, 14)
+legend(<span class="string">'Hela L'</span>, <span class="string">'Hela S'</span>)
+set(gca, <span class="string">'XTick'</span>, xTicks, <span class="string">'XTickLabel'</span>, tickLabels)
+ylim([0 0.5])
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_06.png" alt=""> <h2>All data<a name="8"></a></h2><pre class="codeinput">dataOffset = 0;
+numDatasets = 18;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+<span class="keyword">for</span> ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(12:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); <span class="comment">% Isolate confidence interval of the exponent.</span>
+<span class="keyword">end</span>
+
+
+h = figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 1 1]); hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+<span class="comment">%barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green</span>
+<span class="comment">%colormap(barmap);</span>
+ylab = ylabel(<span class="string">'Scaling exponent \nu*'</span>);
+set(ylab, <span class="string">'position'</span>, get(ylab,<span class="string">'position'</span>)-[0.2,0,0]);  <span class="comment">% shift the y label to the left by 0.2</span>
+set(gca, <span class="string">'XTick'</span>, xTicks, <span class="string">'XTickLabel'</span>, tickLabels)
+xticklabel_rotate(xTicks, 25, tickLabels)
+set(findall(gcf,<span class="string">'type'</span>,<span class="string">'text'</span>),<span class="string">'FontSize'</span>,14,<span class="string">'fontWeight'</span>,<span class="string">'bold'</span>)
+ylim([0 0.5])
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+plot([0 19], [0.33 0.33], <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2)
+legend(<span class="string">'Hela L'</span>, <span class="string">'Hela S'</span>)
+plot([1.5 1.5], [0 0.5],<span class="string">'k--'</span>)
+plot([4.5 4.5], [0 0.5],<span class="string">'k--'</span>)
+plot([7.5 7.5], [0 0.5],<span class="string">'k--'</span>)
+plot([10.5 10.5], [0 0.5],<span class="string">'k--'</span>)
+plot([14.5 14.5], [0 0.5],<span class="string">'k--'</span>)
+
+text(0.1, 0.47, <span class="string">'Original Data'</span>, <span class="string">'FontSize'</span>, 14)
+text(1.6, 0.47, <span class="string">'29-7-14 SmchD1'</span>, <span class="string">'FontSize'</span>, 14)
+text(4.6, 0.47, <span class="string">'30-7-14 SmchD1'</span>, <span class="string">'FontSize'</span>, 14)
+text(7.6, 0.47, <span class="string">'05-08-14 LRif1'</span>, <span class="string">'FontSize'</span>, 14)
+text(10.6, 0.47, <span class="string">'11-08-14 TrF2'</span>, <span class="string">'FontSize'</span>, 14)
+text(14.6, 0.47, <span class="string">'13-08-14 TrF2'</span>, <span class="string">'FontSize'</span>, 14)
+
+hold <span class="string">off</span>
+
+<span class="comment">% %% Plot residuals from the fit of a dataset</span>
+<span class="comment">% plot(data(18).fits.fitRobust2, data(18).distributions2.numLoc, data(18).distributions2.M2Mag, 'co', 'residuals')</span>
+<span class="comment">%</span>
+<span class="comment">% %% Display all r-squared values</span>
+<span class="comment">% for ctr = 1:length(data)</span>
+<span class="comment">%     [data(ctr).fits.gofRobust1.rsquare data(ctr).fits.gofRobust2.rsquare]</span>
+<span class="comment">% end</span>
+</pre><pre class="codeoutput">Current plot held
+
+newpos =
+
+   1.0e+03 *
+
+    0.4999    0.1741    2.8655    0.8620
+
+</pre><img vspace="5" hspace="5" src="data_visualization_07.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Helper functions for plotting and consolidating statistics from the fully
+% processed data structure.
+%
+% These functions require a .mat file containing the relevant data loaded
+% into the workspace.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/26 $ $REVISION: 0.1 $
+
+%% Group fitted exponents from experiments for plotting.
+%==========================================================================
+% 11-06-2014 FISH Original data
+%==========================================================================
+currData = data(1).fits;
+currDataName = data(1).shortName;
+scalingExp1 = currData.fitRobust1.b;
+confInt1 = abs(confint(currData.fitRobust1) - scalingExp1);
+confInt1 = confInt1(:,2); % Isolate confidence interval of the exponent.
+
+scalingExp2 = currData.fitRobust2.b;
+confInt2 = abs(confint(currData.fitRobust2) - scalingExp2);
+confInt2 = confInt2(:,2); % Isolate confidence interval of the exponent.
+
+h = figure; hold;
+barwitherr([[confInt1(1) confInt1(1)]' [confInt2(1) confInt2(1)]'], [1 5],[[scalingExp1 scalingExp1]' [scalingExp2 scalingExp2]'])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+colormap(barmap);
+title(currDataName, 'FontSize', 14)
+ylabel('Scaling exponent \nu*', 'FontSize', 14)
+legend('Hela L', 'Hela S')
+set(gca, 'XTick', [1], 'XTickLabel', {''})
+xlim([-1 3])
+ylim([0 0.5])
+grid on
+
+%% 29-07-2014 SmchD1
+%==========================================================================
+% 29-07-2014 SmchD1
+%==========================================================================
+dataOffset = 1;
+numDatasets = 3;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(19:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+colormap(barmap);
+title('29-07-2014 SmchD1', 'FontSize', 14)
+ylabel('Scaling exponent \nu*', 'FontSize', 14)
+legend('Hela L', 'Hela S')
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+ylim([0 0.5])
+grid on
+
+%% 30-07-2014 SmchD1
+%==========================================================================
+% 30-07-2014 SmchD1
+%==========================================================================
+dataOffset = 4;
+numDatasets = 3;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(19:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+colormap(barmap);
+title('30-07-2014 SmchD1', 'FontSize', 14)
+ylabel('Scaling exponent \nu*', 'FontSize', 14)
+legend('Hela L', 'Hela S')
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+ylim([0 0.5])
+grid on
+
+%% 05-08-2014 Hela L LRif1
+%==========================================================================
+% 05-08-2014 Hela L LRif1
+%==========================================================================
+dataOffset = 7;
+numDatasets = 3;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(19:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+colormap(barmap);
+title('05-08-2014 Hela L LRif1', 'FontSize', 14)
+ylabel('Scaling exponent \nu*', 'FontSize', 14)
+legend('Transfection 1', 'Transfection 2')
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+ylim([0 0.5])
+grid on
+
+%% 11-08-2014 TrF2
+%==========================================================================
+% 11-08-2014 TrF2
+%==========================================================================
+dataOffset = 10;
+numDatasets = 4;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(12:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+colormap(barmap);
+title('11-08-2014 TrF2', 'FontSize', 14)
+ylabel('Scaling exponent \nu*', 'FontSize', 14)
+legend('Hela L', 'Hela S')
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+ylim([0 0.5])
+grid on
+
+%% 11-08-2014 TrF2
+%==========================================================================
+% 13-08-2014 TrF2
+%==========================================================================
+dataOffset = 14;
+numDatasets = 4;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(12:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+
+h = figure; hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+colormap(barmap);
+title('13-08-2014 TrF2', 'FontSize', 14)
+ylabel('Scaling exponent \nu*', 'FontSize', 14)
+legend('Hela L', 'Hela S')
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+ylim([0 0.5])
+grid on
+
+%% All data
+dataOffset = 0;
+numDatasets = 18;
+xTicks = 1:numDatasets;
+tickLabels = cell(numDatasets,1);
+
+scalingExp1 = zeros(numDatasets,1); scalingExp2 = zeros(numDatasets,1);
+confInt1 = zeros(numDatasets,1); confInt2 = zeros(numDatasets,1);
+
+for ctr = xTicks
+    currData = data(ctr + dataOffset).fits;
+    tickLabels{ctr} = data(ctr + dataOffset).shortName;
+    tickLabels{ctr} = tickLabels{ctr}(12:end);
+    scalingExp1(ctr) = currData.fitRobust1.b;
+    confIntTemp = abs(confint(currData.fitRobust1) - scalingExp1(ctr));
+    confInt1(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+
+    scalingExp2(ctr) = currData.fitRobust2.b;
+    confIntTemp = abs(confint(currData.fitRobust2) - scalingExp2(ctr));
+    confInt2(ctr) = confIntTemp(2,2); % Isolate confidence interval of the exponent.
+end
+
+
+h = figure('units','normalized','outerposition',[0 0 1 1]); hold;
+barwitherr([confInt1 confInt2], xTicks ,[scalingExp1 scalingExp2])
+%barmap=[0.7 0.7 0.7; 0.05 .45 0.1]; %[0.7 0.7 0.7] is grey, [0.05 .45 0.1] is green
+%colormap(barmap);
+ylab = ylabel('Scaling exponent \nu*');
+set(ylab, 'position', get(ylab,'position')-[0.2,0,0]);  % shift the y label to the left by 0.2
+set(gca, 'XTick', xTicks, 'XTickLabel', tickLabels)
+xticklabel_rotate(xTicks, 25, tickLabels)
+set(findall(gcf,'type','text'),'FontSize',14,'fontWeight','bold')
+ylim([0 0.5])
+grid on
+hold on
+plot([0 19], [0.33 0.33], 'k', 'LineWidth', 2)
+legend('Hela L', 'Hela S')
+plot([1.5 1.5], [0 0.5],'kREPLACE_WITH_DASH_DASH')
+plot([4.5 4.5], [0 0.5],'kREPLACE_WITH_DASH_DASH')
+plot([7.5 7.5], [0 0.5],'kREPLACE_WITH_DASH_DASH')
+plot([10.5 10.5], [0 0.5],'kREPLACE_WITH_DASH_DASH')
+plot([14.5 14.5], [0 0.5],'kREPLACE_WITH_DASH_DASH')
+
+text(0.1, 0.47, 'Original Data', 'FontSize', 14)
+text(1.6, 0.47, '29-7-14 SmchD1', 'FontSize', 14)
+text(4.6, 0.47, '30-7-14 SmchD1', 'FontSize', 14)
+text(7.6, 0.47, '05-08-14 LRif1', 'FontSize', 14)
+text(10.6, 0.47, '11-08-14 TrF2', 'FontSize', 14)
+text(14.6, 0.47, '13-08-14 TrF2', 'FontSize', 14)
+
+hold off
+
+% %% Plot residuals from the fit of a dataset
+% plot(data(18).fits.fitRobust2, data(18).distributions2.numLoc, data(18).distributions2.M2Mag, 'co', 'residuals')
+% 
+% %% Display all r-squared values
+% for ctr = 1:length(data)
+%     [data(ctr).fits.gofRobust1.rsquare data(ctr).fits.gofRobust2.rsquare]
+% end
+
+##### SOURCE END #####
+--></body></html>

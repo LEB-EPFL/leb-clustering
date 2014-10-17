@@ -1,0 +1,1652 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-08-27"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Use parallel processing to speed up computation? (use 'false' if unsure)</a></li><li><a href="#3">Define clustering and filtering parameters.</a></li><li><a href="#4">Designate the files for analysis.</a></li><li><a href="#5">Verify that all directories are correct.</a></li><li><a href="#6">Primary processing loop.</a></li><li><a href="#8">Filter out upper level directors.</a></li><li><a href="#9">Process the data within each file.</a></li><li><a href="#10">Combine distrubtions from all elements of the data structures.</a></li><li><a href="#11">Create the bins for plotting the distributions from above.</a></li><li><a href="#12">Plot the normalized distributions of the cluster statistics.</a></li><li><a href="#13">Perform a nonlinear least squares regression on Rg vs. number of localizations</a></li><li><a href="#14">Report statistics from distributions.</a></li></ul></div><pre class="codeinput"><span class="comment">% The main script for analyzing the telomere data and producing reports.</span>
+<span class="comment">%</span>
+<span class="comment">% This script should be run after the analysis workflow is determined from</span>
+<span class="comment">% data_mining.m.</span>
+<span class="comment">%</span>
+<span class="comment">% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/27 $ $REVISION: 0.9 $</span>
+<span class="comment">%</span>
+</pre><h2>Use parallel processing to speed up computation? (use 'false' if unsure)<a name="2"></a></h2><pre class="codeinput">useParallel = true;
+
+<span class="comment">% if useParallel</span>
+<span class="comment">%     matlabpool open</span>
+<span class="comment">% end</span>
+</pre><h2>Define clustering and filtering parameters.<a name="3"></a></h2><p>k - number of objects in a neighborhood of an object (minimal number of objects considered as a cluster) Eps - neighborhood radius, if not known avoid this parameter or put [] minLoc - Discard all clusters with localizations fewer than this number.</p><pre class="codeinput">k = 8;
+Eps = 65;
+
+minLoc1 = 200;
+maxLoc1 = 700;
+
+minLoc2 = 50;
+maxLoc2 = 200;
+</pre><h2>Designate the files for analysis.<a name="4"></a></h2><p>All datasets are comparisons between two populations, typically Hela L cells and Hela S cells, or between two different transfections. Therefore, each experiment consists of two datasets.</p><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">% 11-06-2014 FISH Original data</span>
+<span class="comment">%==========================================================================</span>
+data(1).shortName = <span class="string">'11-06-2014 FISH'</span>;
+data(1).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/'</span>;
+data(1).dataset1Dir = <span class="string">'11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/'</span>;
+data(1).dataset2Dir = <span class="string">'11_06_2014_Hela_S_FISH/Hela S FISH molecule lists/'</span>;
+data(1).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(1).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(1).distributions1 = [];
+data(1).distributions2 = [];
+data(1).fits = [];
+
+<span class="comment">%==========================================================================</span>
+<span class="comment">% 29-07-2014 SmchD1</span>
+<span class="comment">%==========================================================================</span>
+data(2).shortName = <span class="string">'29-07-2014 SmchD1 pSuper'</span>;
+data(2).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/29_07_2014_HelaS_L_SmchD1_KD_FISH/29_07_2014_HelaS_L_SmchD1_KD_FISH_Mol_lists/'</span>;
+data(2).dataset1Dir = <span class="string">'29_07_2014_HelaL_SmchD1_pSuper_mol_list/'</span>;
+data(2).dataset2Dir = <span class="string">'29_07_2014_HelaS_SmchD1_pSuper_mol_list/'</span>;
+data(2).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(2).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(2).distributions1 = [];
+data(2).distributions2 = [];
+data(2).fits = [];
+
+data(3).shortName = <span class="string">'29-07-2014 SmchD1 pLVP041'</span>;
+data(3).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/29_07_2014_HelaS_L_SmchD1_KD_FISH/29_07_2014_HelaS_L_SmchD1_KD_FISH_Mol_lists/'</span>;
+data(3).dataset1Dir = <span class="string">'29_07_2014_HelaL_SmchD1_pLVP041_mol_list/'</span>;
+data(3).dataset2Dir = <span class="string">'29_07_2014_HelaS_SmchD1_pLVP041_mol_list/'</span>;
+data(3).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(3).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(3).distributions1 = [];
+data(3).distributions2 = [];
+data(3).fits = [];
+
+data(4).shortName = <span class="string">'29-07-2014 SmchD1 pLVP042'</span>;
+data(4).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/29_07_2014_HelaS_L_SmchD1_KD_FISH/29_07_2014_HelaS_L_SmchD1_KD_FISH_Mol_lists/'</span>;
+data(4).dataset1Dir = <span class="string">'29_07_2014_HelaL_SmchD1_pLVP042_mol_list/'</span>;
+data(4).dataset2Dir = <span class="string">'29_07_2014_HelaS_SmchD1_pLVP042_mol_list/'</span>;
+data(4).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(4).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(4).distributions1 = [];
+data(4).distributions2 = [];
+data(4).fits = [];
+
+<span class="comment">%==========================================================================</span>
+<span class="comment">% 30-07-2014 SmchD1</span>
+<span class="comment">%==========================================================================</span>
+data(5).shortName = <span class="string">'30-07-2014 SmchD1 pSuper'</span>;
+data(5).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/'</span>;
+data(5).dataset1Dir = <span class="string">'30_07_2014_HelaL_SmchD1_pSuper_mol_list/'</span>;
+data(5).dataset2Dir = <span class="string">'30_07_2014_HelaS_SmchD1_pSuper_mol_list/'</span>;
+data(5).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(5).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(5).distributions1 = [];
+data(5).distributions2 = [];
+data(5).fits = [];
+
+data(6).shortName = <span class="string">'30-07-2014 SmchD1 pLVP041'</span>;
+data(6).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/'</span>;
+data(6).dataset1Dir = <span class="string">'30_07_2014_HelaL_SmchD1_pLVP041_mol_list/'</span>;
+data(6).dataset2Dir = <span class="string">'30_07_2014_HelaS_SmchD1_pLVP041_mol_list/'</span>;
+data(6).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(6).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(6).distributions1 = [];
+data(6).distributions2 = [];
+data(6).fits = [];
+
+data(7).shortName = <span class="string">'30-07-2014 SmchD1 pLVP042'</span>;
+data(7).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/'</span>;
+data(7).dataset1Dir = <span class="string">'30_07_2014_HelaL_SmchD1_pLVP042_mol_list/'</span>;
+data(7).dataset2Dir = <span class="string">'30_07_2014_HelaS_SmchD1_pLVP042_mol_list/'</span>;
+data(7).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(7).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(7).distributions1 = [];
+data(7).distributions2 = [];
+data(7).fits = [];
+
+<span class="comment">%==========================================================================</span>
+<span class="comment">% 05-08-2014 Hela L LRif1</span>
+<span class="comment">%==========================================================================</span>
+data(8).shortName = <span class="string">'05-08-2014 Hela L siGfp'</span>;
+data(8).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/05_08_2014_HelaL_LRif1_KD_FISH/05_08_2014_HelaL_LRif1_Mol_Lists/'</span>;
+data(8).dataset1Dir = <span class="string">'05_08_2014_HelaL_LRif1_siGfp_mol_lists/'</span>;
+data(8).dataset2Dir = <span class="string">'05_08_2014_HelaL_LRif1_siGfp_tr2_mol_lists/'</span>;
+data(8).dataset1ShortName = <span class="string">'1st transfection'</span>;
+data(8).dataset2ShortName = <span class="string">'2nd transfection'</span>;
+data(8).distributions1 = [];
+data(8).distributions2 = [];
+data(8).fits = [];
+
+data(9).shortName = <span class="string">'05-08-2014 Hela L si1LRif1'</span>;
+data(9).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/05_08_2014_HelaL_LRif1_KD_FISH/05_08_2014_HelaL_LRif1_Mol_Lists/'</span>;
+data(9).dataset1Dir = <span class="string">'05_08_2014_HelaL_LRif1_si1LRif1_mol_lists/'</span>;
+data(9).dataset2Dir = <span class="string">'05_08_2014_HelaL_LRif1_si1LRif1_tr2_mol_lists/'</span>;
+data(9).dataset1ShortName = <span class="string">'1st transfection'</span>;
+data(9).dataset2ShortName = <span class="string">'2nd transfection'</span>;
+data(9).distributions1 = [];
+data(9).distributions2 = [];
+data(9).fits = [];
+
+data(10).shortName = <span class="string">'05-08-2014 Hela L si6LRif1'</span>;
+data(10).rootDir = <span class="string">'/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/05_08_2014_HelaL_LRif1_KD_FISH/05_08_2014_HelaL_LRif1_Mol_Lists/'</span>;
+data(10).dataset1Dir = <span class="string">'05_08_2014_HelaL_LRif1_si6LRif1_mol_lists/'</span>;
+data(10).dataset2Dir = <span class="string">'05_08_2014_HelaL_LRif1_si6LRif1_tr2_mol_lists/'</span>;
+data(10).dataset1ShortName = <span class="string">'1st transfection'</span>;
+data(10).dataset2ShortName = <span class="string">'2nd transfection'</span>;
+data(10).distributions1 = [];
+data(10).distributions2 = [];
+data(10).fits = [];
+
+<span class="comment">%==========================================================================</span>
+<span class="comment">% 11-08-2014 TrF2</span>
+<span class="comment">%==========================================================================</span>
+data(11).shortName = <span class="string">'11-08-2014 pSuper'</span>;
+data(11).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/'</span>;
+data(11).dataset1Dir = <span class="string">'11_08_2014_HeLaL_KD_Smchd1_TRF2_pSuper_non filtered/'</span>;
+data(11).dataset2Dir = <span class="string">'11_08_2014_HeLaS_KD_Smchd1_TRF2_pSuper_non filtered/'</span>;
+data(11).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(11).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(11).distributions1 = [];
+data(11).distributions2 = [];
+data(11).fits = [];
+
+data(12).shortName = <span class="string">'11-08-2014 pLVP041'</span>;
+data(12).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/'</span>;
+data(12).dataset1Dir = <span class="string">'11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP041_non filtered/'</span>;
+data(12).dataset2Dir = <span class="string">'11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP041_non filtered/'</span>;
+data(12).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(12).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(12).distributions1 = [];
+data(12).distributions2 = [];
+data(12).fits = [];
+
+data(13).shortName = <span class="string">'11-08-2014 pLVP042'</span>;
+data(13).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/'</span>;
+data(13).dataset1Dir = <span class="string">'11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP042_non filtered/'</span>;
+data(13).dataset2Dir = <span class="string">'11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/'</span>;
+data(13).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(13).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(13).distributions1 = [];
+data(13).distributions2 = [];
+data(13).fits = [];
+
+data(14).shortName = <span class="string">'11-08-2014 TrF2'</span>;
+data(14).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/'</span>;
+data(14).dataset1Dir = <span class="string">'11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP TRF2_non filtered/'</span>;
+data(14).dataset2Dir = <span class="string">'11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2_non filtered/'</span>;
+data(14).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(14).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(14).distributions1 = [];
+data(14).distributions2 = [];
+data(14).fits = [];
+
+<span class="comment">%==========================================================================</span>
+<span class="comment">% 13-08-2014 TrF2</span>
+<span class="comment">%==========================================================================</span>
+data(15).shortName = <span class="string">'13-08-2014 pSuper'</span>;
+data(15).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/'</span>;
+data(15).dataset1Dir = <span class="string">'13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_pSuper_Mol_list_not_filtered/'</span>;
+data(15).dataset2Dir = <span class="string">'13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_pSuper_Mol_list_not_filtered/'</span>;
+data(15).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(15).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(15).distributions1 = [];
+data(15).distributions2 = [];
+data(15).fits = [];
+
+data(16).shortName = <span class="string">'13-08-2014 pLVP041'</span>;
+data(16).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/'</span>;
+data(16).dataset1Dir = <span class="string">'13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_pLVP041_Mol_list_not_filtered/'</span>;
+data(16).dataset2Dir = <span class="string">'13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_pLVP041_Mol_list_not_filtered/'</span>;
+data(16).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(16).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(16).distributions1 = [];
+data(16).distributions2 = [];
+data(16).fits = [];
+
+data(17).shortName = <span class="string">'13-08-2014 pLVP042'</span>;
+data(17).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/'</span>;
+data(17).dataset1Dir = <span class="string">'13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_pLVP042_Mol_list_not_filtered/'</span>;
+data(17).dataset2Dir = <span class="string">'13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_pLVP042_Mol_list_not_filtered/'</span>;
+data(17).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(17).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(17).distributions1 = [];
+data(17).distributions2 = [];
+data(17).fits = [];
+
+data(18).shortName = <span class="string">'13-08-2014 TrF2'</span>;
+data(18).rootDir = <span class="string">'/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/'</span>;
+data(18).dataset1Dir = <span class="string">'13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_TRF2_Mol_list_not_filtered/'</span>;
+data(18).dataset2Dir = <span class="string">'13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_TRF2_Mol_list_not_filtered/'</span>;
+data(18).dataset1ShortName = <span class="string">'L dataset'</span>;
+data(18).dataset2ShortName = <span class="string">'S dataset'</span>;
+data(18).distributions1 = [];
+data(18).distributions2 = [];
+data(18).fits = [];
+</pre><h2>Verify that all directories are correct.<a name="5"></a></h2><pre class="codeinput"><span class="keyword">for</span> dirCtr = 1:length(data)
+    completeDir1 = [data(dirCtr).rootDir data(dirCtr).dataset1Dir];
+    completeDir2 = [data(dirCtr).rootDir data(dirCtr).dataset2Dir];
+
+    A = exist(completeDir1, <span class="string">'dir'</span>);
+    B = exist(completeDir2, <span class="string">'dir'</span>);
+
+    <span class="keyword">if</span> A == 0
+        error([<span class="string">'Error: directory '</span> completeDir1 <span class="string">' does not exist.'</span>])
+    <span class="keyword">elseif</span> B == 0
+        error([<span class="string">'Error: directory '</span> completeDir2 <span class="string">' does not exist.'</span>])
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+clear <span class="string">dirCtr</span>
+</pre><h2>Primary processing loop.<a name="6"></a></h2><pre class="codeinput"><span class="keyword">for</span> dataCtr = 1:length(data)
+</pre><pre class="codeinput"><span class="comment">% Loops over all the data files defined above.</span>
+disp([<span class="string">'Processing dataset '</span> data(dataCtr).shortName])
+
+completeDir1 = [data(dataCtr).rootDir data(dataCtr).dataset1Dir];
+completeDir2 = [data(dataCtr).rootDir data(dataCtr).dataset2Dir];
+
+LFiles = dir(completeDir1);
+SFiles = dir(completeDir2);
+</pre><pre class="codeoutput">Processing dataset 11-06-2014 FISH
+</pre><pre class="codeoutput">Processing dataset 29-07-2014 SmchD1 pSuper
+</pre><pre class="codeoutput">Processing dataset 29-07-2014 SmchD1 pLVP041
+</pre><pre class="codeoutput">Processing dataset 29-07-2014 SmchD1 pLVP042
+</pre><pre class="codeoutput">Processing dataset 30-07-2014 SmchD1 pSuper
+</pre><pre class="codeoutput">Processing dataset 30-07-2014 SmchD1 pLVP041
+</pre><pre class="codeoutput">Processing dataset 30-07-2014 SmchD1 pLVP042
+</pre><pre class="codeoutput">Processing dataset 05-08-2014 Hela L siGfp
+</pre><pre class="codeoutput">Processing dataset 05-08-2014 Hela L si1LRif1
+</pre><pre class="codeoutput">Processing dataset 05-08-2014 Hela L si6LRif1
+</pre><pre class="codeoutput">Processing dataset 11-08-2014 pSuper
+</pre><pre class="codeoutput">Processing dataset 11-08-2014 pLVP041
+</pre><pre class="codeoutput">Processing dataset 11-08-2014 pLVP042
+</pre><pre class="codeoutput">Processing dataset 11-08-2014 TrF2
+</pre><pre class="codeoutput">Processing dataset 13-08-2014 pSuper
+</pre><pre class="codeoutput">Processing dataset 13-08-2014 pLVP041
+</pre><pre class="codeoutput">Processing dataset 13-08-2014 pLVP042
+</pre><pre class="codeoutput">Processing dataset 13-08-2014 TrF2
+</pre><h2>Filter out upper level directors.<a name="8"></a></h2><pre class="codeinput">LFiles = LFiles(3:end);
+SFiles = SFiles(3:end);
+</pre><h2>Process the data within each file.<a name="9"></a></h2><pre class="codeinput">clear <span class="string">LProcData</span> <span class="string">SProcData</span>
+LProcData(length(LFiles),1).M1 = 0;
+LProcData(length(LFiles),1).M2 = 0;
+LProcData(length(LFiles),1).M2Mag = 0;
+LProcData(length(LFiles),1).numLoc = 0;
+LProcData(length(LFiles),1).volume = 0;
+
+SProcData(length(SFiles),1).M1 = 0;
+SProcData(length(SFiles),1).M2 = 0;
+SProcData(length(SFiles),1).M2Mag = 0;
+SProcData(length(SFiles),1).numLoc = 0;
+SProcData(length(SFiles),1).volume = 0;
+
+<span class="comment">% process_data(fileName) is custom function call.</span>
+<span class="keyword">if</span> useParallel
+    <span class="keyword">parfor</span> ctr = 1:length(LFiles)
+        LFileName = [completeDir1 LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
+    <span class="keyword">end</span>
+    <span class="keyword">parfor</span> ctr = 1:length(SFiles)
+        SFileName = [completeDir2 SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="keyword">for</span> ctr = 1:length(LFiles)
+        LFileName = [completeDir1 LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
+    <span class="keyword">end</span>
+    <span class="keyword">for</span> ctr = 1:length(SFiles)
+        SFileName = [completeDir2 SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+</pre><pre class="codeoutput">Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+Warning: Duplicate data points have been detected and removed.
+ The Triangulation indices are defined with respect to the unique set of points in DelaunayTri property X.
+&gt; In process_data at 61
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+</pre><pre class="codeoutput">Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+</pre><pre class="codeoutput">Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+</pre><pre class="codeoutput">Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+Warning: The triangulation is empty - the points may be coplanar or collinear.
+&gt; In process_data at 63
+  In parallel_function&gt;make_general_channel/channel_general at 914
+  In remoteParallelFunction at 38 
+Unable to compute volume of the current cluster. Delaunay triangulation may not exist.
+Setting volume of current cluster to 0...
+</pre><h2>Combine distrubtions from all elements of the data structures.<a name="10"></a></h2><pre class="codeinput">LAllData = struct(<span class="string">'M1'</span>, [], <span class="string">'M2'</span>, [], <span class="string">'M2Mag'</span>, [], <span class="string">'numLoc'</span>, [], <span class="string">'volume'</span>, []);
+SAllData = struct(<span class="string">'M1'</span>, [], <span class="string">'M2'</span>, [], <span class="string">'M2Mag'</span>, [], <span class="string">'numLoc'</span>, [], <span class="string">'volume'</span>, []);
+
+<span class="keyword">for</span> ctr = 1:length(LFiles)
+    LAllData.M1 = cat(1, LAllData.M1, LProcData(ctr).M1);
+    LAllData.M2 = cat(1, LAllData.M2, LProcData(ctr).M2);
+    LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
+    LAllData.numLoc = cat(1, LAllData.numLoc, LProcData(ctr).numLoc);
+    LAllData.volume = cat(1, LAllData.volume, LProcData(ctr).volume);
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> ctr = 1:length(SFiles)
+    SAllData.M1 = cat(1, SAllData.M1, SProcData(ctr).M1);
+    SAllData.M2 = cat(1, SAllData.M2, SProcData(ctr).M2);
+    SAllData.M2Mag = cat(1, SAllData.M2Mag, SProcData(ctr).M2Mag);
+    SAllData.numLoc = cat(1, SAllData.numLoc, SProcData(ctr).numLoc);
+    SAllData.volume = cat(1, SAllData.volume, SProcData(ctr).volume);
+<span class="keyword">end</span>
+</pre><h2>Create the bins for plotting the distributions from above.<a name="11"></a></h2><p>First, it is determined which of the two datasets, S or L, has the largest and smallest values in each field. Next, the bins are determined by partitioning the range between between these values into numBins equally-sized intervals. These bins are used to normalize the distributions.</p><pre class="codeinput">numBins = 20;
+bins = struct(<span class="string">'M1'</span>, [], <span class="string">'M2'</span>, [], <span class="string">'M2Mag'</span>, [], <span class="string">'numLoc'</span>, [], <span class="string">'volume'</span>, []);
+fields = fieldnames(bins);
+
+<span class="keyword">for</span> ctr = 1:numel(fields)
+    minBin = min([min(LAllData.(fields{ctr})(:)) min(SAllData.(fields{ctr})(:))]);
+    maxBin = max([max(LAllData.(fields{ctr})(:)) max(SAllData.(fields{ctr})(:))]);
+    bins.(fields{ctr}) = linspace(minBin, maxBin, numBins);
+<span class="keyword">end</span>
+
+<span class="comment">% Write distributions out to the external data structure.</span>
+clear <span class="string">distributions1</span> <span class="string">distributions2</span>
+data(dataCtr).distributions1 = LAllData;
+data(dataCtr).distributions2 = SAllData;
+</pre><h2>Plot the normalized distributions of the cluster statistics.<a name="12"></a></h2><pre class="codeinput">close <span class="string">all</span>
+[LN, LBIN] = histc(LAllData.M2, bins.M2);
+[SN, SBIN] = histc(SAllData.M2, bins.M2);
+
+disp([<span class="string">'Distributions for data set '</span> data(dataCtr).shortName])
+
+<span class="comment">% Set the size of the figure window.</span>
+subplot(2,2,1)
+hFig = gcf();
+set(hFig, <span class="string">'Position'</span>, [100, 100, 1600, 1000])
+
+<span class="comment">% Second order moments along x, y, and z.</span>
+<span class="comment">% Compute the normalization factor.</span>
+dx = diff(bins.M2);
+dx = dx(1);
+
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(bins.M2, [LN ./ repmat(LNorm, size(LN,1), 1), SN ./ repmat(SNorm, size(SN,1), 1)], <span class="string">'histc'</span>)
+legend(<span class="string">'Long M_x^2'</span>, <span class="string">'Long M_y^2'</span>, <span class="string">'Long M_z^2'</span>, <span class="string">'Short M_x^2'</span>, <span class="string">'Short M_y^2'</span>, <span class="string">'Short M_z^2'</span>)
+title(<span class="string">'Second moments about x,y, and z for long and short data sets'</span>)
+xlabel(<span class="string">'M^2, nm^2'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+grid <span class="string">on</span>
+
+<span class="comment">% Plot the normalized distributions of other quantities. (Plots normalized</span>
+<span class="comment">% distributions for the magnitude of the square root of the radius of</span>
+<span class="comment">% gyration, the number of localizations, and the volume.)</span>
+<span class="keyword">for</span> ctr = 3:4
+    [LN, LBIN] = histc(LAllData.(fields{ctr}), bins.(fields{ctr}));
+    [SN, SBIN] = histc(SAllData.(fields{ctr}), bins.(fields{ctr}));
+
+    <span class="comment">% Compute the normalization factor.</span>
+    dx = diff(bins.(fields{ctr}));
+    dx = dx(1);
+    LNorm = sum(dx * LN);
+    SNorm = sum(dx * SN);
+
+    <span class="comment">% Write to subplots 2 and 3.</span>
+    subplot(2,2, ctr - 1)
+    bar(bins.(fields{ctr}), [LN / LNorm, SN / SNorm], <span class="string">'histc'</span>)
+    grid <span class="string">on</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Radius of gyration</span>
+subplot(2,2,2)
+title(<span class="string">'Square root of the radius of gyration of the clusters of points for L and S datasets'</span>)
+xlabel(<span class="string">'Square root of radius of gyration, nm'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+legend(<span class="string">'L dataset'</span>, <span class="string">'S dataset'</span>)
+
+<span class="comment">% Number of localizations</span>
+subplot(2,2,3)
+title(<span class="string">'Number of localizations per cluster'</span>)
+xlabel(<span class="string">'Number of localizations'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+legend(<span class="string">'L dataset'</span>, <span class="string">'S dataset'</span>)
+
+<span class="comment">% Volume</span>
+subplot(2,2,4)
+minBin = min([min(LAllData.volume.^(1/3)) min(SAllData.volume.^(1/3))]);
+maxBin = max([max(LAllData.volume.^(1/3)) max(SAllData.volume.^(1/3))]);
+binsVol3 = linspace(minBin, maxBin, numBins);
+[LN, LBIN] = histc((LAllData.volume).^(1/3), binsVol3);
+[SN, SBIN] = histc((SAllData.volume).^(1/3), binsVol3);
+
+dx = diff(binsVol3);
+dx = dx(1);
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(binsVol3, [LN/ LNorm, SN / SNorm], <span class="string">'histc'</span>)
+title(<span class="string">'Cube root of cluster volumes (characteristic linear size)'</span>)
+xlabel(<span class="string">'Volume^{(1/3)}, nm'</span>)
+ylabel(<span class="string">'Normalized frequency'</span>)
+legend(<span class="string">'L dataset'</span>, <span class="string">'S dataset'</span>)
+grid <span class="string">on</span>
+</pre><pre class="codeoutput">Distributions for data set 11-06-2014 FISH
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <pre class="codeoutput">Distributions for data set 29-07-2014 SmchD1 pSuper
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <pre class="codeoutput">Distributions for data set 29-07-2014 SmchD1 pLVP041
+</pre><img vspace="5" hspace="5" src="main_05.png" alt=""> <pre class="codeoutput">Distributions for data set 29-07-2014 SmchD1 pLVP042
+</pre><img vspace="5" hspace="5" src="main_07.png" alt=""> <pre class="codeoutput">Distributions for data set 30-07-2014 SmchD1 pSuper
+</pre><img vspace="5" hspace="5" src="main_09.png" alt=""> <pre class="codeoutput">Distributions for data set 30-07-2014 SmchD1 pLVP041
+</pre><img vspace="5" hspace="5" src="main_11.png" alt=""> <pre class="codeoutput">Distributions for data set 30-07-2014 SmchD1 pLVP042
+</pre><img vspace="5" hspace="5" src="main_13.png" alt=""> <pre class="codeoutput">Distributions for data set 05-08-2014 Hela L siGfp
+</pre><img vspace="5" hspace="5" src="main_15.png" alt=""> <pre class="codeoutput">Distributions for data set 05-08-2014 Hela L si1LRif1
+</pre><img vspace="5" hspace="5" src="main_17.png" alt=""> <pre class="codeoutput">Distributions for data set 05-08-2014 Hela L si6LRif1
+</pre><img vspace="5" hspace="5" src="main_19.png" alt=""> <pre class="codeoutput">Distributions for data set 11-08-2014 pSuper
+</pre><img vspace="5" hspace="5" src="main_21.png" alt=""> <pre class="codeoutput">Distributions for data set 11-08-2014 pLVP041
+</pre><img vspace="5" hspace="5" src="main_23.png" alt=""> <pre class="codeoutput">Distributions for data set 11-08-2014 pLVP042
+</pre><img vspace="5" hspace="5" src="main_25.png" alt=""> <pre class="codeoutput">Distributions for data set 11-08-2014 TrF2
+</pre><img vspace="5" hspace="5" src="main_27.png" alt=""> <pre class="codeoutput">Distributions for data set 13-08-2014 pSuper
+</pre><img vspace="5" hspace="5" src="main_29.png" alt=""> <pre class="codeoutput">Distributions for data set 13-08-2014 pLVP041
+</pre><img vspace="5" hspace="5" src="main_31.png" alt=""> <pre class="codeoutput">Distributions for data set 13-08-2014 pLVP042
+</pre><img vspace="5" hspace="5" src="main_33.png" alt=""> <pre class="codeoutput">Distributions for data set 13-08-2014 TrF2
+</pre><img vspace="5" hspace="5" src="main_35.png" alt=""> <h2>Perform a nonlinear least squares regression on Rg vs. number of localizations<a name="13"></a></h2><p>For a good discussion on fitting in Matlab, particularly robust fitting, see: <a href="http://www.mathworks.ch/ch/help/curvefit/least-squares-fitting.html">http://www.mathworks.ch/ch/help/curvefit/least-squares-fitting.html</a></p><pre class="codeinput"><span class="comment">% For analytical expressions of the coefficients from nonlinear least</span>
+<span class="comment">% squares fitting to a power law, see:</span>
+<span class="comment">% &lt;http://mathworld.wolfram.com/LeastSquaresFittingPowerLaw.html&gt;</span>
+
+f = fittype(<span class="string">'a*x.^b'</span>);
+
+disp([<span class="string">'Scaling for data set '</span> data(dataCtr).shortName])
+
+<span class="comment">% Work with the first dataset.</span>
+FigHandle = figure(<span class="string">'Position'</span>, [100, 100, 800, 800]);
+subplot(2,1,1)
+x1 = LAllData.numLoc;
+y1 = LAllData.M2Mag;
+
+[fit1,gof1,fitInfo1] = fit(x1,y1,f,<span class="string">'StartPoint'</span>,[17 0.33]);
+
+residuals = fitInfo1.residuals;
+
+I = abs(residuals) &gt; 1.5 * std(residuals);
+outliers = excludedata(x1,y1,<span class="string">'indices'</span>,I);
+
+[fitNoOutliers1, gofNoOutliers1, fitInfoNoOutliers1] = fit(x1,y1,f,<span class="string">'StartPoint'</span>, [17 0.33], <span class="string">'Exclude'</span>,outliers);
+
+[fitRobust1, gofRobust1, fitInfoRobust1] = fit(x1,y1,f,<span class="string">'StartPoint'</span>,[17 0.33],<span class="string">'Robust'</span>,<span class="string">'on'</span>);
+
+plot(fit1,<span class="string">'b-'</span>, x1, y1, <span class="string">'k.'</span>, outliers, <span class="string">'m*'</span>)
+hold <span class="string">on</span>
+plot(fitNoOutliers1,<span class="string">'r--'</span>)
+plot(fitRobust1,<span class="string">'g-'</span>)
+legend( <span class="string">'Data'</span>, <span class="string">'Outliers'</span>, <span class="string">'Original fit'</span>, <span class="string">'Fit with outliers excluded'</span>, <span class="string">'Robust fit'</span> )
+hold <span class="string">off</span>
+grid <span class="string">on</span>
+title(data(dataCtr).dataset1ShortName)
+xlabel(<span class="string">'Number of localizations'</span>)
+ylabel(<span class="string">'R_g, nm'</span>)
+xlim([0 max([maxLoc1 maxLoc2])])
+ylim([0 300])
+
+<span class="comment">% Work with the second dataset.</span>
+subplot(2,1,2)
+x2 = SAllData.numLoc;
+y2 = SAllData.M2Mag;
+
+[fit2,gof2,fitInfo2] = fit(x2,y2,f,<span class="string">'StartPoint'</span>,[17 0.33]);
+
+residuals = fitInfo2.residuals;
+
+I = abs(residuals) &gt; 1.5 * std(residuals);
+outliers = excludedata(x2,y2,<span class="string">'indices'</span>,I);
+
+[fitNoOutliers2, gofNoOutliers2, fitInfoNoOutliers2] = fit(x2,y2,f,<span class="string">'StartPoint'</span>, [17 0.33], <span class="string">'Exclude'</span>,outliers);
+
+[fitRobust2, gofRobust2, fitInfoRobust2] = fit(x2,y2,f,<span class="string">'StartPoint'</span>,[17 0.33],<span class="string">'Robust'</span>,<span class="string">'on'</span>);
+
+plot(fit2,<span class="string">'b-'</span>, x2, y2, <span class="string">'k.'</span>, outliers, <span class="string">'m*'</span>)
+hold <span class="string">on</span>
+plot(fitNoOutliers2,<span class="string">'r--'</span>)
+plot(fitRobust2,<span class="string">'g-'</span>)
+legend( <span class="string">'Data'</span>, <span class="string">'Outliers'</span>, <span class="string">'Original fit'</span>, <span class="string">'Fit with outliers excluded'</span>, <span class="string">'Robust fit'</span> )
+hold <span class="string">off</span>
+grid <span class="string">on</span>
+title(data(dataCtr).dataset2ShortName)
+xlabel(<span class="string">'Number of localizations'</span>)
+ylabel(<span class="string">'R_g, nm'</span>)
+xlim([0 max([maxLoc1, maxLoc2])])
+ylim([0 300])
+pause(2) <span class="comment">% Ensures that the fit has time to work before plotted.</span>
+
+<span class="comment">% Store fits in the external data array.</span>
+data(dataCtr).fits.fit1 = fit1;
+data(dataCtr).fits.gof1 = gof1;
+data(dataCtr).fits.fitInfo1 = fitInfo1;
+
+data(dataCtr).fits.fitNoOutliers1 = fitNoOutliers1;
+data(dataCtr).fits.gofNoOutliers1 = gofNoOutliers1;
+data(dataCtr).fits.fitInfoNoOutliers1 = fitInfoNoOutliers1;
+
+data(dataCtr).fits.fitRobust1 = fitRobust1;
+data(dataCtr).fits.gofRobust1 = gofRobust1;
+data(dataCtr).fits.fitInfoRobust1 = fitInfoRobust1;
+
+data(dataCtr).fits.fit2 = fit2;
+data(dataCtr).fits.gof2 = gof2;
+data(dataCtr).fits.fitInfo2 = fitInfo2;
+
+data(dataCtr).fits.fitNoOutliers2 = fitNoOutliers2;
+data(dataCtr).fits.gofNoOutliers2 = gofNoOutliers2;
+data(dataCtr).fits.fitInfoNoOutliers2 = fitInfoNoOutliers2;
+
+data(dataCtr).fits.fitRobust2 = fitRobust2;
+data(dataCtr).fits.gofRobust2 = gofRobust2;
+data(dataCtr).fits.fitInfoRobust2 = fitInfoRobust2;
+</pre><pre class="codeoutput">Scaling for data set 11-06-2014 FISH
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <pre class="codeoutput">Scaling for data set 29-07-2014 SmchD1 pSuper
+</pre><img vspace="5" hspace="5" src="main_04.png" alt=""> <pre class="codeoutput">Scaling for data set 29-07-2014 SmchD1 pLVP041
+</pre><img vspace="5" hspace="5" src="main_06.png" alt=""> <pre class="codeoutput">Scaling for data set 29-07-2014 SmchD1 pLVP042
+</pre><img vspace="5" hspace="5" src="main_08.png" alt=""> <pre class="codeoutput">Scaling for data set 30-07-2014 SmchD1 pSuper
+</pre><img vspace="5" hspace="5" src="main_10.png" alt=""> <pre class="codeoutput">Scaling for data set 30-07-2014 SmchD1 pLVP041
+</pre><img vspace="5" hspace="5" src="main_12.png" alt=""> <pre class="codeoutput">Scaling for data set 30-07-2014 SmchD1 pLVP042
+</pre><img vspace="5" hspace="5" src="main_14.png" alt=""> <pre class="codeoutput">Scaling for data set 05-08-2014 Hela L siGfp
+</pre><img vspace="5" hspace="5" src="main_16.png" alt=""> <pre class="codeoutput">Scaling for data set 05-08-2014 Hela L si1LRif1
+</pre><img vspace="5" hspace="5" src="main_18.png" alt=""> <pre class="codeoutput">Scaling for data set 05-08-2014 Hela L si6LRif1
+</pre><img vspace="5" hspace="5" src="main_20.png" alt=""> <pre class="codeoutput">Scaling for data set 11-08-2014 pSuper
+</pre><img vspace="5" hspace="5" src="main_22.png" alt=""> <pre class="codeoutput">Scaling for data set 11-08-2014 pLVP041
+</pre><img vspace="5" hspace="5" src="main_24.png" alt=""> <pre class="codeoutput">Scaling for data set 11-08-2014 pLVP042
+</pre><img vspace="5" hspace="5" src="main_26.png" alt=""> <pre class="codeoutput">Scaling for data set 11-08-2014 TrF2
+</pre><img vspace="5" hspace="5" src="main_28.png" alt=""> <pre class="codeoutput">Scaling for data set 13-08-2014 pSuper
+</pre><img vspace="5" hspace="5" src="main_30.png" alt=""> <pre class="codeoutput">Scaling for data set 13-08-2014 pLVP041
+</pre><img vspace="5" hspace="5" src="main_32.png" alt=""> <pre class="codeoutput">Scaling for data set 13-08-2014 pLVP042
+</pre><img vspace="5" hspace="5" src="main_34.png" alt=""> <pre class="codeoutput">Scaling for data set 13-08-2014 TrF2
+</pre><img vspace="5" hspace="5" src="main_36.png" alt=""> <h2>Report statistics from distributions.<a name="14"></a></h2><pre class="codeinput">disp([<span class="string">'Statistics for experiment '</span> data(dataCtr).shortName <span class="string">'.'</span>])
+disp([<span class="string">'Number of clusters, L dataset: '</span> num2str(length(LAllData.numLoc), <span class="string">'%d'</span>)])
+disp([<span class="string">' '</span>])
+disp([<span class="string">'Mean square root of the radius of gyration, L dataset: '</span> num2str(mean(LAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(LAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean cube root of volume, L dataset: '</span> num2str(mean(LAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(LAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean number of localizations, L dataset: '</span> num2str(mean(LAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(LAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp(<span class="string">'-------------------------------------------------------'</span>)
+disp([<span class="string">'Number of clusters, S dataset: '</span> num2str(length(SAllData.numLoc), <span class="string">'%d'</span>) ])
+disp([<span class="string">' '</span>])
+disp([<span class="string">'Mean square root of the radius of gyration, S dataset: '</span> num2str(mean(SAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(SAllData.M2Mag), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean cube root of volume, S dataset: '</span> num2str(mean(SAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(SAllData.volume.^(1/3)), <span class="string">'%.2f'</span>) <span class="string">' nm'</span>])
+disp(<span class="string">' '</span>)
+disp([<span class="string">'Mean number of localizations, S dataset: '</span> num2str(mean(SAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp([<span class="string">'Standard deviation: '</span> num2str(std(SAllData.numLoc), <span class="string">'%.2f'</span>)])
+disp(<span class="string">' '</span>)
+</pre><pre class="codeoutput">Statistics for experiment 11-06-2014 FISH.
+Number of clusters, L dataset: 915
+ 
+Mean square root of the radius of gyration, L dataset: 125.33 nm
+Standard deviation: 24.69 nm
+ 
+Mean cube root of volume, L dataset: 241.27 nm
+Standard deviation: 44.88 nm
+ 
+Mean number of localizations, L dataset: 306.28
+Standard deviation: 89.05
+-------------------------------------------------------
+Number of clusters, S dataset: 1260
+ 
+Mean square root of the radius of gyration, S dataset: 82.35 nm
+Standard deviation: 17.63 nm
+ 
+Mean cube root of volume, S dataset: 134.14 nm
+Standard deviation: 30.02 nm
+ 
+Mean number of localizations, S dataset: 97.29
+Standard deviation: 37.40
+ 
+</pre><pre class="codeoutput">Statistics for experiment 29-07-2014 SmchD1 pSuper.
+Number of clusters, L dataset: 196
+ 
+Mean square root of the radius of gyration, L dataset: 123.65 nm
+Standard deviation: 20.96 nm
+ 
+Mean cube root of volume, L dataset: 226.83 nm
+Standard deviation: 35.01 nm
+ 
+Mean number of localizations, L dataset: 293.27
+Standard deviation: 76.51
+-------------------------------------------------------
+Number of clusters, S dataset: 282
+ 
+Mean square root of the radius of gyration, S dataset: 80.20 nm
+Standard deviation: 21.45 nm
+ 
+Mean cube root of volume, S dataset: 129.25 nm
+Standard deviation: 32.54 nm
+ 
+Mean number of localizations, S dataset: 113.84
+Standard deviation: 38.26
+ 
+</pre><pre class="codeoutput">Statistics for experiment 29-07-2014 SmchD1 pLVP041.
+Number of clusters, L dataset: 179
+ 
+Mean square root of the radius of gyration, L dataset: 104.98 nm
+Standard deviation: 19.36 nm
+ 
+Mean cube root of volume, L dataset: 188.81 nm
+Standard deviation: 33.19 nm
+ 
+Mean number of localizations, L dataset: 315.99
+Standard deviation: 94.46
+-------------------------------------------------------
+Number of clusters, S dataset: 210
+ 
+Mean square root of the radius of gyration, S dataset: 76.31 nm
+Standard deviation: 22.42 nm
+ 
+Mean cube root of volume, S dataset: 119.97 nm
+Standard deviation: 32.40 nm
+ 
+Mean number of localizations, S dataset: 105.56
+Standard deviation: 37.46
+ 
+</pre><pre class="codeoutput">Statistics for experiment 29-07-2014 SmchD1 pLVP042.
+Number of clusters, L dataset: 302
+ 
+Mean square root of the radius of gyration, L dataset: 109.78 nm
+Standard deviation: 21.95 nm
+ 
+Mean cube root of volume, L dataset: 203.80 nm
+Standard deviation: 38.38 nm
+ 
+Mean number of localizations, L dataset: 344.84
+Standard deviation: 109.93
+-------------------------------------------------------
+Number of clusters, S dataset: 252
+ 
+Mean square root of the radius of gyration, S dataset: 80.80 nm
+Standard deviation: 16.92 nm
+ 
+Mean cube root of volume, S dataset: 132.22 nm
+Standard deviation: 25.97 nm
+ 
+Mean number of localizations, S dataset: 117.82
+Standard deviation: 38.29
+ 
+</pre><pre class="codeoutput">Statistics for experiment 30-07-2014 SmchD1 pSuper.
+Number of clusters, L dataset: 186
+ 
+Mean square root of the radius of gyration, L dataset: 126.21 nm
+Standard deviation: 20.19 nm
+ 
+Mean cube root of volume, L dataset: 241.77 nm
+Standard deviation: 38.96 nm
+ 
+Mean number of localizations, L dataset: 333.48
+Standard deviation: 98.05
+-------------------------------------------------------
+Number of clusters, S dataset: 260
+ 
+Mean square root of the radius of gyration, S dataset: 78.87 nm
+Standard deviation: 15.91 nm
+ 
+Mean cube root of volume, S dataset: 133.11 nm
+Standard deviation: 28.98 nm
+ 
+Mean number of localizations, S dataset: 122.03
+Standard deviation: 42.26
+ 
+</pre><pre class="codeoutput">Statistics for experiment 30-07-2014 SmchD1 pLVP041.
+Number of clusters, L dataset: 138
+ 
+Mean square root of the radius of gyration, L dataset: 125.43 nm
+Standard deviation: 21.16 nm
+ 
+Mean cube root of volume, L dataset: 241.58 nm
+Standard deviation: 35.51 nm
+ 
+Mean number of localizations, L dataset: 317.20
+Standard deviation: 93.14
+-------------------------------------------------------
+Number of clusters, S dataset: 279
+ 
+Mean square root of the radius of gyration, S dataset: 77.16 nm
+Standard deviation: 17.40 nm
+ 
+Mean cube root of volume, S dataset: 129.35 nm
+Standard deviation: 30.91 nm
+ 
+Mean number of localizations, S dataset: 109.89
+Standard deviation: 38.00
+ 
+</pre><pre class="codeoutput">Statistics for experiment 30-07-2014 SmchD1 pLVP042.
+Number of clusters, L dataset: 191
+ 
+Mean square root of the radius of gyration, L dataset: 129.31 nm
+Standard deviation: 22.20 nm
+ 
+Mean cube root of volume, L dataset: 244.09 nm
+Standard deviation: 40.74 nm
+ 
+Mean number of localizations, L dataset: 338.18
+Standard deviation: 103.03
+-------------------------------------------------------
+Number of clusters, S dataset: 302
+ 
+Mean square root of the radius of gyration, S dataset: 77.39 nm
+Standard deviation: 16.80 nm
+ 
+Mean cube root of volume, S dataset: 126.46 nm
+Standard deviation: 27.94 nm
+ 
+Mean number of localizations, S dataset: 117.11
+Standard deviation: 39.06
+ 
+</pre><pre class="codeoutput">Statistics for experiment 05-08-2014 Hela L siGfp.
+Number of clusters, L dataset: 217
+ 
+Mean square root of the radius of gyration, L dataset: 128.27 nm
+Standard deviation: 20.98 nm
+ 
+Mean cube root of volume, L dataset: 239.05 nm
+Standard deviation: 40.01 nm
+ 
+Mean number of localizations, L dataset: 296.64
+Standard deviation: 79.10
+-------------------------------------------------------
+Number of clusters, S dataset: 163
+ 
+Mean square root of the radius of gyration, S dataset: 93.40 nm
+Standard deviation: 25.27 nm
+ 
+Mean cube root of volume, S dataset: 151.34 nm
+Standard deviation: 36.71 nm
+ 
+Mean number of localizations, S dataset: 137.83
+Standard deviation: 42.78
+ 
+</pre><pre class="codeoutput">Statistics for experiment 05-08-2014 Hela L si1LRif1.
+Number of clusters, L dataset: 319
+ 
+Mean square root of the radius of gyration, L dataset: 122.63 nm
+Standard deviation: 22.18 nm
+ 
+Mean cube root of volume, L dataset: 231.05 nm
+Standard deviation: 41.15 nm
+ 
+Mean number of localizations, L dataset: 333.59
+Standard deviation: 109.57
+-------------------------------------------------------
+Number of clusters, S dataset: 427
+ 
+Mean square root of the radius of gyration, S dataset: 88.06 nm
+Standard deviation: 19.37 nm
+ 
+Mean cube root of volume, S dataset: 146.72 nm
+Standard deviation: 34.84 nm
+ 
+Mean number of localizations, S dataset: 122.24
+Standard deviation: 39.96
+ 
+</pre><pre class="codeoutput">Statistics for experiment 05-08-2014 Hela L si6LRif1.
+Number of clusters, L dataset: 303
+ 
+Mean square root of the radius of gyration, L dataset: 116.04 nm
+Standard deviation: 21.76 nm
+ 
+Mean cube root of volume, L dataset: 213.96 nm
+Standard deviation: 35.87 nm
+ 
+Mean number of localizations, L dataset: 308.00
+Standard deviation: 75.04
+-------------------------------------------------------
+Number of clusters, S dataset: 353
+ 
+Mean square root of the radius of gyration, S dataset: 91.63 nm
+Standard deviation: 20.24 nm
+ 
+Mean cube root of volume, S dataset: 153.82 nm
+Standard deviation: 35.69 nm
+ 
+Mean number of localizations, S dataset: 119.64
+Standard deviation: 40.51
+ 
+</pre><pre class="codeoutput">Statistics for experiment 11-08-2014 pSuper.
+Number of clusters, L dataset: 183
+ 
+Mean square root of the radius of gyration, L dataset: 119.35 nm
+Standard deviation: 31.19 nm
+ 
+Mean cube root of volume, L dataset: 219.04 nm
+Standard deviation: 48.95 nm
+ 
+Mean number of localizations, L dataset: 301.78
+Standard deviation: 81.89
+-------------------------------------------------------
+Number of clusters, S dataset: 476
+ 
+Mean square root of the radius of gyration, S dataset: 73.51 nm
+Standard deviation: 21.03 nm
+ 
+Mean cube root of volume, S dataset: 122.07 nm
+Standard deviation: 40.78 nm
+ 
+Mean number of localizations, S dataset: 107.94
+Standard deviation: 40.74
+ 
+</pre><pre class="codeoutput">Statistics for experiment 11-08-2014 pLVP041.
+Number of clusters, L dataset: 147
+ 
+Mean square root of the radius of gyration, L dataset: 116.67 nm
+Standard deviation: 31.44 nm
+ 
+Mean cube root of volume, L dataset: 215.02 nm
+Standard deviation: 55.78 nm
+ 
+Mean number of localizations, L dataset: 329.95
+Standard deviation: 117.61
+-------------------------------------------------------
+Number of clusters, S dataset: 370
+ 
+Mean square root of the radius of gyration, S dataset: 72.24 nm
+Standard deviation: 20.12 nm
+ 
+Mean cube root of volume, S dataset: 114.61 nm
+Standard deviation: 36.27 nm
+ 
+Mean number of localizations, S dataset: 111.81
+Standard deviation: 40.10
+ 
+</pre><pre class="codeoutput">Statistics for experiment 11-08-2014 pLVP042.
+Number of clusters, L dataset: 223
+ 
+Mean square root of the radius of gyration, L dataset: 111.55 nm
+Standard deviation: 30.75 nm
+ 
+Mean cube root of volume, L dataset: 209.40 nm
+Standard deviation: 52.53 nm
+ 
+Mean number of localizations, L dataset: 328.83
+Standard deviation: 106.24
+-------------------------------------------------------
+Number of clusters, S dataset: 522
+ 
+Mean square root of the radius of gyration, S dataset: 71.82 nm
+Standard deviation: 22.02 nm
+ 
+Mean cube root of volume, S dataset: 109.80 nm
+Standard deviation: 37.21 nm
+ 
+Mean number of localizations, S dataset: 116.33
+Standard deviation: 41.72
+ 
+</pre><pre class="codeoutput">Statistics for experiment 11-08-2014 TrF2.
+Number of clusters, L dataset: 88
+ 
+Mean square root of the radius of gyration, L dataset: 110.40 nm
+Standard deviation: 34.64 nm
+ 
+Mean cube root of volume, L dataset: 198.03 nm
+Standard deviation: 48.31 nm
+ 
+Mean number of localizations, L dataset: 284.35
+Standard deviation: 77.91
+-------------------------------------------------------
+Number of clusters, S dataset: 349
+ 
+Mean square root of the radius of gyration, S dataset: 68.07 nm
+Standard deviation: 19.50 nm
+ 
+Mean cube root of volume, S dataset: 108.02 nm
+Standard deviation: 31.05 nm
+ 
+Mean number of localizations, S dataset: 89.13
+Standard deviation: 35.47
+ 
+</pre><pre class="codeoutput">Statistics for experiment 13-08-2014 pSuper.
+Number of clusters, L dataset: 286
+ 
+Mean square root of the radius of gyration, L dataset: 111.28 nm
+Standard deviation: 19.83 nm
+ 
+Mean cube root of volume, L dataset: 217.94 nm
+Standard deviation: 38.91 nm
+ 
+Mean number of localizations, L dataset: 320.99
+Standard deviation: 106.44
+-------------------------------------------------------
+Number of clusters, S dataset: 412
+ 
+Mean square root of the radius of gyration, S dataset: 82.12 nm
+Standard deviation: 20.88 nm
+ 
+Mean cube root of volume, S dataset: 131.88 nm
+Standard deviation: 37.74 nm
+ 
+Mean number of localizations, S dataset: 115.30
+Standard deviation: 39.29
+ 
+</pre><pre class="codeoutput">Statistics for experiment 13-08-2014 pLVP041.
+Number of clusters, L dataset: 209
+ 
+Mean square root of the radius of gyration, L dataset: 122.76 nm
+Standard deviation: 24.74 nm
+ 
+Mean cube root of volume, L dataset: 231.36 nm
+Standard deviation: 43.08 nm
+ 
+Mean number of localizations, L dataset: 304.91
+Standard deviation: 100.58
+-------------------------------------------------------
+Number of clusters, S dataset: 282
+ 
+Mean square root of the radius of gyration, S dataset: 76.64 nm
+Standard deviation: 22.33 nm
+ 
+Mean cube root of volume, S dataset: 116.14 nm
+Standard deviation: 36.56 nm
+ 
+Mean number of localizations, S dataset: 95.24
+Standard deviation: 31.11
+ 
+</pre><pre class="codeoutput">Statistics for experiment 13-08-2014 pLVP042.
+Number of clusters, L dataset: 289
+ 
+Mean square root of the radius of gyration, L dataset: 119.92 nm
+Standard deviation: 29.01 nm
+ 
+Mean cube root of volume, L dataset: 228.01 nm
+Standard deviation: 44.90 nm
+ 
+Mean number of localizations, L dataset: 330.94
+Standard deviation: 107.71
+-------------------------------------------------------
+Number of clusters, S dataset: 336
+ 
+Mean square root of the radius of gyration, S dataset: 83.65 nm
+Standard deviation: 22.56 nm
+ 
+Mean cube root of volume, S dataset: 136.29 nm
+Standard deviation: 36.44 nm
+ 
+Mean number of localizations, S dataset: 122.95
+Standard deviation: 39.84
+ 
+</pre><pre class="codeoutput">Statistics for experiment 13-08-2014 TrF2.
+Number of clusters, L dataset: 186
+ 
+Mean square root of the radius of gyration, L dataset: 120.46 nm
+Standard deviation: 29.53 nm
+ 
+Mean cube root of volume, L dataset: 226.07 nm
+Standard deviation: 43.79 nm
+ 
+Mean number of localizations, L dataset: 282.31
+Standard deviation: 74.33
+-------------------------------------------------------
+Number of clusters, S dataset: 393
+ 
+Mean square root of the radius of gyration, S dataset: 76.42 nm
+Standard deviation: 19.54 nm
+ 
+Mean cube root of volume, S dataset: 121.54 nm
+Standard deviation: 32.96 nm
+ 
+Mean number of localizations, S dataset: 110.01
+Standard deviation: 37.14
+ 
+</pre><pre class="codeinput"><span class="keyword">end</span> <span class="comment">% Ends loop over datasets.</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% The main script for analyzing the telomere data and producing reports.
+%
+% This script should be run after the analysis workflow is determined from
+% data_mining.m.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/08/27 $ $REVISION: 0.9 $
+%
+%% Use parallel processing to speed up computation? (use 'false' if unsure)
+useParallel = true;
+
+% if useParallel
+%     matlabpool open
+% end
+
+%% Define clustering and filtering parameters.
+% k - number of objects in a neighborhood of an object 
+% (minimal number of objects considered as a cluster)
+% Eps - neighborhood radius, if not known avoid this parameter or put []
+% minLoc - Discard all clusters with localizations fewer than this number.
+k = 8;
+Eps = 65;
+
+minLoc1 = 200;
+maxLoc1 = 700;
+
+minLoc2 = 50;
+maxLoc2 = 200;
+%% Designate the files for analysis.
+% All datasets are comparisons between two populations, typically Hela L
+% cells and Hela S cells, or between two different transfections.
+% Therefore, each experiment consists of two datasets.
+
+%==========================================================================
+% 11-06-2014 FISH Original data
+%==========================================================================
+data(1).shortName = '11-06-2014 FISH';
+data(1).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/';
+data(1).dataset1Dir = '11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
+data(1).dataset2Dir = '11_06_2014_Hela_S_FISH/Hela S FISH molecule lists/';
+data(1).dataset1ShortName = 'L dataset';
+data(1).dataset2ShortName = 'S dataset';
+data(1).distributions1 = [];
+data(1).distributions2 = [];
+data(1).fits = [];
+
+%==========================================================================
+% 29-07-2014 SmchD1
+%==========================================================================
+data(2).shortName = '29-07-2014 SmchD1 pSuper';
+data(2).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/29_07_2014_HelaS_L_SmchD1_KD_FISH/29_07_2014_HelaS_L_SmchD1_KD_FISH_Mol_lists/';
+data(2).dataset1Dir = '29_07_2014_HelaL_SmchD1_pSuper_mol_list/';
+data(2).dataset2Dir = '29_07_2014_HelaS_SmchD1_pSuper_mol_list/';
+data(2).dataset1ShortName = 'L dataset';
+data(2).dataset2ShortName = 'S dataset';
+data(2).distributions1 = [];
+data(2).distributions2 = [];
+data(2).fits = [];
+
+data(3).shortName = '29-07-2014 SmchD1 pLVP041';
+data(3).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/29_07_2014_HelaS_L_SmchD1_KD_FISH/29_07_2014_HelaS_L_SmchD1_KD_FISH_Mol_lists/';
+data(3).dataset1Dir = '29_07_2014_HelaL_SmchD1_pLVP041_mol_list/';
+data(3).dataset2Dir = '29_07_2014_HelaS_SmchD1_pLVP041_mol_list/';
+data(3).dataset1ShortName = 'L dataset';
+data(3).dataset2ShortName = 'S dataset';
+data(3).distributions1 = [];
+data(3).distributions2 = [];
+data(3).fits = [];
+
+data(4).shortName = '29-07-2014 SmchD1 pLVP042';
+data(4).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/29_07_2014_HelaS_L_SmchD1_KD_FISH/29_07_2014_HelaS_L_SmchD1_KD_FISH_Mol_lists/';
+data(4).dataset1Dir = '29_07_2014_HelaL_SmchD1_pLVP042_mol_list/';
+data(4).dataset2Dir = '29_07_2014_HelaS_SmchD1_pLVP042_mol_list/';
+data(4).dataset1ShortName = 'L dataset';
+data(4).dataset2ShortName = 'S dataset';
+data(4).distributions1 = [];
+data(4).distributions2 = [];
+data(4).fits = [];
+
+%==========================================================================
+% 30-07-2014 SmchD1
+%==========================================================================
+data(5).shortName = '30-07-2014 SmchD1 pSuper';
+data(5).rootDir = '/media/My Book/Kyle/Telomere_Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/';
+data(5).dataset1Dir = '30_07_2014_HelaL_SmchD1_pSuper_mol_list/';
+data(5).dataset2Dir = '30_07_2014_HelaS_SmchD1_pSuper_mol_list/';
+data(5).dataset1ShortName = 'L dataset';
+data(5).dataset2ShortName = 'S dataset';
+data(5).distributions1 = [];
+data(5).distributions2 = [];
+data(5).fits = [];
+
+data(6).shortName = '30-07-2014 SmchD1 pLVP041';
+data(6).rootDir = '/media/My Book/Kyle/Telomere_Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/';
+data(6).dataset1Dir = '30_07_2014_HelaL_SmchD1_pLVP041_mol_list/';
+data(6).dataset2Dir = '30_07_2014_HelaS_SmchD1_pLVP041_mol_list/';
+data(6).dataset1ShortName = 'L dataset';
+data(6).dataset2ShortName = 'S dataset';
+data(6).distributions1 = [];
+data(6).distributions2 = [];
+data(6).fits = [];
+
+data(7).shortName = '30-07-2014 SmchD1 pLVP042';
+data(7).rootDir = '/media/My Book/Kyle/Telomere_Data/30_07_2014_HeLaS_L_SmchD1_KD_FISH/';
+data(7).dataset1Dir = '30_07_2014_HelaL_SmchD1_pLVP042_mol_list/';
+data(7).dataset2Dir = '30_07_2014_HelaS_SmchD1_pLVP042_mol_list/';
+data(7).dataset1ShortName = 'L dataset';
+data(7).dataset2ShortName = 'S dataset';
+data(7).distributions1 = [];
+data(7).distributions2 = [];
+data(7).fits = [];
+
+%==========================================================================
+% 05-08-2014 Hela L LRif1
+%==========================================================================
+data(8).shortName = '05-08-2014 Hela L siGfp';
+data(8).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/05_08_2014_HelaL_LRif1_KD_FISH/05_08_2014_HelaL_LRif1_Mol_Lists/';
+data(8).dataset1Dir = '05_08_2014_HelaL_LRif1_siGfp_mol_lists/';
+data(8).dataset2Dir = '05_08_2014_HelaL_LRif1_siGfp_tr2_mol_lists/';
+data(8).dataset1ShortName = '1st transfection';
+data(8).dataset2ShortName = '2nd transfection';
+data(8).distributions1 = [];
+data(8).distributions2 = [];
+data(8).fits = [];
+
+data(9).shortName = '05-08-2014 Hela L si1LRif1';
+data(9).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/05_08_2014_HelaL_LRif1_KD_FISH/05_08_2014_HelaL_LRif1_Mol_Lists/';
+data(9).dataset1Dir = '05_08_2014_HelaL_LRif1_si1LRif1_mol_lists/';
+data(9).dataset2Dir = '05_08_2014_HelaL_LRif1_si1LRif1_tr2_mol_lists/';
+data(9).dataset1ShortName = '1st transfection';
+data(9).dataset2ShortName = '2nd transfection';
+data(9).distributions1 = [];
+data(9).distributions2 = [];
+data(9).fits = [];
+
+data(10).shortName = '05-08-2014 Hela L si6LRif1';
+data(10).rootDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Telo2/05_08_2014_HelaL_LRif1_KD_FISH/05_08_2014_HelaL_LRif1_Mol_Lists/';
+data(10).dataset1Dir = '05_08_2014_HelaL_LRif1_si6LRif1_mol_lists/';
+data(10).dataset2Dir = '05_08_2014_HelaL_LRif1_si6LRif1_tr2_mol_lists/';
+data(10).dataset1ShortName = '1st transfection';
+data(10).dataset2ShortName = '2nd transfection';
+data(10).distributions1 = [];
+data(10).distributions2 = [];
+data(10).fits = [];
+
+%==========================================================================
+% 11-08-2014 TrF2
+%==========================================================================
+data(11).shortName = '11-08-2014 pSuper';
+data(11).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+data(11).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pSuper_non filtered/';
+data(11).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pSuper_non filtered/';
+data(11).dataset1ShortName = 'L dataset';
+data(11).dataset2ShortName = 'S dataset';
+data(11).distributions1 = [];
+data(11).distributions2 = [];
+data(11).fits = [];
+
+data(12).shortName = '11-08-2014 pLVP041';
+data(12).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+data(12).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP041_non filtered/';
+data(12).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP041_non filtered/';
+data(12).dataset1ShortName = 'L dataset';
+data(12).dataset2ShortName = 'S dataset';
+data(12).distributions1 = [];
+data(12).distributions2 = [];
+data(12).fits = [];
+
+data(13).shortName = '11-08-2014 pLVP042';
+data(13).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+data(13).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP042_non filtered/';
+data(13).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP042_non filtered/';
+data(13).dataset1ShortName = 'L dataset';
+data(13).dataset2ShortName = 'S dataset';
+data(13).distributions1 = [];
+data(13).distributions2 = [];
+data(13).fits = [];
+
+data(14).shortName = '11-08-2014 TrF2';
+data(14).rootDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/';
+data(14).dataset1Dir = '11_08_2014_HeLaL_KD_Smchd1_TRF2_pLVP TRF2_non filtered/';
+data(14).dataset2Dir = '11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2_non filtered/';
+data(14).dataset1ShortName = 'L dataset';
+data(14).dataset2ShortName = 'S dataset';
+data(14).distributions1 = [];
+data(14).distributions2 = [];
+data(14).fits = [];
+
+%==========================================================================
+% 13-08-2014 TrF2
+%==========================================================================
+data(15).shortName = '13-08-2014 pSuper';
+data(15).rootDir = '/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/';
+data(15).dataset1Dir = '13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_pSuper_Mol_list_not_filtered/';
+data(15).dataset2Dir = '13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_pSuper_Mol_list_not_filtered/';
+data(15).dataset1ShortName = 'L dataset';
+data(15).dataset2ShortName = 'S dataset';
+data(15).distributions1 = [];
+data(15).distributions2 = [];
+data(15).fits = [];
+
+data(16).shortName = '13-08-2014 pLVP041';
+data(16).rootDir = '/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/';
+data(16).dataset1Dir = '13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_pLVP041_Mol_list_not_filtered/';
+data(16).dataset2Dir = '13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_pLVP041_Mol_list_not_filtered/';
+data(16).dataset1ShortName = 'L dataset';
+data(16).dataset2ShortName = 'S dataset';
+data(16).distributions1 = [];
+data(16).distributions2 = [];
+data(16).fits = [];
+
+data(17).shortName = '13-08-2014 pLVP042';
+data(17).rootDir = '/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/';
+data(17).dataset1Dir = '13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_pLVP042_Mol_list_not_filtered/';
+data(17).dataset2Dir = '13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_pLVP042_Mol_list_not_filtered/';
+data(17).dataset1ShortName = 'L dataset';
+data(17).dataset2ShortName = 'S dataset';
+data(17).distributions1 = [];
+data(17).distributions2 = [];
+data(17).fits = [];
+
+data(18).shortName = '13-08-2014 TrF2';
+data(18).rootDir = '/media/My Book/Kyle/Telomere_Data/13_08_2014_HelaS_L_SmchD1_Trf2_KD_FISH/13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_Mol_list_not_filtered/';
+data(18).dataset1Dir = '13_08_2014_HelaL_SmchD1_TRF2_KD_FISH_TRF2_Mol_list_not_filtered/';
+data(18).dataset2Dir = '13_08_2014_HelaS_SmchD1_TRF2_KD_FISH_TRF2_Mol_list_not_filtered/';
+data(18).dataset1ShortName = 'L dataset';
+data(18).dataset2ShortName = 'S dataset';
+data(18).distributions1 = [];
+data(18).distributions2 = [];
+data(18).fits = [];
+
+%% Verify that all directories are correct.
+for dirCtr = 1:length(data)
+    completeDir1 = [data(dirCtr).rootDir data(dirCtr).dataset1Dir];
+    completeDir2 = [data(dirCtr).rootDir data(dirCtr).dataset2Dir];
+    
+    A = exist(completeDir1, 'dir');
+    B = exist(completeDir2, 'dir');
+    
+    if A == 0
+        error(['Error: directory ' completeDir1 ' does not exist.'])
+    elseif B == 0
+        error(['Error: directory ' completeDir2 ' does not exist.'])
+    end
+end
+clear dirCtr
+
+%% Primary processing loop.
+
+for dataCtr = 1:length(data)
+% Loops over all the data files defined above.
+disp(['Processing dataset ' data(dataCtr).shortName])
+
+completeDir1 = [data(dataCtr).rootDir data(dataCtr).dataset1Dir];
+completeDir2 = [data(dataCtr).rootDir data(dataCtr).dataset2Dir];
+
+LFiles = dir(completeDir1);
+SFiles = dir(completeDir2);
+
+%% Filter out upper level directors.
+LFiles = LFiles(3:end);
+SFiles = SFiles(3:end);
+
+%% Process the data within each file.
+clear LProcData SProcData
+LProcData(length(LFiles),1).M1 = 0;
+LProcData(length(LFiles),1).M2 = 0;
+LProcData(length(LFiles),1).M2Mag = 0;
+LProcData(length(LFiles),1).numLoc = 0;
+LProcData(length(LFiles),1).volume = 0;
+
+SProcData(length(SFiles),1).M1 = 0;
+SProcData(length(SFiles),1).M2 = 0;
+SProcData(length(SFiles),1).M2Mag = 0;
+SProcData(length(SFiles),1).numLoc = 0;
+SProcData(length(SFiles),1).volume = 0;
+
+% process_data(fileName) is custom function call.
+if useParallel
+    parfor ctr = 1:length(LFiles)
+        LFileName = [completeDir1 LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
+    end
+    parfor ctr = 1:length(SFiles)
+        SFileName = [completeDir2 SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
+    end
+else
+    for ctr = 1:length(LFiles)
+        LFileName = [completeDir1 LFiles(ctr).name];
+        LData = tdfread(LFileName);
+        LDataF = [LData.Xc LData.Yc LData.Zc];
+        LProcData(ctr) = process_data(LDataF, k, Eps, minLoc1, maxLoc1);
+    end
+    for ctr = 1:length(SFiles)
+        SFileName = [completeDir2 SFiles(ctr).name];
+        SData = tdfread(SFileName);
+        SDataF = [SData.Xc SData.Yc SData.Zc];
+        SProcData(ctr) = process_data(SDataF, k, Eps, minLoc2, maxLoc2);
+    end
+end
+
+%% Combine distrubtions from all elements of the data structures.
+LAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+SAllData = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+
+for ctr = 1:length(LFiles)
+    LAllData.M1 = cat(1, LAllData.M1, LProcData(ctr).M1);
+    LAllData.M2 = cat(1, LAllData.M2, LProcData(ctr).M2);
+    LAllData.M2Mag = cat(1, LAllData.M2Mag, LProcData(ctr).M2Mag);
+    LAllData.numLoc = cat(1, LAllData.numLoc, LProcData(ctr).numLoc);
+    LAllData.volume = cat(1, LAllData.volume, LProcData(ctr).volume);
+end
+
+for ctr = 1:length(SFiles)
+    SAllData.M1 = cat(1, SAllData.M1, SProcData(ctr).M1);
+    SAllData.M2 = cat(1, SAllData.M2, SProcData(ctr).M2);
+    SAllData.M2Mag = cat(1, SAllData.M2Mag, SProcData(ctr).M2Mag);
+    SAllData.numLoc = cat(1, SAllData.numLoc, SProcData(ctr).numLoc);
+    SAllData.volume = cat(1, SAllData.volume, SProcData(ctr).volume);
+end
+
+%% Create the bins for plotting the distributions from above.
+% First, it is determined which of the two datasets, S or L, has the
+% largest and smallest values in each field. Next, the bins are determined
+% by partitioning the range between between these values into numBins
+% equally-sized intervals. These bins are used to normalize the
+% distributions.
+numBins = 20;
+bins = struct('M1', [], 'M2', [], 'M2Mag', [], 'numLoc', [], 'volume', []);
+fields = fieldnames(bins);
+
+for ctr = 1:numel(fields)
+    minBin = min([min(LAllData.(fields{ctr})(:)) min(SAllData.(fields{ctr})(:))]);
+    maxBin = max([max(LAllData.(fields{ctr})(:)) max(SAllData.(fields{ctr})(:))]);
+    bins.(fields{ctr}) = linspace(minBin, maxBin, numBins);    
+end
+
+% Write distributions out to the external data structure.
+clear distributions1 distributions2
+data(dataCtr).distributions1 = LAllData;
+data(dataCtr).distributions2 = SAllData;
+
+%% Plot the normalized distributions of the cluster statistics.
+close all
+[LN, LBIN] = histc(LAllData.M2, bins.M2);
+[SN, SBIN] = histc(SAllData.M2, bins.M2);
+
+disp(['Distributions for data set ' data(dataCtr).shortName])
+
+% Set the size of the figure window.
+subplot(2,2,1)
+hFig = gcf();
+set(hFig, 'Position', [100, 100, 1600, 1000])
+
+% Second order moments along x, y, and z.
+% Compute the normalization factor.
+dx = diff(bins.M2);
+dx = dx(1);
+
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(bins.M2, [LN ./ repmat(LNorm, size(LN,1), 1), SN ./ repmat(SNorm, size(SN,1), 1)], 'histc')
+legend('Long M_x^2', 'Long M_y^2', 'Long M_z^2', 'Short M_x^2', 'Short M_y^2', 'Short M_z^2')
+title('Second moments about x,y, and z for long and short data sets')
+xlabel('M^2, nm^2')
+ylabel('Normalized frequency')
+grid on
+
+% Plot the normalized distributions of other quantities. (Plots normalized
+% distributions for the magnitude of the square root of the radius of
+% gyration, the number of localizations, and the volume.)
+for ctr = 3:4
+    [LN, LBIN] = histc(LAllData.(fields{ctr}), bins.(fields{ctr}));
+    [SN, SBIN] = histc(SAllData.(fields{ctr}), bins.(fields{ctr}));
+    
+    % Compute the normalization factor.
+    dx = diff(bins.(fields{ctr}));
+    dx = dx(1);
+    LNorm = sum(dx * LN);
+    SNorm = sum(dx * SN);
+    
+    % Write to subplots 2 and 3.
+    subplot(2,2, ctr - 1)
+    bar(bins.(fields{ctr}), [LN / LNorm, SN / SNorm], 'histc')
+    grid on
+end
+
+% Radius of gyration
+subplot(2,2,2)
+title('Square root of the radius of gyration of the clusters of points for L and S datasets')
+xlabel('Square root of radius of gyration, nm')
+ylabel('Normalized frequency')
+legend('L dataset', 'S dataset')
+
+% Number of localizations
+subplot(2,2,3)
+title('Number of localizations per cluster')
+xlabel('Number of localizations')
+ylabel('Normalized frequency')
+legend('L dataset', 'S dataset')
+
+% Volume
+subplot(2,2,4)
+minBin = min([min(LAllData.volume.^(1/3)) min(SAllData.volume.^(1/3))]);
+maxBin = max([max(LAllData.volume.^(1/3)) max(SAllData.volume.^(1/3))]);
+binsVol3 = linspace(minBin, maxBin, numBins); 
+[LN, LBIN] = histc((LAllData.volume).^(1/3), binsVol3);
+[SN, SBIN] = histc((SAllData.volume).^(1/3), binsVol3);
+
+dx = diff(binsVol3);
+dx = dx(1);
+LNorm = sum(dx * LN);
+SNorm = sum(dx * SN);
+
+bar(binsVol3, [LN/ LNorm, SN / SNorm], 'histc')
+title('Cube root of cluster volumes (characteristic linear size)')
+xlabel('Volume^{(1/3)}, nm')
+ylabel('Normalized frequency')
+legend('L dataset', 'S dataset')
+grid on
+
+%% Perform a nonlinear least squares regression on Rg vs. number of localizations
+% For a good discussion on fitting in Matlab, particularly robust fitting,
+% see:
+% <http://www.mathworks.ch/ch/help/curvefit/least-squares-fitting.html>
+
+% For analytical expressions of the coefficients from nonlinear least
+% squares fitting to a power law, see:
+% <http://mathworld.wolfram.com/LeastSquaresFittingPowerLaw.html>
+
+f = fittype('a*x.^b');
+
+disp(['Scaling for data set ' data(dataCtr).shortName])
+
+% Work with the first dataset.
+FigHandle = figure('Position', [100, 100, 800, 800]);
+subplot(2,1,1)
+x1 = LAllData.numLoc;
+y1 = LAllData.M2Mag;
+
+[fit1,gof1,fitInfo1] = fit(x1,y1,f,'StartPoint',[17 0.33]);
+
+residuals = fitInfo1.residuals;
+
+I = abs(residuals) > 1.5 * std(residuals);
+outliers = excludedata(x1,y1,'indices',I);
+
+[fitNoOutliers1, gofNoOutliers1, fitInfoNoOutliers1] = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
+
+[fitRobust1, gofRobust1, fitInfoRobust1] = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
+
+plot(fit1,'b-', x1, y1, 'k.', outliers, 'm*')
+hold on
+plot(fitNoOutliers1,'rREPLACE_WITH_DASH_DASH')
+plot(fitRobust1,'g-')
+legend( 'Data', 'Outliers', 'Original fit', 'Fit with outliers excluded', 'Robust fit' )
+hold off
+grid on
+title(data(dataCtr).dataset1ShortName)
+xlabel('Number of localizations')
+ylabel('R_g, nm')
+xlim([0 max([maxLoc1 maxLoc2])])
+ylim([0 300])
+
+% Work with the second dataset.
+subplot(2,1,2)
+x2 = SAllData.numLoc;
+y2 = SAllData.M2Mag;
+
+[fit2,gof2,fitInfo2] = fit(x2,y2,f,'StartPoint',[17 0.33]);
+
+residuals = fitInfo2.residuals;
+
+I = abs(residuals) > 1.5 * std(residuals);
+outliers = excludedata(x2,y2,'indices',I);
+
+[fitNoOutliers2, gofNoOutliers2, fitInfoNoOutliers2] = fit(x2,y2,f,'StartPoint', [17 0.33], 'Exclude',outliers);
+
+[fitRobust2, gofRobust2, fitInfoRobust2] = fit(x2,y2,f,'StartPoint',[17 0.33],'Robust','on');
+
+plot(fit2,'b-', x2, y2, 'k.', outliers, 'm*')
+hold on
+plot(fitNoOutliers2,'rREPLACE_WITH_DASH_DASH')
+plot(fitRobust2,'g-')
+legend( 'Data', 'Outliers', 'Original fit', 'Fit with outliers excluded', 'Robust fit' )
+hold off
+grid on
+title(data(dataCtr).dataset2ShortName)
+xlabel('Number of localizations')
+ylabel('R_g, nm')
+xlim([0 max([maxLoc1, maxLoc2])])
+ylim([0 300])
+pause(2) % Ensures that the fit has time to work before plotted.
+
+% Store fits in the external data array.
+data(dataCtr).fits.fit1 = fit1;
+data(dataCtr).fits.gof1 = gof1;
+data(dataCtr).fits.fitInfo1 = fitInfo1;
+
+data(dataCtr).fits.fitNoOutliers1 = fitNoOutliers1;
+data(dataCtr).fits.gofNoOutliers1 = gofNoOutliers1;
+data(dataCtr).fits.fitInfoNoOutliers1 = fitInfoNoOutliers1;
+
+data(dataCtr).fits.fitRobust1 = fitRobust1;
+data(dataCtr).fits.gofRobust1 = gofRobust1;
+data(dataCtr).fits.fitInfoRobust1 = fitInfoRobust1;
+
+data(dataCtr).fits.fit2 = fit2;
+data(dataCtr).fits.gof2 = gof2;
+data(dataCtr).fits.fitInfo2 = fitInfo2;
+
+data(dataCtr).fits.fitNoOutliers2 = fitNoOutliers2;
+data(dataCtr).fits.gofNoOutliers2 = gofNoOutliers2;
+data(dataCtr).fits.fitInfoNoOutliers2 = fitInfoNoOutliers2;
+
+data(dataCtr).fits.fitRobust2 = fitRobust2;
+data(dataCtr).fits.gofRobust2 = gofRobust2;
+data(dataCtr).fits.fitInfoRobust2 = fitInfoRobust2;
+
+%% Report statistics from distributions.
+disp(['Statistics for experiment ' data(dataCtr).shortName '.'])
+disp(['Number of clusters, L dataset: ' num2str(length(LAllData.numLoc), '%d')])
+disp([' '])
+disp(['Mean square root of the radius of gyration, L dataset: ' num2str(mean(LAllData.M2Mag), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(LAllData.M2Mag), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean cube root of volume, L dataset: ' num2str(mean(LAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(LAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean number of localizations, L dataset: ' num2str(mean(LAllData.numLoc), '%.2f')])
+disp(['Standard deviation: ' num2str(std(LAllData.numLoc), '%.2f')])
+disp('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-')
+disp(['Number of clusters, S dataset: ' num2str(length(SAllData.numLoc), '%d') ])
+disp([' '])
+disp(['Mean square root of the radius of gyration, S dataset: ' num2str(mean(SAllData.M2Mag), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(SAllData.M2Mag), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean cube root of volume, S dataset: ' num2str(mean(SAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(['Standard deviation: ' num2str(std(SAllData.volume.^(1/3)), '%.2f') ' nm'])
+disp(' ')
+disp(['Mean number of localizations, S dataset: ' num2str(mean(SAllData.numLoc), '%.2f')])
+disp(['Standard deviation: ' num2str(std(SAllData.numLoc), '%.2f')])
+disp(' ')
+
+end % Ends loop over datasets.
+##### SOURCE END #####
+--></body></html>
