@@ -1,6 +1,7 @@
 %% Compute number distributions from Southern blots
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/22 $ $REVISION: 0.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/22 $ $REVISION: 0.2 $
+
 function southern_blot()
 %% Read in line profiles of Southern blots
 hL = dlmread('helaL.txt');
@@ -23,6 +24,7 @@ SSresid = sum(yresid.^2);
 SStotal = (length(NTicks) - 1) * var(log10(NTicks));
 rsq = 1 - SSresid/SStotal;
 
+close all
 plot(scaleTicks, log10(NTicks), '-*', 'MarkerSize', 8)
 hold on
 plot(scaleTicks, yfit, '-k', 'LineWidth', 2)
@@ -65,7 +67,7 @@ xlabel('Genomic length, kb')
 ylabel('Inverse blot gray scale, a.u.')
 legend('Hela L blot', 'Hela L smoothing spline', 'Hela S blot', 'Hela S smoothing spline')
 
-% Normalize the distributions to make them probability distributions
+% Normalize the distributions to make them probability density functions
 deltaN = 1; % Spacing between adjacent points on the x-axis in kb
 xL = floor(min(NkbL)):1:ceil(max(NkbL));
 xS = floor(min(NkbS)):1:ceil(max(NkbS));
@@ -88,6 +90,43 @@ disp(['Mean of Hela S: ' num2str(meanS) ' kb'])
 end
 
 %% ==================== DO NOT EDIT BELOW THIS LINE =======================
+function [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN)
+% Creates a normalized probability density function using splines
+%
+% [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN) returns a spline
+% representing a probability density function (pdf) for raw, discrete data
+% in vector x with relative frequency y. deltaN represents the spacing
+% between adjacent data values in the new distribution and is typically
+% equal to 1.
+%
+% Inputs
+%   x : single-column array of doubles
+%       The data contained in the distribution 
+%   y : single-column array of doubles
+%       The (possibly unnormalized) frequencies or counts for the data in x
+%   smoothingFactor : double between 0 and 1
+%       Determines how accurately the interpolating spline matches the data
+%       in y.
+%   deltaN : double (typically 1)
+%       The spacing between adjacent data values in the new distribution.
+%
+% Outputs
+%   distr : ppform of a cubic smoothing spline (native Matlab object)
+
+[~, cols] = size(x);
+assert(cols == 1, 'Error: Input x must be a single-column array.')
+assert(length(x) == length(y), 'Error: x and y must be the same lengths.')
+
+% Approximate the distribution with a spline
+relativeDist = csaps(x, y, smoothingFactor);
+
+% Uniform samples of the approximating spline
+x2 = floor(min(x)):deltaN:ceil(max(x));
+
+% Normalized pdf of y sampled at x
+pdf = normDist(fnval(relativeDist, x2), deltaN);
+    
+end
 
 function outputDist = normDist(inputDist, deltaN)
 % Normalize a distribution to make it a probability distribution function
