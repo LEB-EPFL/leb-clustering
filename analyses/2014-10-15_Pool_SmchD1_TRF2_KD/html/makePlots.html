@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Pooled data for SmchD1/TRF2 double KD experiment</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-10-16"><meta name="DC.source" content="makePlots.m"><style type="text/css">
+      --><title>Pooled data for SMCHD1 and TRF2 independent KD experiments</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-10-17"><meta name="DC.source" content="makePlots.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,25 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Pooled data for SmchD1/TRF2 double KD experiment</h1><p>These data come from the 08-09-2014 and the 09-09-2014 datasets.</p><pre class="codeinput">data_visualization(data);
-
-disp([<span class="string">'Mean value of RgTrans / pSuper/pSuper: '</span> num2str(mean(data(1).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'Standard deviation of RgTrans / pSuper/pSuper: '</span> num2str(std(data(1).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'-----------------------------------------------------------------'</span>])
-disp([<span class="string">'Mean value of RgTrans / pSuper/pTRF2: '</span> num2str(mean(data(2).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'Standard deviation value of RgTrans / pSuper/TRF2: '</span> num2str(std(data(2).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'-----------------------------------------------------------------'</span>])
-disp([<span class="string">'Mean value of RgTrans / pLVP041/pSuper: '</span> num2str(mean(data(3).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'Standard deviation of RgTrans / pLVP041/pSuper: '</span> num2str(std(data(3).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'-----------------------------------------------------------------'</span>])
-disp([<span class="string">'Mean value of RgTrans / pLVP041/TRF2: '</span> num2str(mean(data(4).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'Standard deviation value of RgTrans / pLVP041/TRF2: '</span> num2str(std(data(4).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'-----------------------------------------------------------------'</span>])
-disp([<span class="string">'Mean value of RgTrans / pLVP042/pSuper: '</span> num2str(mean(data(5).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'Standard deviation value of RgTrans / pLVP042/pSuper: '</span> num2str(std(data(5).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'-----------------------------------------------------------------'</span>])
-disp([<span class="string">'Mean value of RgTrans / pLVP042/TRF2: '</span> num2str(mean(data(6).distributions.RgTrans)) <span class="string">' nm'</span>])
-disp([<span class="string">'Standard deviation value of RgTrans / pLVP042/TRF2: '</span> num2str(std(data(6).distributions.RgTrans)) <span class="string">' nm'</span>])
+  </style></head><body><div class="content"><h1>Pooled data for SMCHD1 and TRF2 independent KD experiments</h1><pre class="codeinput">data_visualization(data);
 </pre><pre class="codeoutput">Current plot held
 
 newpos =
@@ -117,45 +99,9 @@ newpos =
 
     0.2506    0.1871    1.3460    0.8240
 
-Mean value of RgTrans / pSuper/pSuper: 59.5956 nm
-Standard deviation of RgTrans / pSuper/pSuper: 18.5999 nm
------------------------------------------------------------------
-Mean value of RgTrans / pSuper/pTRF2: 55.2401 nm
-Standard deviation value of RgTrans / pSuper/TRF2: 16.4298 nm
------------------------------------------------------------------
-Mean value of RgTrans / pLVP041/pSuper: 54.6448 nm
-Standard deviation of RgTrans / pLVP041/pSuper: 18.0853 nm
------------------------------------------------------------------
-Mean value of RgTrans / pLVP041/TRF2: 56.7167 nm
-Standard deviation value of RgTrans / pLVP041/TRF2: 20.8032 nm
------------------------------------------------------------------
-Mean value of RgTrans / pLVP042/pSuper: 58.1934 nm
-Standard deviation value of RgTrans / pLVP042/pSuper: 19.8155 nm
------------------------------------------------------------------
-Mean value of RgTrans / pLVP042/TRF2: 57.6433 nm
-Standard deviation value of RgTrans / pLVP042/TRF2: 20.2176 nm
-</pre><img vspace="5" hspace="5" src="makePlots_01.png" alt=""> <img vspace="5" hspace="5" src="makePlots_02.png" alt=""> <img vspace="5" hspace="5" src="makePlots_03.png" alt=""> <img vspace="5" hspace="5" src="makePlots_04.png" alt=""> <img vspace="5" hspace="5" src="makePlots_05.png" alt=""> <img vspace="5" hspace="5" src="makePlots_06.png" alt=""> <img vspace="5" hspace="5" src="makePlots_07.png" alt=""> <img vspace="5" hspace="5" src="makePlots_08.png" alt=""> <img vspace="5" hspace="5" src="makePlots_09.png" alt=""> <img vspace="5" hspace="5" src="makePlots_10.png" alt=""> <img vspace="5" hspace="5" src="makePlots_11.png" alt=""> <img vspace="5" hspace="5" src="makePlots_12.png" alt=""> <img vspace="5" hspace="5" src="makePlots_13.png" alt=""> <img vspace="5" hspace="5" src="makePlots_14.png" alt=""> <img vspace="5" hspace="5" src="makePlots_15.png" alt=""> <img vspace="5" hspace="5" src="makePlots_16.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="makePlots_01.png" alt=""> <img vspace="5" hspace="5" src="makePlots_02.png" alt=""> <img vspace="5" hspace="5" src="makePlots_03.png" alt=""> <img vspace="5" hspace="5" src="makePlots_04.png" alt=""> <img vspace="5" hspace="5" src="makePlots_05.png" alt=""> <img vspace="5" hspace="5" src="makePlots_06.png" alt=""> <img vspace="5" hspace="5" src="makePlots_07.png" alt=""> <img vspace="5" hspace="5" src="makePlots_08.png" alt=""> <img vspace="5" hspace="5" src="makePlots_09.png" alt=""> <img vspace="5" hspace="5" src="makePlots_10.png" alt=""> <img vspace="5" hspace="5" src="makePlots_11.png" alt=""> <img vspace="5" hspace="5" src="makePlots_12.png" alt=""> <img vspace="5" hspace="5" src="makePlots_13.png" alt=""> <img vspace="5" hspace="5" src="makePlots_14.png" alt=""> <img vspace="5" hspace="5" src="makePlots_15.png" alt=""> <img vspace="5" hspace="5" src="makePlots_16.png" alt=""> <img vspace="5" hspace="5" src="makePlots_17.png" alt=""> <img vspace="5" hspace="5" src="makePlots_18.png" alt=""> <img vspace="5" hspace="5" src="makePlots_19.png" alt=""> <img vspace="5" hspace="5" src="makePlots_20.png" alt=""> <img vspace="5" hspace="5" src="makePlots_21.png" alt=""> <img vspace="5" hspace="5" src="makePlots_22.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% Pooled data for SmchD1/TRF2 double KD experiment
-% These data come from the 08-09-2014 and the 09-09-2014 datasets.
+%% Pooled data for SMCHD1 and TRF2 independent KD experiments
 data_visualization(data);
-
-disp(['Mean value of RgTrans / pSuper/pSuper: ' num2str(mean(data(1).distributions.RgTrans)) ' nm'])
-disp(['Standard deviation of RgTrans / pSuper/pSuper: ' num2str(std(data(1).distributions.RgTrans)) ' nm'])
-disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
-disp(['Mean value of RgTrans / pSuper/pTRF2: ' num2str(mean(data(2).distributions.RgTrans)) ' nm'])
-disp(['Standard deviation value of RgTrans / pSuper/TRF2: ' num2str(std(data(2).distributions.RgTrans)) ' nm'])
-disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
-disp(['Mean value of RgTrans / pLVP041/pSuper: ' num2str(mean(data(3).distributions.RgTrans)) ' nm'])
-disp(['Standard deviation of RgTrans / pLVP041/pSuper: ' num2str(std(data(3).distributions.RgTrans)) ' nm'])
-disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
-disp(['Mean value of RgTrans / pLVP041/TRF2: ' num2str(mean(data(4).distributions.RgTrans)) ' nm'])
-disp(['Standard deviation value of RgTrans / pLVP041/TRF2: ' num2str(std(data(4).distributions.RgTrans)) ' nm'])
-disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
-disp(['Mean value of RgTrans / pLVP042/pSuper: ' num2str(mean(data(5).distributions.RgTrans)) ' nm'])
-disp(['Standard deviation value of RgTrans / pLVP042/pSuper: ' num2str(std(data(5).distributions.RgTrans)) ' nm'])
-disp(['REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-'])
-disp(['Mean value of RgTrans / pLVP042/TRF2: ' num2str(mean(data(6).distributions.RgTrans)) ' nm'])
-disp(['Standard deviation value of RgTrans / pLVP042/TRF2: ' num2str(std(data(6).distributions.RgTrans)) ' nm'])
 ##### SOURCE END #####
 --></body></html>
