@@ -11,17 +11,65 @@ function data_visualization(data)
 
 numBins = 20;
 
+% Plot separate distributions for only Hela L or Hela S
+filterDataNames = {'Pooled pSuper';
+                   'Pooled TRF1';
+                   'Pooled TRF2';
+                   'Pooled TRF1 TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela L';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela L';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela S';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
 % Scatter plots with fits
+tempData = data;
+data = data(1:8);
+
 clear figParams
 figParams.xlim = [0 700];
 figParams.ylim = [0 300];
 for ctr = 1:length(data)
-    plotScatter(data(ctr), 'Rg', figParams)
+    plotScatter(data(ctr), 'RgTrans', figParams)
 end
 
 % Mean scaling exponents of all datasets
 clear figParams
-figParams.title = 'Scaling exponents for all other datasets.';
+figParams.title = 'Scaling exponents for R_g^{x,y} vs. N';
 figParams.ylim = [0 0.6];
 figParams.ylabel = 'Scaling exponent \nu ^*';
 figParams.legend = {'Hela L'; 'Hela S'};
@@ -32,7 +80,7 @@ plotScalingExpPaired(data, fieldName, figParams, fullScreen)
 
 % Mean RgTrans's for all datasets
 clear figParams
-figParams.title = 'Mean R_g^{x,y} for all other datasets';
+figParams.title = 'Mean R_g^{x,y}';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g^{x,y}, nm';
 figParams.legend = {'Hela L'; 'Hela S'};
@@ -44,7 +92,7 @@ plotMeansPaired(data, fieldName, figParams, errorBar, fullScreen);
 
 % Mean number of localizations for all datasets
 clear figParams
-figParams.title = 'Mean number of localizations for all other datasets';
+figParams.title = 'Mean number of localizations';
 figParams.ylim = [0 300];
 figParams.ylabel = 'Mean number of localizations';
 figParams.legend = {'Hela L'; 'Hela S'};
@@ -66,6 +114,106 @@ fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(data, fieldName, figParams, errorBar, fullScreen);
 
+data = tempData;
+
+%==========================================================================
+% Check individual data sets
+%==========================================================================
+tempData = data;
+data = data(9:16);
+
+clear figParams
+figParams.xlim = [0 700];
+figParams.ylim = [0 300];
+for ctr = 1:length(data)
+    plotScatter(data(ctr), 'RgTrans', figParams)
+end
+
+filterDataNames = {'08-09-2014 pSuper';
+                   '09-09-2014 pSuper'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Individual pSuper datasets / Hela L';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Individual pSuper datsets / Hela L';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Individual pSuper datasets / Hela S';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Individual pSuper datasets / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+filterDataNames = {'08-09-2014 TRF1 TRF2';
+                   '09-09-2014 TRF1 TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Individual pSuper datasets / Hela L';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Individual pSuper datsets / Hela L';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Individual pSuper datasets / Hela S';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Individual pSuper datasets / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+data = tempData;
 end
 
 %% ========================================================================
@@ -201,7 +349,7 @@ grid on
 % distributions for the magnitude of the square root of the radius of
 % gyration, the number of localizations, and the volume.)
 N = zeros(numBins, numDatasets);
-for ctr = 3:5
+for ctr = 4:6
     % Distance between bins
     dx = diff(bins.(fields{ctr}));
     dx = dx(1);
@@ -214,7 +362,7 @@ for ctr = 3:5
     Norm = sum(dx * N);
     
     % Write to subplots 2 and 3.
-    subplot(2,2, ctr - 1)
+    subplot(2,2, ctr - 2)
     bar(bins.(fields{ctr}), N * dx ./ repmat(Norm, size(N,1), 1), 'histc')
     grid on
 end
