@@ -11,20 +11,15 @@ function data_visualization(data)
 
 numBins = 20;
 
-plotData = data(1:4);
-for ctr = 1:2:length(plotData)
-    figParams.title = plotData(ctr).experimentShortName;
-    plotAllDist(plotData(ctr:ctr+1), figParams, numBins);
-    pause(2)
-end
-
 % Plot separate distributions for only Hela L or Hela S
 filterDataNames = {'Pooled pSuper';
-                   'Pooled TRF1 TRF2 KD'};
+                   'Pooled TRF1';
+                   'Pooled TRF2';
+                   'Pooled TRF1 TRF2'};
 filterData = findData(data, filterDataNames, 'L dataset');
 
 clear figParams
-figParams.title = 'Pooled Double KD of TRF1 and TRF2 / Hela L';
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela L';
 figParams.xlabel = 'R_g^{x,y}, nm';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -33,7 +28,7 @@ figParams.ylim = [0 0.03];
 plotDist(filterData, 'RgTrans', numBins, figParams)
 
 clear figParams
-figParams.title = 'Pooled Double KD of TRF1 and TRF2 / Hela L';
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela L';
 figParams.xlabel = 'Number of localizations';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -44,7 +39,7 @@ plotDist(filterData, 'numLoc', numBins, figParams)
 filterData = findData(data, filterDataNames, 'S dataset');
 
 clear figParams
-figParams.title = 'Pooled Double KD of TRF1 and TRF2 / Hela S';
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela S';
 figParams.xlabel = 'R_g^{x,y}, nm';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -53,7 +48,7 @@ figParams.ylim = [0 0.03];
 plotDist(filterData, 'RgTrans', numBins, figParams)
 
 clear figParams
-figParams.title = 'Pooled Double KD of TRF1 and TRF2 / Hela S';
+figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela S';
 figParams.xlabel = 'Number of localizations';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -63,7 +58,7 @@ plotDist(filterData, 'numLoc', numBins, figParams)
 
 % Scatter plots with fits
 tempData = data;
-data = data(1:4);
+data = data(1:8);
 
 clear figParams
 figParams.xlim = [0 700];
@@ -125,7 +120,7 @@ data = tempData;
 % Check individual data sets
 %==========================================================================
 tempData = data;
-data = data(5:12);
+data = data(9:16);
 
 clear figParams
 figParams.xlim = [0 700];

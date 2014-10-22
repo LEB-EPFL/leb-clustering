@@ -78,6 +78,84 @@ figParams.xlim = [0 700];
 figParams.ylim = [0 0.015];
 plotDist(filterData, 'numLoc', numBins, figParams)
 
+%===============================
+% Plot all vs. pSuper/pSuper control
+filterDataNames = {'Pooled pSuper/pSuper';
+                   'Pooled pLVP041/pSuper';
+                   'Pooled pLVP042/pSuper'};
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled Double KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled Double KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+filterDataNames = {'Pooled pSuper/pSuper';
+                   'Pooled pSuper/TRF2';
+                   'Pooled pLVP041/TRF2';
+                   'Pooled pLVP042/TRF2'};
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled Double KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled Double KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
+
+%===============================
+% Combine all data into one plot
+filterDataNames = {'Pooled pSuper/pSuper';
+                   'Pooled pSuper/TRF2';
+                   'Pooled pLVP041/pSuper';
+                   'Pooled pLVP041/TRF2';
+                   'Pooled pLVP042/pSuper'
+                   'Pooled pLVP042/TRF2'};
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled Double KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'R_g^{x,y}, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled Double KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'Number of localizations';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 700];
+figParams.ylim = [0 0.015];
+plotDist(filterData, 'numLoc', numBins, figParams)
+
 %========================
 % Scatter plots with fits
 
