@@ -8,9 +8,9 @@ hL = dlmread('helaL.txt');
 hS = dlmread('helaS.txt');
 scale = dlmread('scale.txt');
 
-%% Convert scales
+%% Convert from image distance scale to genomic scale
 % Find locations of tick marks in the scale profile
-filterLevel = 90;
+filterLevel = 90; % Set by visual inspection of line profiles
 scaleTicks = scale(scale(:,2) < filterLevel, 1);
 
 % Number of kilobase pairs correspoinding to the ticks
@@ -38,7 +38,7 @@ legend('Southern blot ladder', ['Best fit line (r^2 = ' num2str(rsq) ')'], 'Loca
 x = scale(:,1);
 Nkb = 10.^(polyval(p, scale(:,1)));
 
-%% Create probability distribution from Southern blot data
+%% Create probability distributions from Southern blot data
 % Define boundaries of blots (determined visually)
 boundaryL = [1.5, 3.78];
 boundaryS = [1.03, 2.37];
@@ -67,9 +67,9 @@ ylabel('Plot profile, inverse gray scale')
 legend('Hela L blot', 'Hela S blot')
 
 figure
-plot(XL, pdfL, 'b')
+plot(XL, pdfL, 'b', 'LineWidth', 2)
 hold on
-plot(XS, pdfS, 'r')
+plot(XS, pdfS, 'r', 'LineWidth', 2)
 grid on
 xlabel('Genomic length, kb')
 ylabel('Probability density')
@@ -79,6 +79,19 @@ meanL = findMean(XL, pdfL, deltaN);
 meanS = findMean(XS, pdfS, deltaN);
 disp(['Mean of Hela L: ' num2str(meanL) ' kb'])
 disp(['Mean of Hela S: ' num2str(meanS) ' kb'])
+
+%% Find the cumulative distribution functions for Hela L and Hela S
+cdfL = findCDF(XL, pdfL);
+cdfS = findCDF(XS, pdfS);
+
+figure
+plot(XL, cdfL, 'b', 'LineWidth', 2)
+hold on
+plot(XS, cdfS, 'r', 'LineWidth', 2)
+grid on
+xlabel('Genomic length, kb')
+ylabel('Cumulative distribution function')
+legend('Hela L', 'Hela S', 'Location', 'SouthEast')
 
 end
 
@@ -120,11 +133,11 @@ relativeDist = csaps(x, y, smoothingFactor);
 X = floor(min(x)):deltaN:ceil(max(x));
 
 % Normalized pdf of y sampled at uniformly spaced values x2
-pdf = normDist(fnval(relativeDist, X), deltaN);
+pdf = normalizeDist(fnval(relativeDist, X), deltaN);
     
 end
 
-function outputDist = normDist(inputDist, deltaN)
+function [outputDist] = normalizeDist(inputDist, deltaN)
 % Normalize a distribution to make it a probability distribution function
 %
 % Inputs
@@ -135,7 +148,31 @@ normFactor = sum(inputDist * deltaN);
 outputDist = inputDist/normFactor;
 end
 
-function meanVal = findMean(x, pdf, deltaN)
+function [cdf] = findCDF(x, pdf)
+% Finds the cumulative distribution function from a pdf object.
+%
+% Inputs
+%   x : single-column array of doubles
+%       Locations where the pdf is sampled.
+%   pdf : single-column array of doubles
+%       Normalized probability distribution for data in x
+% Outputs
+%   cdf : single-column array of doubles
+%       Cumulative distribution function at values of x.
+
+assert(length(x) == length(pdf), 'Error: x and pdf must have the same lengths')
+
+cdf = zeros(length(pdf),1);
+for ctr = 1:length(x)
+    if ctr == 1
+        cdf(ctr) = pdf(ctr);
+    else
+        cdf(ctr) = pdf(ctr) + cdf(ctr - 1);
+    end
+end
+end
+
+function [meanVal] = findMean(x, pdf, deltaN)
 % Finds the mean of a probability distribution
 %
 % Inputs
