@@ -52,45 +52,38 @@ NkbS = 10.^(polyval(p, scale(scale(:,1) >= boundaryS(1) & scale(:,1) <= boundary
 % Perform a cubic spline smoothing and interpolation to the data
 smoothingFactorL = 0.5;
 smoothingFactorS = 0.75;
-ppL = csaps(NkbL, distL(:,2), smoothingFactorL);
-ppS = csaps(NkbS, distS(:,2), smoothingFactorS);
+deltaN = 1;
+[XL, pdfL] = createDiscretePDF(NkbL, distL(:,2), smoothingFactorL, deltaN);
+[XS, pdfS] = createDiscretePDF(NkbS, distS(:,2), smoothingFactorS, deltaN);
 
-% Plot profiles vs. genomic distance
+% Plot line profiles vs. genomic distance
 close all
-fnplt(ppL)
-hold on
 plot(NkbL,distL(:,2),'-+')
-fnplt(ppS,'r')
+hold on
 plot(NkbS,distS(:,2),'r-+')
 grid on
 xlabel('Genomic length, kb')
-ylabel('Inverse blot gray scale, a.u.')
-legend('Hela L blot', 'Hela L smoothing spline', 'Hela S blot', 'Hela S smoothing spline')
+ylabel('Plot profile, inverse gray scale')
+legend('Hela L blot', 'Hela S blot')
 
-% Normalize the distributions to make them probability density functions
-deltaN = 1; % Spacing between adjacent points on the x-axis in kb
-xL = floor(min(NkbL)):1:ceil(max(NkbL));
-xS = floor(min(NkbS)):1:ceil(max(NkbS));
-normDistL = normDist(fnval(ppL, xL), deltaN);
-normDistS = normDist(fnval(ppS, xS), deltaN);
 figure
-plot(xL, normDistL, 'gs', 'LineWidth', 2)
+plot(XL, pdfL, 'b')
 hold on
-plot(xS, normDistS, 'mo', 'LineWidth', 2)
+plot(XS, pdfS, 'r')
 grid on
 xlabel('Genomic length, kb')
 ylabel('Probability density')
 legend('Hela L', 'Hela S')
 
-meanL = findMean(xL, normDistL, deltaN);
-meanS = findMean(xS, normDistS, deltaN);
+meanL = findMean(XL, pdfL, deltaN);
+meanS = findMean(XS, pdfS, deltaN);
 disp(['Mean of Hela L: ' num2str(meanL) ' kb'])
 disp(['Mean of Hela S: ' num2str(meanS) ' kb'])
 
 end
 
 %% ==================== DO NOT EDIT BELOW THIS LINE =======================
-function [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN)
+function [X, pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN)
 % Creates a normalized probability density function using splines
 %
 % [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN) returns a spline
@@ -111,7 +104,10 @@ function [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN)
 %       The spacing between adjacent data values in the new distribution.
 %
 % Outputs
-%   distr : ppform of a cubic smoothing spline (native Matlab object)
+%   X : single-column array of doubles
+%       Uniformly spaced x-axis values for the normalized pdf
+%   pdf : single-column array of doubles
+%       Probability distribution sampled at values of X
 
 [~, cols] = size(x);
 assert(cols == 1, 'Error: Input x must be a single-column array.')
@@ -121,10 +117,10 @@ assert(length(x) == length(y), 'Error: x and y must be the same lengths.')
 relativeDist = csaps(x, y, smoothingFactor);
 
 % Uniform samples of the approximating spline
-x2 = floor(min(x)):deltaN:ceil(max(x));
+X = floor(min(x)):deltaN:ceil(max(x));
 
-% Normalized pdf of y sampled at x
-pdf = normDist(fnval(relativeDist, x2), deltaN);
+% Normalized pdf of y sampled at uniformly spaced values x2
+pdf = normDist(fnval(relativeDist, X), deltaN);
     
 end
 
