@@ -2,7 +2,7 @@
 %
 % $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/22 $ $REVISION: 0.2 $
 
-function southern_blot()
+function southern_blot(data)
 %% Read in line profiles of Southern blots
 hL = dlmread('helaL.txt');
 hS = dlmread('helaS.txt');
@@ -81,8 +81,8 @@ disp(['Mean of Hela L: ' num2str(meanL) ' kb'])
 disp(['Mean of Hela S: ' num2str(meanS) ' kb'])
 
 %% Find the cumulative distribution functions for Hela L and Hela S
-cdfL = findCDF(XL, pdfL);
-cdfS = findCDF(XS, pdfS);
+cdfL = findCDF(XL, pdfL, deltaN);
+cdfS = findCDF(XS, pdfS, deltaN);
 
 figure
 plot(XL, cdfL, 'b', 'LineWidth', 2)
@@ -93,17 +93,62 @@ xlabel('Genomic length, kb')
 ylabel('Cumulative distribution function')
 legend('Hela L', 'Hela S', 'Location', 'SouthEast')
 
+%% Load number of localization data into memory
+[nL,xL] = hist(data(1).distributions.numLoc, 1:max(data(1).distributions.numLoc));
+[nS,xS] = hist(data(2).distributions.numLoc, 1:max(data(2).distributions.numLoc));
+nL = nL'; xL = xL';
+nS = nS'; xS = xS';
+
+% Experimental number of localization distributions
+smoothingFactorExp = 0.01;
+deltaN = 10;
+[expXL, exp_pdfL] = createDiscretePDF(xL, nL, smoothingFactorExp, deltaN);
+[expXS, exp_pdfS] = createDiscretePDF(xS, nS, smoothingFactorExp, deltaN);
+
+figure
+plot(expXL, exp_pdfL, 'LineWidth', 2)
+hold on
+plot(expXS, exp_pdfS, 'r', 'LineWidth', 2)
+grid on
+xlabel('Number of localizations')
+ylabel('Probability density')
+legend('Hela L', 'Hela S')
+
+%% Find cumulative distribution functions for number of localizations
+exp_cdfL = findCDF(expXL, exp_pdfL, deltaN);
+exp_cdfS = findCDF(expXS, exp_pdfS, deltaN);
+
+figure
+plot(expXL, exp_cdfL, 'b', 'LineWidth', 2)
+hold on
+plot(expXS, exp_cdfS, 'r', 'LineWidth', 2)
+grid on
+xlabel('Number of localizations')
+ylabel('Cumulative distribution function')
+legend('Hela L', 'Hela S', 'Location', 'SouthEast')
+
+%% Compute the number in kb corresponding to the number of localizations
+NL = findMapping(expXL, exp_cdfL, XL, cdfL);
+NS = findMapping(expXS, exp_cdfS, XS, cdfS);
+figure;
+plot(expXL, NL, 'LineWidth', 2)
+hold on
+plot(expXS, NS, 'r', 'LineWidth', 2)
+grid on
+xlabel('Number of localizations')
+ylabel('Genomic length, kb')
+legend('Hela L', 'Hela S', 'Location', 'NorthWest')
 end
 
 %% ==================== DO NOT EDIT BELOW THIS LINE =======================
 function [X, pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN)
 % Creates a normalized probability density function using splines
 %
-% [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN) returns a spline
-% representing a probability density function (pdf) for raw, discrete data
-% in vector x with relative frequency y. deltaN represents the spacing
-% between adjacent data values in the new distribution and is typically
-% equal to 1.
+% [pdf] = createDiscretePDF(x, y, smoothingFactor, deltaN) returns two
+% single-column arrays representing a probability density function (pdf)
+% and its associated data for raw, discrete data in vector x with relative
+% frequency y. deltaN represents the spacing between adjacent data values
+% in the new distribution and is typically equal to 1.
 %
 % Inputs
 %   x : single-column array of doubles
@@ -133,7 +178,8 @@ relativeDist = csaps(x, y, smoothingFactor);
 X = floor(min(x)):deltaN:ceil(max(x));
 
 % Normalized pdf of y sampled at uniformly spaced values x2
-pdf = normalizeDist(fnval(relativeDist, X), deltaN);
+% (The absolute value inverts negative values from spline fitting)
+pdf = normalizeDist(abs(fnval(relativeDist, X)), deltaN);
     
 end
 
@@ -141,14 +187,14 @@ function [outputDist] = normalizeDist(inputDist, deltaN)
 % Normalize a distribution to make it a probability distribution function
 %
 % Inputs
-%   inputDist : distributioin to normalize
+%   inputDist : distribution to normalize
 %   deltaN : spacing between elements of the distribution
 
 normFactor = sum(inputDist * deltaN);
 outputDist = inputDist/normFactor;
 end
 
-function [cdf] = findCDF(x, pdf)
+function [cdf] = findCDF(x, pdf, deltaN)
 % Finds the cumulative distribution function from a pdf object.
 %
 % Inputs
@@ -156,6 +202,8 @@ function [cdf] = findCDF(x, pdf)
 %       Locations where the pdf is sampled.
 %   pdf : single-column array of doubles
 %       Normalized probability distribution for data in x
+%   deltaN : double
+%       Spacing between adjacent x-values
 % Outputs
 %   cdf : single-column array of doubles
 %       Cumulative distribution function at values of x.
@@ -165,11 +213,38 @@ assert(length(x) == length(pdf), 'Error: x and pdf must have the same lengths')
 cdf = zeros(length(pdf),1);
 for ctr = 1:length(x)
     if ctr == 1
-        cdf(ctr) = pdf(ctr);
+        cdf(ctr) = pdf(ctr) * deltaN;
     else
-        cdf(ctr) = pdf(ctr) + cdf(ctr - 1);
+        cdf(ctr) = pdf(ctr) * deltaN + cdf(ctr - 1);
     end
 end
+end
+
+function [N] = findMapping(x1, cdf1, x2, cdf2)
+% Determines the mapping between x1 and x2 based on a cdf transformation
+%
+% Inputs
+%   x1 : single-column array of doubles
+%       Data from the first distribution
+%   cdf1 : single-column array of doubles
+%       The cdf for the first distribution
+%   x2: single-column array of doubles
+%       Data from the second distribution
+%   cdf2: single-column array of doubles
+%       The cdf for the second distribution
+
+% Fit a spline to the second cdf
+ppCDF2 = csaps(x2, cdf2);
+
+N = zeros(length(x1),1);
+for ctr = 1:length(x1)
+   % Define a function of a continuous variable related to x2 and find its
+   % root. This root will correspond to the value resulting from the
+   % desired mapping of x1 onto a continuous scale with samples at x2.
+   diffFun = @(Y) cdf1(ctr) - fnval(Y, ppCDF2);
+   N(ctr) = fzero(diffFun, median(x2));
+end
+
 end
 
 function [meanVal] = findMean(x, pdf, deltaN)
