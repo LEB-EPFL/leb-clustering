@@ -3,13 +3,15 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/13 $ $REVISION: 1.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/24 $ $REVISION: 1.2 $
 %
+function [data] = main()
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
 
 if useParallel
-    matlabpool open
+    % Start a Matlab pool if one hasn't started.
+    gcp;
 end
 
 %% Define clustering and filtering parameters.
@@ -96,82 +98,12 @@ end
 % Write distributions out to the large data structure for the experiment.
 data(dataCtr).distributions = allData;
 
-%% Perform a nonlinear least squares regression on Rg vs. number of localizations
-% For a good discussion on fitting in Matlab, particularly robust fitting,
-% see:
-% <http://www.mathworks.ch/ch/help/curvefit/least-squares-fitting.html>
+%% Perform nonlinear least squares fits on Rg. vs. number of localizations
+% Perform all three fit types, or just robust?
+fitAll = true;
+fittedData = fit_scaling_law(allData, fitAll);
 
-% For analytical expressions of the coefficients from nonlinear least
-% squares fitting to a power law, see:
-% <http://mathworld.wolfram.com/LeastSquaresFittingPowerLaw.html>
-
-f = fittype('a*x.^b');
-x1 = allData.numLoc;
-y1 = allData.Rg;
-
-% Nonlinear least squares fit to all data points.
-[fitNormal,gofNormal,fitInfoNormal] = fit(x1,y1,f,'StartPoint',[17 0.33]);
-
-% Nonlinear least squares fit to data points without outliers.
-% Outliers lie more than 1.5 standard deviations from the first fit curve.
-residuals = fitInfoNormal.residuals;
-I = abs(residuals) > 1.5 * std(residuals);
-outliers = excludedata(x1,y1,'indices',I);
-[fitNoOutliers, gofNoOutliers, fitInfoNoOutliers] = fit(x1,y1,f,'StartPoint', [17 0.33], 'Exclude',outliers);
-
-% Robust fit to all data points (points are weighted by distance from
-% curve.)
-[fitRobust, gofRobust, fitInfoRobust] = fit(x1,y1,f,'StartPoint',[17 0.33],'Robust','on');
-
-% Store fits in the external data array.
-data(dataCtr).fits.fitNormal = fitNormal;
-data(dataCtr).fits.gofNormal = gofNormal;
-data(dataCtr).fits.fitInfoNormal = fitInfoNormal;
-
-data(dataCtr).fits.fitNoOutliers = fitNoOutliers;
-data(dataCtr).fits.gofNoOutliers = gofNoOutliers;
-data(dataCtr).fits.fitInfoNoOutliers = fitInfoNoOutliers;
-
-data(dataCtr).fits.fitRobust = fitRobust;
-data(dataCtr).fits.gofRobust = gofRobust;
-data(dataCtr).fits.fitInfoRobust = fitInfoRobust;
-
-%% Perform fits to the transverse second moments
-
-clear x1 y1 residuals I outliers
-x1 = allData.numLoc;
-yTrans = allData.RgTrans;
-%yAx = sqrt(allData.M2(:,3));  For later updates.
-
-% Nonlinear least squares fit to all data points.
-[fitRgTransNormal,gofRgTransNormal,fitRgTransInfoNormal] = fit(x1,yTrans,f,'StartPoint',[17 0.33]);
-
-% Nonlinear least squares fit to data points without outliers.
-% Outliers lie more than 1.5 standard deviations from the first fit curve.
-residuals = fitRgTransInfoNormal.residuals;
-I = abs(residuals) > 1.5 * std(residuals);
-outliers = excludedata(x1,yTrans,'indices',I);
-[fitRgTransNoOutliers, gofRgTransNoOutliers, fitRgTransInfoNoOutliers] = fit(x1,yTrans,f,'StartPoint', [17 0.33], 'Exclude',outliers);
-
-% Robust fit to all data points (points are weighted by distance from
-% curve.)
-[fitRgTransRobust, gofRgTransRobust, fitRgTransInfoRobust] = fit(x1,yTrans,f,'StartPoint',[17 0.33],'Robust','on');
-
-% Store fits in the external data array.
-data(dataCtr).fits.fitRgTransNormal = fitRgTransNormal;
-data(dataCtr).fits.gofRgTransNormal = gofRgTransNormal;
-data(dataCtr).fits.fitRgTransInfoNormal = fitRgTransInfoNormal;
-
-data(dataCtr).fits.fitRgTransNoOutliers = fitRgTransNoOutliers;
-data(dataCtr).fits.gofRgTransNoOutliers = gofRgTransNoOutliers;
-data(dataCtr).fits.fitRgTransInfoNoOutliers = fitRgTransInfoNoOutliers;
-
-data(dataCtr).fits.fitRgTransRobust = fitRgTransRobust;
-data(dataCtr).fits.gofRgTransRobust = gofRgTransRobust;
-data(dataCtr).fits.fitRgTransInfoRobust = fitRgTransInfoRobust;
-
+% Assign fit information to data structure.
+data(dataCtr).fits = fittedData.fits;
 
 end % Ends loop over datasets.
-
-%% Saves the workspace automatically.
-
