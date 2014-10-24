@@ -1,10 +1,10 @@
 function [dataOut] = fit_scaling_law(dataIn, fitAll)
 % Perform curve fitting to the preliminary clustering data structure.
 %
-% [dataOut] = fit_scaling_law(dataIn) takes the preliminary clustering
-% data, i.e. Rg, number of localizations, etc. for every telomere and
-% performs a powerlaw fit to the data. The output is a data structure
-% containing all the fit information.
+% [dataOut] = fit_scaling_law(dataIn, fitAll) takes the preliminary
+% clustering data, i.e. Rg, number of localizations, etc. for every
+% telomere and performs a powerlaw fit to the data. The output is a data
+% structure containing all the fit information.
 %
 % Inputs
 %   dataIn : User-defined structure

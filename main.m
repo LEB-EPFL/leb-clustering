@@ -95,8 +95,12 @@ for ctr = 1:length(files)
     allData.volume = cat(1, allData.volume, procData(ctr).volume);
 end
 
+%% Perform initial filtering on the data?
+dataModel = fittype('a*x.^b');
+threshold = 1.5;
+
 % Write distributions out to the large data structure for the experiment.
-data(dataCtr).distributions = allData;
+data(dataCtr).distributions = filter_noisy_clusters(allData, dataModel, threshold);
 
 %% Perform nonlinear least squares fits on Rg. vs. number of localizations
 % Perform all three fit types, or just robust?
