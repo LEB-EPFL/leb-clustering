@@ -8,9 +8,9 @@
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
 
-% if useParallel
-%     matlabpool open
-% end
+if useParallel
+    matlabpool open
+end
 
 %% Define clustering and filtering parameters.
 % k - number of objects in a neighborhood of an object 
@@ -22,13 +22,13 @@ useParallel = true;
 k = 8;
 Eps = 65;
 
-minLoc = 0;
+minLoc = 50;
 maxLoc = 1000;
 %% Setup the data structure and designate files for analysis.
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
 
-data = pool_data_TRF1_TRF2();
+data = very_first_data_struct();
 
 %% Verify that all directories are correct.
 for dirCtr = 1:length(data)

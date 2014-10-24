@@ -10,11 +10,15 @@ scale = dlmread('scale.txt');
 
 %% Convert from image distance scale to genomic scale
 % Find locations of tick marks in the scale profile
-filterLevel = 90; % Set by visual inspection of line profiles
-scaleTicks = scale(scale(:,2) < filterLevel, 1);
+filterLevel = 126; % Set by visual inspection of line profiles
+scaleTicks = scale(scale(:,2) <= filterLevel, 1);
 
 % Number of kilobase pairs correspoinding to the ticks
-NTicks = [8, 10, 17, 29.9, 38.5, 48.5]';
+NTicks = [2, 2.5, 3, 4, 5, 6, 8, 10, 15, 17, 24, 29, 33, 38, 48.5]';
+
+% Adjust for out of range marks
+scaleTicks = scaleTicks(7:end);
+NTicks = NTicks(7:end);
 
 % Check for logarithmic scale and fit a line
 p = polyfit(scaleTicks, log10(NTicks),1);
@@ -40,8 +44,8 @@ Nkb = 10.^(polyval(p, scale(:,1)));
 
 %% Create probability distributions from Southern blot data
 % Define boundaries of blots (determined visually)
-boundaryL = [1.5, 3.78];
-boundaryS = [1.03, 2.37];
+boundaryL = [120, 138];
+boundaryS = [100, 120];
 
 % Filter out distributions from the full line profile
 distL = hL(hL(:,1) >= boundaryL(1) & hL(:,1) <= boundaryL(2), :); distL(:,2) = 256 - distL(:,2);
@@ -94,16 +98,31 @@ ylabel('Cumulative distribution function')
 legend('Hela L', 'Hela S', 'Location', 'SouthEast')
 
 %% Load number of localization data into memory
-[nL,xL] = hist(data(1).distributions.numLoc, 1:max(data(1).distributions.numLoc));
-[nS,xS] = hist(data(2).distributions.numLoc, 1:max(data(2).distributions.numLoc));
+
+% FILTERING: DO THIS MORE RIGOROUSLY
+filterDistL = data(1);
+filterDistS = data(2);
+
+filterL = filterDistL.distributions.numLoc < 500;
+filterS = filterDistS.distributions.numLoc < 300;
+
+filterDistL.distributions.RgTrans = filterDistL.distributions.RgTrans(filterL);
+filterDistL.distributions.numLoc = filterDistL.distributions.numLoc(filterL);
+
+filterDistS.distributions.RgTrans = filterDistS.distributions.RgTrans(filterS);
+filterDistS.distributions.numLoc = filterDistS.distributions.numLoc(filterS);
+
+[nL,xL] = hist(filterDistL.distributions.numLoc, 1:max(filterDistL.distributions.numLoc));
+[nS,xS] = hist(filterDistS.distributions.numLoc, 1:max(filterDistS.distributions.numLoc));
 nL = nL'; xL = xL';
 nS = nS'; xS = xS';
 
 % Experimental number of localization distributions
 smoothingFactorExp = 0.01;
-deltaN = 10;
-[expXL, exp_pdfL] = createDiscretePDF(xL, nL, smoothingFactorExp, deltaN);
-[expXS, exp_pdfS] = createDiscretePDF(xS, nS, smoothingFactorExp, deltaN);
+deltaNL = 50;
+deltaNS = 25;
+[expXL, exp_pdfL] = createDiscretePDF(xL, nL, smoothingFactorExp, deltaNL);
+[expXS, exp_pdfS] = createDiscretePDF(xS, nS, smoothingFactorExp, deltaNS);
 
 figure
 plot(expXL, exp_pdfL, 'LineWidth', 2)
@@ -115,8 +134,8 @@ ylabel('Probability density')
 legend('Hela L', 'Hela S')
 
 %% Find cumulative distribution functions for number of localizations
-exp_cdfL = findCDF(expXL, exp_pdfL, deltaN);
-exp_cdfS = findCDF(expXS, exp_pdfS, deltaN);
+exp_cdfL = findCDF(expXL, exp_pdfL, deltaNL);
+exp_cdfS = findCDF(expXS, exp_pdfS, deltaNS);
 
 figure
 plot(expXL, exp_cdfL, 'b', 'LineWidth', 2)
@@ -128,16 +147,47 @@ ylabel('Cumulative distribution function')
 legend('Hela L', 'Hela S', 'Location', 'SouthEast')
 
 %% Compute the number in kb corresponding to the number of localizations
-NL = findMapping(expXL, exp_cdfL, XL, cdfL);
-NS = findMapping(expXS, exp_cdfS, XS, cdfS);
+NLMap = findMapping(expXL, exp_cdfL, XL, cdfL);
+NSMap = findMapping(expXS, exp_cdfS, XS, cdfS);
 figure;
-plot(expXL, NL, 'LineWidth', 2)
+plot(expXL, NLMap, 'LineWidth', 2)
 hold on
-plot(expXS, NS, 'r', 'LineWidth', 2)
+plot(expXS, NSMap, 'r', 'LineWidth', 2)
 grid on
 xlabel('Number of localizations')
 ylabel('Genomic length, kb')
 legend('Hela L', 'Hela S', 'Location', 'NorthWest')
+
+%% Convert to genomic length scale using interpolating splines
+NL = spline(expXL, NLMap, data(1).distributions.numLoc);
+NS = spline(expXS, NSMap, data(2).distributions.numLoc);
+%% Plot scatter plots of Hela L and Hela S vs. genomic distance
+%close all
+figure
+scatter(NL, data(1).distributions.RgTrans, '.b')
+grid on
+xlabel('Genomic length, kb')
+ylabel('R_g^{x,y}')
+figure
+scatter(NS, data(2).distributions.RgTrans, '.r')
+xlabel('Genomic length, kb')
+ylabel('R_g^{x,y}')
+
+%% Rescale the fit curves onto the genomic distance plot
+aL = data(1).fits.fitRgTransRobust.a;
+bL = data(1).fits.fitRgTransRobust.b;
+aS = data(2).fits.fitRgTransRobust.a;
+bS = data(2).fits.fitRgTransRobust.b;
+
+yL = aL * expXL.^bL;
+yS = aS * expXS.^bS;
+figure
+loglog(NLMap,yL, 'LineWidth', 2)
+hold on
+loglog(NSMap,yS, 'r', 'LineWidth', 2)
+grid on
+xlabel('Genomic distance, kb')
+ylabel('R_g^{x,y}, nm')
 end
 
 %% ==================== DO NOT EDIT BELOW THIS LINE =======================
@@ -181,6 +231,12 @@ X = floor(min(x)):deltaN:ceil(max(x));
 % (The absolute value inverts negative values from spline fitting)
 pdf = normalizeDist(abs(fnval(relativeDist, X)), deltaN);
     
+end
+
+function [outputDist] = sizeNumberFilter(data)
+% Filters size and number of localizations distributions
+Rg = data.distributions.RgTrans;
+numLoc = data.distributions.numLoc;
 end
 
 function [outputDist] = normalizeDist(inputDist, deltaN)
