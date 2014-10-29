@@ -4,19 +4,22 @@
 
 function southern_blot(data)
 %% Read in line profiles of Southern blots
-hL = dlmread('helaL.txt');
-hS = dlmread('helaS.txt');
-scale = dlmread('scale.txt');
+hL = dlmread('helaL2.txt');
+hS = dlmread('helaS2.txt');
+scale = dlmread('scale2.txt');
 
 %% Convert from image distance scale to genomic scale
 % Find locations of tick marks in the scale profile
-filterLevel = 126; % Set by visual inspection of line profiles
+% Set by visual inspection of line profiles
+%filterLevel = 90; % For scale 1
+filterLevel = 126; % For scale 2
 scaleTicks = scale(scale(:,2) <= filterLevel, 1);
 
 % Number of kilobase pairs correspoinding to the ticks
-NTicks = [2, 2.5, 3, 4, 5, 6, 8, 10, 15, 17, 24, 29, 33, 38, 48.5]';
+%NTicks = [8, 10, 17, 29.9, 38.5, 48.5]'; % For scale 1
+NTicks = [2, 2.5, 3, 4, 5, 6, 8, 10, 15, 17, 24, 29, 33, 38, 48.5]'; % For scale 2
 
-% Adjust for out of range marks
+% Adjust for out of range marks (only for scale 2!)
 scaleTicks = scaleTicks(7:end);
 NTicks = NTicks(7:end);
 
@@ -36,7 +39,7 @@ grid on
 xlabel('Location of tick marks, inches')
 ylabel('log_{10} N_{kb}')
 legend('Southern blot ladder', ['Best fit line (r^2 = ' num2str(rsq) ')'], 'Location', 'SouthEast')
-%savefig('check_logarithmic_scale')
+savefig('check_logarithmic_scale')
 
 % Scale for the number of kilobase pairs
 x = scale(:,1);
@@ -44,8 +47,11 @@ Nkb = 10.^(polyval(p, scale(:,1)));
 
 %% Create probability distributions from Southern blot data
 % Define boundaries of blots (determined visually)
-boundaryL = [120, 138];
-boundaryS = [100, 120];
+% This is the most important, but unfortunately most subjective part
+% boundaryL = [1.03, 2.65]; % Scale 1
+% boundaryS = [0.38, 1.45 ]; % Scale 1
+boundaryL = [112, 138]; % Scale 2
+boundaryS = [100, 120]; % Scale 2
 
 % Filter out distributions from the full line profile
 distL = hL(hL(:,1) >= boundaryL(1) & hL(:,1) <= boundaryL(2), :); distL(:,2) = 256 - distL(:,2);

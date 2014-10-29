@@ -1,6 +1,6 @@
 % Process the data from the telomere experiments.
 %
-% Arguments:
+% Inputs:
 %   dataF  - N X 3 array of unclustered point coordinates.
 %   k      - Number of objects in a neighborhood of an cluster
 %   Eps    - Neighborhood radius, if not known put []
@@ -8,7 +8,7 @@
 %   maxLoc - Maximum number of points in a cluster
 %            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/15 $ $REVISION: 1.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/27 $ $REVISION: 1.3 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)

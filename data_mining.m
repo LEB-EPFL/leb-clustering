@@ -6,9 +6,10 @@
 %workDir = 'Z:\LEB\Users\Kyle-Michael-Douglass\Projects\Telomeres\';
 %workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 %workDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2/';
-workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/08_09_2014_HelaS_L_Trf1_Trf2_KD_DAPI_FISH_mol_lists/08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD/';
+%workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/08_09_2014_HelaS_L_Trf1_Trf2_KD_DAPI_FISH_mol_lists/08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD/';
+workDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
 
-%fName = '11_06_2014_FISH_HelaL_8_list.txt';
+fName = '11_06_2014_FISH_HelaL_8_list.txt';
 %fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
@@ -17,7 +18,7 @@ workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/08_
 %fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pLVP Trf2_1_list.txt';
 %fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pSuper_1.txt';
 %fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pLVP Trf2_5_list.txt';
-fName = '08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD_1_list.txt';
+%fName = '08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD_1_list.txt';
 
 %imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pSuper/';
 %fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pSuper_1.jp2'];
@@ -72,9 +73,9 @@ clustersF = clusters(cellfun(@length, clusters) > minLoc);
 numClustersF = length(clustersF);
 
 %% Plot 3D scatter plot of all data points.
-% scatter3(dataF(:,1),dataF(:,2),dataF(:,3), '.k')
-% axis equal
-% grid on
+scatter3(dataF(:,1),dataF(:,2),dataF(:,3), '.k')
+axis equal
+grid on
 
 %% Plot filtered clusters in 3D.
 % See, for example, <http://stackoverflow.com/questions/5492806/plotting-a-surface-from-a-set-of-interior-3d-scatter-points-in-matlab>

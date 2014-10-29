@@ -42,5 +42,8 @@ fName = fieldnames(dataIn);
 for ctr = 1:length(fName)
     dataOut.(fName{ctr}) = dataIn.(fName{ctr})(filter);
 end
-    
+
+numRejectedClusters = length(x1) - sum(filter);
+disp(['The number of prefiltered clusters is: ' num2str(length(x1))])
+disp(['The number of rejected clusters is: ' num2str(numRejectedClusters)])
 end
