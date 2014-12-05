@@ -3,9 +3,14 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/03 $ $REVISION: 1.3 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.4 $
 %
+
 function [data] = main()
+%% Where should the data structure be saved?
+saveFolder = uigetdir('', ...
+                      'Choose where the data structure will be saved.');
+
 %% Filtering options
 % Filter data based on distance from robust power-law fit?
 filterFit = false;
@@ -38,7 +43,7 @@ maxLoc = 1000;
 % descriptive names and root directories for each dataset.
 
 cd data_structures/
-data = pool_data_SmchD1_TRF2();
+data = pool_data_TRF1_TRF2();
 cd ..
 
 
@@ -124,3 +129,14 @@ fittedData = fit_scaling_law(allData, fitAll);
 data(dataCtr).fits = fittedData.fits;
 
 end % Ends loop over datasets.
+
+%% Save the data
+if saveFolder ~= 0
+    save([saveFolder, '/matlab.mat'], ...
+         'data', ...
+         'k', ...
+         'Eps', ...
+         'minLoc', ...
+         'maxLoc')
+end
+end
