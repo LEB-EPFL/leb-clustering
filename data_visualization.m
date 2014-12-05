@@ -4,7 +4,7 @@
 % These functions require a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/13 $ $REVISION: 1.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/03 $ $REVISION: 1.2 $
 
 %% Primary function for generating plots from a set of experimental data.
 function data_visualization(data)
@@ -12,34 +12,16 @@ function data_visualization(data)
 numBins = 20;
 
 % Plot separate distributions for only Hela L or Hela S
-filterDataNames = {'Pooled pSuper';
-                   'Pooled TRF1';
-                   'Pooled TRF2';
-                   'Pooled TRF1 TRF2'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela L';
-figParams.xlabel = 'R_g^{x,y}, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 200];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'RgTrans', numBins, figParams)
-
-clear figParams
-figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela L';
-figParams.xlabel = 'Number of localizations';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 700];
-figParams.ylim = [0 0.015];
-plotDist(filterData, 'numLoc', numBins, figParams)
-
+filterDataNames = {'Pooled pSuper/pSuper';
+                   'Pooled pSuper/TRF2';
+                   'Pooled pLVP041/pSuper';
+                   'Pooled pLVP041/TRF2';
+                   'Pooled pLVP042/pSuper';
+                   'Pooled pLVP042/TRF2'};
 filterData = findData(data, filterDataNames, 'S dataset');
 
 clear figParams
-figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela S';
+figParams.title = 'Pooled KD of SmchD1 and TRF2 / Hela S';
 figParams.xlabel = 'R_g^{x,y}, nm';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -48,7 +30,7 @@ figParams.ylim = [0 0.03];
 plotDist(filterData, 'RgTrans', numBins, figParams)
 
 clear figParams
-figParams.title = 'Pooled KD of TRF1, TRF2, and double KD / Hela S';
+figParams.title = 'Pooled KD of SmchD1 and TRF2 / Hela S';
 figParams.xlabel = 'Number of localizations';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -57,9 +39,6 @@ figParams.ylim = [0 0.015];
 plotDist(filterData, 'numLoc', numBins, figParams)
 
 % Scatter plots with fits
-tempData = data;
-data = data(1:8);
-
 clear figParams
 figParams.xlim = [0 700];
 figParams.ylim = [0 300];
@@ -70,150 +49,46 @@ end
 % Mean scaling exponents of all datasets
 clear figParams
 figParams.title = 'Scaling exponents for R_g^{x,y} vs. N';
-figParams.ylim = [0 0.6];
+figParams.ylim = [0 0.8];
 figParams.ylabel = 'Scaling exponent \nu ^*';
 figParams.legend = {'Hela L'; 'Hela S'};
-figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
 fullScreen = true;
 fieldName = 'RgTrans';
-plotScalingExpPaired(data, fieldName, figParams, fullScreen)
+plotScalingExp(data, fieldName, figParams, fullScreen)
 
 % Mean RgTrans's for all datasets
 clear figParams
-figParams.title = 'Mean R_g^{x,y}';
+figParams.title = 'Mean R_g^{x,y} for pooled datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g^{x,y}, nm';
 figParams.legend = {'Hela L'; 'Hela S'};
-figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'RgTrans';
-plotMeansPaired(data, fieldName, figParams, errorBar, fullScreen);
+plotMeans(data, fieldName, figParams, errorBar, fullScreen);
 
 % Mean number of localizations for all datasets
 clear figParams
-figParams.title = 'Mean number of localizations';
+figParams.title = 'Mean number of localizations for pooled datasets';
 figParams.ylim = [0 300];
 figParams.ylabel = 'Mean number of localizations';
 figParams.legend = {'Hela L'; 'Hela S'};
-figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'numLoc';
-plotMeansPaired(data, fieldName, figParams, errorBar, fullScreen);
+plotMeans(data, fieldName, figParams, errorBar, fullScreen);
 
 % Mean volume for all datasets
 clear figParams
-figParams.title = 'Mean volume for all other datasets';
+figParams.title = 'Mean volume for pooled datasets';
 figParams.ylim = [0 11e6];
 figParams.ylabel = 'Mean volume, nm^3';
 figParams.legend = {'Hela L'; 'Hela S'};
-figParams.dividers = [4.5, 5.5, 8.5]; % x-locations of vertical dividing lines
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
-plotMeansPaired(data, fieldName, figParams, errorBar, fullScreen);
+plotMeans(data, fieldName, figParams, errorBar, fullScreen);
 
-data = tempData;
-
-%==========================================================================
-% Check individual data sets
-%==========================================================================
-tempData = data;
-data = data(9:16);
-
-clear figParams
-figParams.xlim = [0 700];
-figParams.ylim = [0 300];
-for ctr = 1:length(data)
-    plotScatter(data(ctr), 'RgTrans', figParams)
-end
-
-filterDataNames = {'08-09-2014 pSuper';
-                   '09-09-2014 pSuper'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = 'Individual pSuper datasets / Hela L';
-figParams.xlabel = 'R_g^{x,y}, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 200];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'RgTrans', numBins, figParams)
-
-clear figParams
-figParams.title = 'Individual pSuper datsets / Hela L';
-figParams.xlabel = 'Number of localizations';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 700];
-figParams.ylim = [0 0.015];
-plotDist(filterData, 'numLoc', numBins, figParams)
-
-filterData = findData(data, filterDataNames, 'S dataset');
-
-clear figParams
-figParams.title = 'Individual pSuper datasets / Hela S';
-figParams.xlabel = 'R_g^{x,y}, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 200];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'RgTrans', numBins, figParams)
-
-clear figParams
-figParams.title = 'Individual pSuper datasets / Hela S';
-figParams.xlabel = 'Number of localizations';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 700];
-figParams.ylim = [0 0.015];
-plotDist(filterData, 'numLoc', numBins, figParams)
-
-filterDataNames = {'08-09-2014 TRF1 TRF2';
-                   '09-09-2014 TRF1 TRF2'};
-filterData = findData(data, filterDataNames, 'L dataset');
-
-clear figParams
-figParams.title = 'Individual pSuper datasets / Hela L';
-figParams.xlabel = 'R_g^{x,y}, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 200];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'RgTrans', numBins, figParams)
-
-clear figParams
-figParams.title = 'Individual pSuper datsets / Hela L';
-figParams.xlabel = 'Number of localizations';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 700];
-figParams.ylim = [0 0.015];
-plotDist(filterData, 'numLoc', numBins, figParams)
-
-filterData = findData(data, filterDataNames, 'S dataset');
-
-clear figParams
-figParams.title = 'Individual pSuper datasets / Hela S';
-figParams.xlabel = 'R_g^{x,y}, nm';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 200];
-figParams.ylim = [0 0.03];
-plotDist(filterData, 'RgTrans', numBins, figParams)
-
-clear figParams
-figParams.title = 'Individual pSuper datasets / Hela S';
-figParams.xlabel = 'Number of localizations';
-figParams.ylabel = 'Normalized frequency';
-figParams.legend = filterDataNames;
-figParams.xlim = [0 700];
-figParams.ylim = [0 0.015];
-plotDist(filterData, 'numLoc', numBins, figParams)
-
-data = tempData;
 end
 
 %% ========================================================================
@@ -613,7 +488,7 @@ tickLabels = cell(numDatasets,1);
 
 scalingExp = zeros(numDatasets,1);
 confInt = zeros(numDatasets,1);
-if strcmp(fieldType, 'Rg')
+if strcmp(fieldName, 'Rg')
     for ctr = 1:numDatasets
         currData = data(ctr).fits;
         tickLabels{ctr} = data(ctr).experimentShortName;

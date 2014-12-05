@@ -3,9 +3,16 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/10/24 $ $REVISION: 1.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/03 $ $REVISION: 1.3 $
 %
 function [data] = main()
+%% Filtering options
+% Filter data based on distance from robust power-law fit?
+filterFit = false;
+
+% Perform all three fit types, or just robust?
+fitAll = true;
+
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
 useParallel = true;
 
@@ -30,7 +37,10 @@ maxLoc = 1000;
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
 
-data = very_first_data_struct();
+cd data_structures/
+data = pool_data_SmchD1_TRF2();
+cd ..
+
 
 %% Verify that all directories are correct.
 for dirCtr = 1:length(data)
@@ -96,15 +106,18 @@ for ctr = 1:length(files)
 end
 
 %% Perform initial filtering on the data?
-dataModel = fittype('a*x.^b');
-threshold = 1.5;
 
-% Write distributions out to the large data structure for the experiment.
-data(dataCtr).distributions = filter_noisy_clusters(allData, dataModel, threshold);
+if filterFit
+    dataModel = fittype('a*x.^b');
+    threshold = 1.5;
+
+    % Write distributions out to the large data structure for the experiment.
+    data(dataCtr).distributions = filter_noisy_clusters(allData, dataModel, threshold);
+else
+    data(dataCtr).distributions = allData;
+end
 
 %% Perform nonlinear least squares fits on Rg. vs. number of localizations
-% Perform all three fit types, or just robust?
-fitAll = true;
 fittedData = fit_scaling_law(allData, fitAll);
 
 % Assign fit information to data structure.
