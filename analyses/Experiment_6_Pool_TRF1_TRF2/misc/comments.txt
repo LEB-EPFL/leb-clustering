@@ -1,0 +1,10 @@
+These zip files correspond to:
+
+All_Datasets -- every dataset from 05-11-2014 was kept
+X_Two_Datasets -- 05-11-2014 Hela S pSuper and TRF2 were removed from
+	          the pool
+No_05-11-2014 -- No datasets from 05-11-2014 were included in the pool
+
+The only different between X_Two_Datasets and the zip file in the
+upper level directory is that the one in the upper directory contains
+plots of the median values as well.
