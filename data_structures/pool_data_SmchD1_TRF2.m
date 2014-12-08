@@ -62,7 +62,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 %==========================================================================
 % 06-11-2014 SmchD1 / TRF2 KD experiments
 %==========================================================================
-% Hela S
+% Hela S (set 7)
 dataIn.experimentShortName = '06-11-2014 pSuper';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/06_11_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -71,7 +71,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 8)
 dataIn.experimentShortName = '06-11-2014 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/06_11_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -84,7 +84,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 % pLVP041 and pLVP041 + TRF2 KD
 %==========================================================================
 
-% Hela S
+% Hela S (set 9)
 dataIn.experimentShortName = '06-11-2014 pLVP041';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/06_11_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -93,7 +93,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 10)
 dataIn.experimentShortName = '06-11-2014 pLVP041 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/06_11_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -106,7 +106,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 % pLVP042 and pLVP042 + TRF2 KD
 %==========================================================================
 
-% Hela S
+% Hela S (set 11)
 dataIn.experimentShortName = '06-11-2014 pLVP042';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/06_11_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -115,7 +115,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 12)
 dataIn.experimentShortName = '06-11-2014 pLVP042 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/06_11_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -127,7 +127,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 %==========================================================================
 % 24-08-2014 SmchD1 / TRF2 KD experiments
 %==========================================================================
-% Hela S
+% Hela S (set 13)
 dataIn.experimentShortName = '24-08-2014 pSuper';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/24_08_2014_HeLaS_SmchD1_TRF2_doubleKD_FISH/';
@@ -136,7 +136,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 14)
 dataIn.experimentShortName = '24-08-2014 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/24_08_2014_HeLaS_SmchD1_TRF2_doubleKD_FISH/';
@@ -149,7 +149,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 % pLVP041 and pLVP041 + TRF2 KD
 %==========================================================================
 
-% Hela S
+% Hela S (set 15)
 dataIn.experimentShortName = '24-08-2014 pLVP041';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/24_08_2014_HeLaS_SmchD1_TRF2_doubleKD_FISH/';
@@ -158,7 +158,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 16)
 dataIn.experimentShortName = '24-08-2014 pLVP041 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/24_08_2014_HeLaS_SmchD1_TRF2_doubleKD_FISH/';
@@ -171,7 +171,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 % pLVP042 and pLVP042 + TRF2 KD
 %==========================================================================
 
-% Hela S
+% Hela S (set 17)
 dataIn.experimentShortName = '24-08-2014 pLVP042';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/24_08_2014_HeLaS_SmchD1_TRF2_doubleKD_FISH/';
@@ -180,7 +180,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 18)
 dataIn.experimentShortName = '24-08-2014 pLVP042 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/24_08_2014_HeLaS_SmchD1_TRF2_doubleKD_FISH/';
@@ -192,7 +192,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 %==========================================================================
 % 27-08-2014 SmchD1 / TRF2 KD experiments
 %==========================================================================
-% Hela S
+% Hela S (set 19)
 dataIn.experimentShortName = '27-08-2014 pSuper';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/27_08_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -201,7 +201,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 20)
 dataIn.experimentShortName = '27-08-2014 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/27_08_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -214,7 +214,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 % pLVP041 and pLVP041 + TRF2 KD
 %==========================================================================
 
-% Hela S
+% Hela S (set 21)
 dataIn.experimentShortName = '27-08-2014 pLVP041';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/27_08_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -223,7 +223,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 22 )
 dataIn.experimentShortName = '27-08-2014 pLVP041 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/27_08_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -236,7 +236,7 @@ data = [data, dataIn]; % Appends this dataset to the data array.
 % pLVP042 and pLVP042 + TRF2 KD
 %==========================================================================
 
-% Hela S
+% Hela S (set 23)
 dataIn.experimentShortName = '27-08-2014 pLVP042';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/27_08_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
@@ -245,7 +245,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S
+% Hela S (set 24)
 dataIn.experimentShortName = '27-08-2014 pLVP042 TRF2';
 dataIn.datasetShortName = 'S dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/27_08_2014_HelaS_SmchD1_Trf2_doubleKD_FISH/';
