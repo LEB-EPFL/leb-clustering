@@ -1,0 +1,916 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>data_visualization</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-12-09"><meta name="DC.source" content="data_visualization.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Pooled data from TRF2 knockdowns : Hela L</a></li><li><a href="#3">Pooled data from TRF2 knockdowns : Hela S</a></li><li><a href="#4">Pooled data from TRF2 knockdowns : Plots of Means</a></li><li><a href="#5">Pooled data from TRF2 knockdowns : Plots of Medians</a></li><li><a href="#6">11-08-2014 TRF2 knockdowns : Hela L</a></li><li><a href="#7">11-08-2014 TRF2 knockdowns : Hela S</a></li><li><a href="#8">11-08-2014 TRF2 knockdowns : Plot of Means</a></li><li><a href="#9">11-08-2014 TRF2 knockdowns : Plot of Medians</a></li><li><a href="#10">13-08-2014 TRF2 knockdowns : Hela L</a></li><li><a href="#11">13-08-2014 TRF2 knockdowns : Hela S</a></li><li><a href="#12">13-08-2014 TRF2 knockdowns : Plot of Means</a></li><li><a href="#13">13-08-2014 TRF2 knockdowns: Plot of Medians</a></li><li><a href="#14">24-08-2014 TRF2 double knockdowns : Hela S</a></li><li><a href="#15">24-08-2014 TRF2 knockdowns : Plot of Means</a></li><li><a href="#16">24-08-2014 TRF2 knockdowns : Plot of Medians</a></li><li><a href="#17">27-08-2014 TRF2 knockdowns : Hela S</a></li><li><a href="#18">27-08-2014 TRF2 knockdowns : Plot of Means</a></li><li><a href="#19">27-08-2014 TRF2 knockdowns : Plot of Medians</a></li></ul></div><h2>Pooled data from TRF2 knockdowns : Hela L<a name="2"></a></h2><pre class="codeoutput">===================================================================
+Pooled data from TRF2 knockdowns
+===================================================================
+===========================================================
+Data for Pooled pSuper / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 89.9632	 Std. Dev.: 24.8687	 Median: 88.3047	
+
+
+Volume
+Mean: 6453331.9963	 Std. Dev.: 5256695.3180	 Median: 5017984.7378	
+
+
+Number of localizations
+Mean: 182.5494	 Std. Dev.: 98.5919	 Median: 164.0000	
+
+
+Number of clusters: 881
+
+
+===========================================================
+Data for Pooled TRF2 / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 83.4963	 Std. Dev.: 27.5910	 Median: 81.7653	
+
+
+Volume
+Mean: 4515674.3978	 Std. Dev.: 3980716.9941	 Median: 3285535.9500	
+
+
+Number of localizations
+Mean: 134.8676	 Std. Dev.: 77.0665	 Median: 111.0000	
+
+
+Number of clusters: 861
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_01.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_02.png" alt=""> <h2>Pooled data from TRF2 knockdowns : Hela S<a name="3"></a></h2><pre class="codeoutput">===========================================================
+Data for Pooled pSuper / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 74.2014	 Std. Dev.: 21.3579	 Median: 72.6379	
+
+
+Volume
+Mean: 3191626.8651	 Std. Dev.: 2646327.5554	 Median: 2436931.9323	
+
+
+Number of localizations
+Mean: 125.7051	 Std. Dev.: 71.1369	 Median: 108.5000	
+
+
+Number of clusters: 1560
+
+
+===========================================================
+Data for Pooled TRF2 / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 67.1905	 Std. Dev.: 21.2433	 Median: 65.6520	
+
+
+Volume
+Mean: 2291438.7773	 Std. Dev.: 2106592.3038	 Median: 1806035.0392	
+
+
+Number of localizations
+Mean: 107.2381	 Std. Dev.: 50.4085	 Median: 93.0000	
+
+
+Number of clusters: 1214
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_03.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_04.png" alt=""> <h2>Pooled data from TRF2 knockdowns : Plots of Means<a name="4"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_05.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_06.png" alt=""> <h2>Pooled data from TRF2 knockdowns : Plots of Medians<a name="5"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_07.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_08.png" alt=""> <h2>11-08-2014 TRF2 knockdowns : Hela L<a name="6"></a></h2><pre class="codeoutput">===================================================================
+11-08-2014 TRF2 knockdowns
+===================================================================
+===========================================================
+Data for 11-08-2014 pSuper / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 84.9793	 Std. Dev.: 25.6555	 Median: 82.8173	
+
+
+Volume
+Mean: 5694637.2835	 Std. Dev.: 5258199.0241	 Median: 4098336.4751	
+
+
+Number of localizations
+Mean: 155.3510	 Std. Dev.: 86.3865	 Median: 134.0000	
+
+
+Number of clusters: 433
+
+
+===========================================================
+Data for 11-08-2014 TRF2 / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 75.6803	 Std. Dev.: 26.5723	 Median: 70.7161	
+
+
+Volume
+Mean: 3243283.2677	 Std. Dev.: 3241612.1570	 Median: 2349966.9912	
+
+
+Number of localizations
+Mean: 115.6881	 Std. Dev.: 64.6099	 Median: 97.0000	
+
+
+Number of clusters: 436
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_09.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_10.png" alt=""> <h2>11-08-2014 TRF2 knockdowns : Hela S<a name="7"></a></h2><pre class="codeoutput">===========================================================
+Data for 11-08-2014 pSuper / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 72.6091	 Std. Dev.: 19.8178	 Median: 72.7218	
+
+
+Volume
+Mean: 3204106.3830	 Std. Dev.: 2663273.6775	 Median: 2343921.6561	
+
+
+Number of localizations
+Mean: 132.3298	 Std. Dev.: 76.0583	 Median: 109.0000	
+
+
+Number of clusters: 467
+
+
+===========================================================
+Data for 11-08-2014 TRF2 / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 59.8684	 Std. Dev.: 17.0903	 Median: 59.7646	
+
+
+Volume
+Mean: 1681393.7619	 Std. Dev.: 1228745.8829	 Median: 1415932.1559	
+
+
+Number of localizations
+Mean: 93.7660	 Std. Dev.: 45.0582	 Median: 80.0000	
+
+
+Number of clusters: 312
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_11.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_12.png" alt=""> <h2>11-08-2014 TRF2 knockdowns : Plot of Means<a name="8"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_13.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_14.png" alt=""> <h2>11-08-2014 TRF2 knockdowns : Plot of Medians<a name="9"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_15.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_16.png" alt=""> <h2>13-08-2014 TRF2 knockdowns : Hela L<a name="10"></a></h2><pre class="codeoutput">===================================================================
+13-08-2014 TRF2 knockdowns
+===================================================================
+===========================================================
+Data for 13-08-2014 pSuper / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 94.7802	 Std. Dev.: 23.1108	 Median: 92.8504	
+
+
+Volume
+Mean: 7186623.9843	 Std. Dev.: 5155858.2139	 Median: 5885219.6075	
+
+
+Number of localizations
+Mean: 208.8371	 Std. Dev.: 102.5421	 Median: 194.5000	
+
+
+Number of clusters: 448
+
+
+===========================================================
+Data for 13-08-2014 TRF2 / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 91.5146	 Std. Dev.: 26.3134	 Median: 91.0519	
+
+
+Volume
+Mean: 5820998.0042	 Std. Dev.: 4241148.2911	 Median: 4775759.1621	
+
+
+Number of localizations
+Mean: 154.5435	 Std. Dev.: 83.6512	 Median: 139.0000	
+
+
+Number of clusters: 425
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_17.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_18.png" alt=""> <h2>13-08-2014 TRF2 knockdowns : Hela S<a name="11"></a></h2><pre class="codeoutput">===========================================================
+Data for 13-08-2014 pSuper / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 78.2929	 Std. Dev.: 19.9676	 Median: 77.4540	
+
+
+Volume
+Mean: 3537846.5631	 Std. Dev.: 2527270.1727	 Median: 2903454.2004	
+
+
+Number of localizations
+Mean: 122.1231	 Std. Dev.: 52.1834	 Median: 113.0000	
+
+
+Number of clusters: 390
+
+
+===========================================================
+Data for 13-08-2014 TRF2 / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 72.8512	 Std. Dev.: 24.1479	 Median: 69.8996	
+
+
+Volume
+Mean: 2873891.0524	 Std. Dev.: 2954121.4650	 Median: 2044959.4569	
+
+
+Number of localizations
+Mean: 118.4513	 Std. Dev.: 56.8795	 Median: 104.0000	
+
+
+Number of clusters: 359
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_19.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_20.png" alt=""> <h2>13-08-2014 TRF2 knockdowns : Plot of Means<a name="12"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_21.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_22.png" alt=""> <h2>13-08-2014 TRF2 knockdowns: Plot of Medians<a name="13"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_23.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_24.png" alt=""> <h2>24-08-2014 TRF2 double knockdowns : Hela S<a name="14"></a></h2><pre class="codeoutput">===================================================================
+24-08-2014 TRF1 and TRF2 double knockdowns
+===================================================================
+===========================================================
+Data for 24-08-2014 pSuper / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 68.7276	 Std. Dev.: 21.8740	 Median: 65.7118	
+
+
+Volume
+Mean: 2586010.7171	 Std. Dev.: 2326626.6877	 Median: 1898207.4280	
+
+
+Number of localizations
+Mean: 125.9845	 Std. Dev.: 70.1922	 Median: 106.5000	
+
+
+Number of clusters: 388
+
+
+===========================================================
+Data for 24-08-2014 TRF2 / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 63.4610	 Std. Dev.: 18.7036	 Median: 63.8290	
+
+
+Volume
+Mean: 1930665.9454	 Std. Dev.: 1477111.6610	 Median: 1568369.5778	
+
+
+Number of localizations
+Mean: 111.9025	 Std. Dev.: 49.9888	 Median: 101.5000	
+
+
+Number of clusters: 318
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_25.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_26.png" alt=""> <h2>24-08-2014 TRF2 knockdowns : Plot of Means<a name="15"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_27.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_28.png" alt=""> <h2>24-08-2014 TRF2 knockdowns : Plot of Medians<a name="16"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_29.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_30.png" alt=""> <h2>27-08-2014 TRF2 knockdowns : Hela S<a name="17"></a></h2><pre class="codeoutput">===================================================================
+27-08-2014 TRF2 knockdowns
+===================================================================
+===========================================================
+Data for 27-08-2014 pSuper / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 78.2390	 Std. Dev.: 22.8116	 Median: 75.7003	
+
+
+Volume
+Mean: 3490437.8123	 Std. Dev.: 2994509.1457	 Median: 2721618.0694	
+
+
+Number of localizations
+Mean: 119.9746	 Std. Dev.: 83.5443	 Median: 100.0000	
+
+
+Number of clusters: 315
+
+
+===========================================================
+Data for 27-08-2014 TRF2 / S dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 73.5827	 Std. Dev.: 20.6010	 Median: 75.1654	
+
+
+Volume
+Mean: 2717925.1712	 Std. Dev.: 1862866.2176	 Median: 2332082.0101	
+
+
+Number of localizations
+Mean: 101.4356	 Std. Dev.: 41.4158	 Median: 91.0000	
+
+
+Number of clusters: 225
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_31.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_32.png" alt=""> <h2>27-08-2014 TRF2 knockdowns : Plot of Means<a name="18"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_33.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_34.png" alt=""> <h2>27-08-2014 TRF2 knockdowns : Plot of Medians<a name="19"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_35.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_36.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Helper functions for plotting and consolidating statistics from the fully
+% processed data structure.
+%
+% These functions require a .mat file containing the relevant data loaded
+% into the workspace.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.2 $
+
+%% Pooled data from TRF2 knockdowns : Hela L
+
+% Access to the helper functions for plotting
+cd private/
+
+numBins = 20;
+
+disp('===================================================================')
+disp('Pooled data from TRF2 knockdowns')
+disp('===================================================================')
+
+filterDataNames = {'Pooled pSuper';
+                   'Pooled TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD TRF2 / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% Pooled data from TRF2 knockdowns : Hela S
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+filterData = findData(data, filterDataNames);
+
+%% Pooled data from TRF2 knockdowns : Plots of Means
+
+% Mean RgTrans's for all datasets
+clear figParams
+figParams.title = 'Mean R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Mean Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% Pooled data from TRF2 knockdowns : Plots of Medians
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 11-08-2014 TRF2 knockdowns : Hela L
+disp('===================================================================')
+disp('11-08-2014 TRF2 knockdowns')
+disp('===================================================================')
+
+filterDataNames = {'11-08-2014 pSuper';
+                   '11-08-2014 TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% 11-08-2014 TRF2 knockdowns : Hela S
+
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2/ Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% 11-08-2014 TRF2 knockdowns : Plot of Means
+
+filterData = findData(data, filterDataNames);
+
+% Mean RgTrans's for all datasets
+clear figParams
+figParams.title = 'Mean R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Mean Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 11-08-2014 TRF2 knockdowns : Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 13-08-2014 TRF2 knockdowns : Hela L
+disp('===================================================================')
+disp('13-08-2014 TRF2 knockdowns')
+disp('===================================================================')
+
+filterDataNames = {'13-08-2014 pSuper';
+                   '13-08-2014 TRF2'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'Pooled KD TRF2 / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% 13-08-2014 TRF2 knockdowns : Hela S
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+filterData = findData(data, filterDataNames);
+
+%% 13-08-2014 TRF2 knockdowns : Plot of Means
+
+% Mean RgTrans's for all datasets
+clear figParams
+figParams.title = 'Mean R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Mean Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 13-08-2014 TRF2 knockdowns: Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 24-08-2014 TRF2 double knockdowns : Hela S
+disp('===================================================================')
+disp('24-08-2014 TRF1 and TRF2 double knockdowns')
+disp('===================================================================')
+
+filterDataNames = {'24-08-2014 pSuper';
+                   '24-08-2014 TRF2';};
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+filterData = findData(data, filterDataNames);
+
+%% 24-08-2014 TRF2 knockdowns : Plot of Means
+
+% Mean RgTrans's for all datasets
+clear figParams
+figParams.title = 'Mean R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Mean Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 24-08-2014 TRF2 knockdowns : Plot of Medians
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 27-08-2014 TRF2 knockdowns : Hela S
+disp('===================================================================')
+disp('27-08-2014 TRF2 knockdowns')
+disp('===================================================================')
+
+filterDataNames = {'27-08-2014 pSuper';
+                   '27-08-2014 TRF2'};
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 KD / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'Pooled KD of TRF2 KD / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% 27-08-2014 TRF2 knockdowns : Plot of Means
+
+filterData = findData(data, filterDataNames);
+
+% Mean RgTrans's for all datasets
+clear figParams
+figParams.title = 'Mean R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Mean Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 27-08-2014 TRF2 knockdowns : Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Switch back to parent directory
+cd ..
+
+##### SOURCE END #####
+--></body></html>

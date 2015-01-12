@@ -1,0 +1,232 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>data_visualization</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-12-10"><meta name="DC.source" content="data_visualization.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">FISH vs. TRF1 IF : Hela L</a></li><li><a href="#3">FISH vs. TRF1 IF : Plots of Means</a></li><li><a href="#4">FISH vs. TRF1 IF : Plots of Medians</a></li></ul></div><h2>FISH vs. TRF1 IF : Hela L<a name="2"></a></h2><pre class="codeoutput">===================================================================
+Hela L FISH vs. TRF1 IF
+===================================================================
+===========================================================
+Data for WT / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 100.1856	 Std. Dev.: 29.2974	 Median: 97.3636	
+
+
+Volume
+Mean: 8762139.1931	 Std. Dev.: 8144095.7774	 Median: 6230210.8824	
+
+
+Number of localizations
+Mean: 190.6436	 Std. Dev.: 111.3994	 Median: 165.0000	
+
+
+Number of clusters: 2424
+
+
+===========================================================
+Data for TRF1 1000 / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 68.0529	 Std. Dev.: 28.3898	 Median: 72.5573	
+
+
+Volume
+Mean: 3466856.0520	 Std. Dev.: 3038435.5341	 Median: 2801674.1109	
+
+
+Number of localizations
+Mean: 119.6927	 Std. Dev.: 64.3406	 Median: 105.5000	
+
+
+Number of clusters: 218
+
+
+===========================================================
+Data for TRF1 2000 / L dataset
+===========================================================
+
+
+Radius of gyration
+Mean: 72.3196	 Std. Dev.: 29.0701	 Median: 77.4400	
+
+
+Volume
+Mean: 4065556.2813	 Std. Dev.: 3629910.4946	 Median: 3073011.3081	
+
+
+Number of localizations
+Mean: 141.4341	 Std. Dev.: 82.3572	 Median: 120.5000	
+
+
+Number of clusters: 182
+
+
+</pre><img vspace="5" hspace="5" src="data_visualization_01.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_02.png" alt=""> <h2>FISH vs. TRF1 IF : Plots of Means<a name="3"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_03.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_04.png" alt=""> <h2>FISH vs. TRF1 IF : Plots of Medians<a name="4"></a></h2><pre class="codeoutput">Current plot held
+Current plot held
+</pre><img vspace="5" hspace="5" src="data_visualization_05.png" alt=""> <img vspace="5" hspace="5" src="data_visualization_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Helper functions for plotting and consolidating statistics from the fully
+% processed data structure.
+%
+% These functions require a .mat file containing the relevant data loaded
+% into the workspace.
+%
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.2 $
+
+%% FISH vs. TRF1 IF : Hela L
+
+% Access to the helper functions for plotting
+cd private/
+
+numBins = 20;
+
+disp('===================================================================')
+disp('Hela L FISH vs. TRF1 IF')
+disp('===================================================================')
+
+filterDataNames = {'WT';
+                   'TRF1 1000';
+                   'TRF1 2000'};
+filterData = findData(data, filterDataNames, 'L dataset');
+
+clear figParams
+figParams.title = 'FISH vs. TRF1 Immunofluorescence / Hela L';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = 'FISH vs. TRF1 Immunofluorescence / Hela L';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% FISH vs. TRF1 IF : Plots of Means
+
+filterData = findData(data, filterDataNames);
+
+% Mean RgTrans's for all datasets
+clear figParams
+figParams.title = 'Mean R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Mean Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% FISH vs. TRF1 IF : Plots of Medians
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Switch back to parent directory
+cd ..
+
+##### SOURCE END #####
+--></body></html>
