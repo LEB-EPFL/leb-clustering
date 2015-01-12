@@ -293,6 +293,41 @@
   \field{year}{2009}
 \endentry
 
+\entry{scott-biometrika-1979}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Scott}{S.}%
+     {David~W}{D.~W.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{SDW1}
+  \strng{fullhash}{SDW1}
+  \field{abstract}{%
+  In this paper the formula for the optimal histogram bin width is derived
+  which asymptotically minimizes the integrated mean squared error. Monte Carlo
+  methods are used to verify the usefulness of this formula for small samples.
+  A data-based procedure for choosing the bin width parameter is proposed,
+  which assumes a Gaussian reference standard and requires only the sample size
+  and an estimate of the standard deviation. The sensitivity of the procedure
+  is investigated using several probability models which violate the Gaussian
+  assumption.%
+  }
+  \field{number}{3}
+  \field{pages}{605\bibrangedash 610}
+  \field{title}{{On optimal and data-based histograms}}
+  \verb{url}
+  \verb http://www.jstor.org/stable/2335182?seq=1\#page\_scan\_tab\_contents
+  \endverb
+  \field{volume}{66}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/scott-biometrika-1979.pdf
+  \verb :pdf
+  \endverb
+  \field{journaltitle}{Biometrika}
+  \field{year}{1979}
+\endentry
+
 \lossort
 \endlossort
 

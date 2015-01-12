@@ -1,4 +1,4 @@
-% Created 2014-11-28 Fri 14:39
+% Created 2014-12-19 Fri 14:41
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -258,7 +258,7 @@ divided by the theoretical value for $R_g$.
 \begin{figure}[htb]
 \centering
 \includegraphics[width=.9\linewidth]{./images/accuracy1.pdf}
-\caption{\label{fig-accuracy1}The accuracy of the mean radii of gyration for a number of polymer experiments with different packing densities and persistence lengths. 1000 polymer conformations were simulated for each parameter pair. Each segment was 0.4 nm long.}
+\caption{\label{fig-accuracy1}The accuracy of the mean radii of gyration for a number of polymer experiments with different packing densities and persistence lengths. 1000 polymer conformations were simulated for each parameter pair. Each segment was 0.4 nm long. The code version is 0.1.}
 \end{figure}
 
 In \ref{fig-accuracy2}, the errors are displayed for the same
@@ -293,8 +293,59 @@ chromatin polymer of a single contour length (25000 bp in these
 examples). When the population also involves sampling multiple contour
 lengths, more polymers will likely be required.
 
-\subsubsection{Tests to be performed}
+\subsubsection{Problems with saving histograms in the database}
 \label{sec-3-3-2}
+\textit{<2014-12-19 Fri>}
+In version 0.1 and 0.2 of the code, the results of the radii of
+gyration are saved as histograms with the bin size determined by
+the method in Ref. \cite{scott-biometrika-1979}. This format
+however creates a problem when performing the maximum likelihood
+estimation on the polymer model parameters.
+
+The problem lies in the tails of the distribution. In the tails, a
+few bins in the histograms of the simulated gyration radii may be
+empty, meaning the probability of measuring a telomere with $R_g$
+value in that range is zero. However, some of the data may
+actually fall into that bin, so the \textbf{log}-likelihood of seeing
+that data is minus infinity.
+
+A temporary workaround is to catch the divide-by-zero warnings
+that Python throws when the numpy log function returns -inf and
+instead assign the bin a probability of a very small number. This
+is not satisfactory, though since the relative log-likelihoods for
+different parameter pairs may be incorrectly weighted according to
+how many datapoints fall within these zero-probability bins.
+
+A better solution is to try estimating a continuous probability
+density function from the simulated $R_g$ data. One way to do this
+is a technique called kernel density estimation, where each point
+is assigned a kernal function of equal weight and varying
+size. Each function is then summed to produce a smooth, continuous
+pdf of the discrete data.
+
+\subsubsection{Timing}
+\label{sec-3-3-3}
+In version 0.2 of the code, I rewrote the main loop for creating
+the 3D wormlike chains. After profiling the Python code, I
+concluded that this rewrite sped it up by a factor of four. Most
+of the rewrite came from continuously normalizing a new
+displacement vector with numpy's norm() function during each
+iteration of the loop. I instead made this inline and directly
+called the Fortran function nrm2. In addition, I made the cross
+product operation inline as well in pure Python.
+
+I also timed a simulation with the following parameters: $c =
+    \left[10, 30, \ldots , 90\right]$, $\ell_p = \left[ 10, 30,
+    \ldots, 190 \right]$, and 10 chains for each pair of values
+$\left(c, \ell_p\right)$.  This took approximately 30 seconds.
+
+Simulating 50,000 chains with the same set of parameter pairs
+should take 150,000 seconds according to this estimation. I
+performed the simulation with the version 0.2 code and found the
+actual time to be about 156,900 seconds, which is not far off the
+estimation.
+\subsubsection{Tests to be performed}
+\label{sec-3-3-4}
 These are the crucial tests to be performed on the polymer simulation
 code before simulating polymer conformations.
 

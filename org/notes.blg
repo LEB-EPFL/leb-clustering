@@ -18,44 +18,44 @@ Database file #2: telomeres.bib
 Biblatex version: 1.7
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
-You've used 7 entries,
+You've used 8 entries,
             6019 wiz_defined-function locations,
-            1182 strings with 12692 characters,
-and the built_in function-call counts, 20798 in all, are:
-= -- 767
-> -- 699
-< -- 143
-+ -- 253
-- -- 290
-* -- 1695
-:= -- 1453
+            1192 strings with 13474 characters,
+and the built_in function-call counts, 23362 in all, are:
+= -- 856
+> -- 770
+< -- 160
++ -- 267
+- -- 317
+* -- 1873
+:= -- 1595
 add.period$ -- 0
-call.type$ -- 7
-change.case$ -- 67
+call.type$ -- 8
+change.case$ -- 74
 chr.to.int$ -- 46
-cite$ -- 12
-duplicate$ -- 2297
-empty$ -- 2204
-format.name$ -- 479
-if$ -- 4542
+cite$ -- 14
+duplicate$ -- 2599
+empty$ -- 2516
+format.name$ -- 524
+if$ -- 5119
 int.to.chr$ -- 0
-int.to.str$ -- 13
+int.to.str$ -- 15
 missing$ -- 0
-newline$ -- 259
-num.names$ -- 255
-pop$ -- 1930
+newline$ -- 287
+num.names$ -- 293
+pop$ -- 2230
 preamble$ -- 1
-purify$ -- 97
+purify$ -- 106
 quote$ -- 0
-skip$ -- 1137
+skip$ -- 1285
 stack$ -- 0
-substring$ -- 487
-swap$ -- 841
-text.length$ -- 152
+substring$ -- 528
+swap$ -- 954
+text.length$ -- 170
 text.prefix$ -- 0
 top$ -- 1
-type$ -- 254
+type$ -- 292
 warning$ -- 0
-while$ -- 166
+while$ -- 184
 width$ -- 0
-write$ -- 251
+write$ -- 278

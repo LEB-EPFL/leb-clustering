@@ -5,11 +5,11 @@
 #+LATEX_HEADER: \usepackage{amssymb}
 #+LATEX_HEADER: \addbibresource{telomeres.bib}
 
-#+TITLE: Telomere Master Notes
+#+TITLE: Telomere Structure Estimation
 #+AUTHOR: Kyle M. Douglass
 #+DATE: \today
 
-* Introduction
+* Introduction to telomere biology
 Telomeres consist of DNA tandem repeat sequences, their associated
 binding proteins, and a non-coding RNA transcript. They are located at
 the end of chromosomes and address two important problems in
@@ -20,12 +20,12 @@ problem. A nice summary is provided in \cite{sfeir-jcellsci-2012}.
 In humans, the telomere tandem repeat sequence is TTAGGG. A telomere's
 size lies between 5 and 15 kb in humans. A key feature of the telomere
 end in all organisms is the 3' single-stranded G-rich overhang. In
-mammals, these overhangs are 30-500 nucleotides long.
+mammals, these overhangs are 30-500 nucleotides long
+\cite{sfeir-jcellsci-2012}.
 
 Associated with the telomeric DNA are proteins of the shelterin
 complex. Shelterin is responsible for solving the end-protection problem,
 though it acts in a complicated manner.
-
 
 The six known shelterin proteins are TRF1, TRF2, RAP1, TIN2, TPP1, and
 POT1. TRF1 and TRF2 bind to the duplex region of the DNA; POT1 coats
@@ -50,6 +50,7 @@ factors are known.
 For example, overexpressing TRF1 in cancer-derived human cells leads
 to telomere shortening, whereas depleting telomeres of TRF1 results in
 elongation. Reducing levels of TRF2 and TIN2 leads to telomere
+extension, but also to heterochromatic marks that might offset the
 extension. There are also repressive histone marks on telomeric
 chromatin. Deletion of these marks correlates with large elongations
 of telomeres.
@@ -60,14 +61,14 @@ including H3K9me3 and H4K20me3 and the heterochromatin-specific
 factors chromobox homolog (CBX) 1, 3, and 5. Depleting these marks
 correlates with telomere elongation.
 
-* Shelterin and its role in telomere functioning
+** Shelterin and its role in telomere functioning
 + Do the shelterin proteins always come in a complete unit, or do the
   ratios of the amounts of the various shelterin proteins vary from
   telomere to telomere?
 + Do the increased sizes in TRF1 correspond to telomeres having longer
   genomic lengths?
   
-** TRF1 controls human telomere lengths
+*** TRF1 controls human telomere lengths
 TRF1 was found to control the length of human telomeres
 \cite{vansteensel-nature-1997}. The authors both overexpressed TRF1
 and reducing the binding of TRF1 to telomeres and observed a gradual
@@ -75,55 +76,137 @@ shortening and lengthening of telomeres. The expression of telomerase
 was not changed, which suggested that TRF1 somehow inhibits the action
 of telomerase.
 
-** TRF2 is linked to the DNA repair machinery
+*** TRF2 is linked to the DNA repair machinery
 Deleting TRF2 results in the activation of the kinase ATM and triggers
 the accumulation of DNA damage factors, including H2AX and 53BP1
 \cite{sfeir-jcellsci-2012}. Furthermore, in the absence of TRF2,
 ligase 4- and Ku-mediated NHEJ repair is activated at telomeres, which
 results in chromosome end-to-end fusions \cite{sfeir-jcellsci-2012}.
 
-* Polymer simulation and chromatin modeling
+** Project goals
+
+1. Establish a rigorous quantitative method for determining the size
+   of chromatin structures from STORM data.
+2. Use the method to determine the distribution of physical telomere
+   sizes in Hela L(ong) and Hela S(hort) phenotypes.
+3. Demonstrate how the genomic length of Hela telomeres correlates to
+   physical size.
+4. Determine how variation of shelterin composition at the Hela
+   telomere affects the physical size.
+5. Use the measured size distributions and polymer modeling to
+   estimate the degree and nature of telomere packaging.
+6. Correlate changes in telomere polymeric properties to histone marks
+   acquired after knockdown of shelterin components.
+
+* Super-resolution imaging of telomeres
+Telomeres in two phenotypes of Hela cells were imaged using the Biop's
+N-STORM microscope. DNA FISH was used to attach 18 bp labels to the
+telomeric repeats. The fluorescent label was Cy5. 3D imaging was
+achieved using a cylindrical lens in the Fourier plane of the
+microscope output, but the third dimension was not used in the end.
+
+A single field of view consisted of about four cells on average and
+about twenty or thirty labeled telomeres. 10,000 images were taken for
+each field of view after bleaching Cy5 into its transient
+off-state. Single molecule localizations were extracted from the
+images using Nikon's NIS-Elements Ar software (possibly NIS-A N-STORM
+Analysis as well).
+
+** Data processing of STORM
+The localization data for each field of view was analyzed by grouping
+localizations into clusters using the DB-SCAN clustering
+algorithm. Before performing the full analyses, we found that a
+minimum number per cluster of 8 and neighborhood radius of 65 nm
+sufficed to successfully identify clusters and avoid artifacts and
+noise. In Fig.\ref{fig-sweep}, the number of identified clusters as a
+function of DB-SCAN clustering parameters is plotted. The plateau is
+the ideal area of the parameter space because neighboring telomeres
+are not grouped into one cluster and sparse clusters are still
+identified.
+
+#+CAPTION: The number of identifiable clusters using DB-SCAN in the original Hela L dataset as a function of the minimum points per cluster and the neighborhood radius. The white circle marks $k = 8$ and $\epsilon = 65$, the values used in all datasets. The plateau indicates the optimum region because different telomeres are not grouped into the same cluster whereas spare clusters are still identified.
+#+ATTR_LATEX: scale=0.5
+#+LABEL: fig-sweep
+[[./images/sweep.pdf]]
+
+** Assessing telomere size
+The properties of STORM measurements prevent the accurate
+determination of any single telomere structure. The reason for this
+can be seen in Fig.\ref{fig-sampling}. A small portion of the DNA
+polymer is illustrated in A. However, one only has access to the data
+seen in B, which represents the individual localizations found during
+imaging. The localizations only reflect the true structure to a degree
+due to random labeling and finite localization precisions. An
+additional source of randomness comes from the fact that the telomere
+genomic length is not a single number, but is also random as well. The
+problem is essentially this: which of the many contours that can be
+traced through the localization point data is the real chromatin
+conformation? Even with extremely small localization precisions,
+random labeling of the polymer would still prevent answering this
+question exactly.
+
+#+CAPTION: A) An illustration of a portion of telomeric DNA. B) Due to a finite localization precision and random labeling of the structure, the individual localizations only marginally reflect the underlying DNA structure.
+#+ATTR_LATEX: scale=0.5
+#+LABEL: fig-sampling
+[[./images/polymer_sampling.pdf]]
+
+Because the real telomere conformation cannot be determined from
+STORM, we instead choose to analyze a statistical measure from the
+ensemble of telomeres, the *radius of gyration, $R_g$*. This has two
+advantages: 1) it satisfies our intuitive notion of size for a
+polymer, and 2) the mean $R_g$ of the ensemble has an analytical
+solution from polymer physics, which we can use to constrain our
+models.
+
+Note that we are not measuring *mean end-to-end distances* like in
+many earlier works, (c.f. \cite{bystricky-pnas-2004}). In these works,
+specific genomic sequences could be labeled and the histogram of
+distances between two labeled sequences accurately determined. Because
+the telomeres are genomic repeats and because of stochasiticity of the
+labeling mentioned above, the radius of gyration is a more appropriate
+measure of size. $R_g$ is also more amenable to assessing the telomere
+structure because the genomic distances are much smaller than in
+previous works (telomeres are at most 35 kb, whereas previous work
+explored genomic distances on the order of 100 kb.) Genomic and
+physical distances between molecules are too small to accurately
+determine their separation distributions at these scales.
+
+We should also note that the localization precision of the
+measurements in the z-direction is about 50 nm. This is of the same
+order of magnitude as the telomere size. For this reason, we analyze
+the projected radii of gyration, i.e. the radius of gyration computed
+from the localizations' x- and y-coordinates only. For a polymer in
+thermodynamic equilibrium, the projected gyration radius is equal to
+the true, three-dimensional gyration radius up to a constant factor of
+$\sqrt{3/2}$ \cite{rivetti-jmolbiol-1996}.
+
+* Polymer modeling of telomeric chromatin
 Polymer simulations are now becoming useful tools for modeling
 experimental data on chromatin and predicting other structural
 features of DNA \cite{rivetti-jmolbiol-1996, giorgetti-cell-2014}.
 
-Within the context of this telomere project, we wanted to simulate a
-particular chromatin model, the wormlike chain, and compare it to the
-measured telomere sizes. This would allow us to estimate what
-combination of values for the model parameters, the chain's contour
-length and its persistence length, was most likely to have produced
-our data.
+The difference between our work and the recent chromatin simulations
+of topologically associating domains (TAD's) is primarily one of
+scope: in \cite{giorgetti-cell-2014}, the authors model chromatin
+conformations on the 100 kb scale by allowing for independent
+interaction energies between any two sections of the fiber,
+essentially including the heterogeneity of the fiber as a central
+aspect of their model. This is important for studying interactions
+between enhancer/promoter pairs, which should have more favorable
+interaction energies than with other sections of the fiber. However,
+the telomeres are composed of genomic repeats and are therefore much
+more homogeneous. Their smaller size also restricts the number of
+conformations available for them to adopt.
 
-** Introduction to the polymer models
-Polymers are molecular and macromolecular chains that are found
-throughout both the natural and the man-made world. Because of their
-ubiquity, tools for studying their properties find great utility in
-the physical and life sciences.
+For these reasons, we modeled the polymer as simpler a homogeneous
+wormlike chain for which only two parameters are needed to describe
+the conformational ensemble, the packing ratio $c$ and the persistence
+length $\ell_p$. The packing ratio is the number of base pairs per
+nanometer. To simulate a wormlike chain, we also needed the genomic
+length of telomeres which, when multiplied with $c$ gives the fiber's
+contour length.
 
-The study of polymer physics involves coping with complexity. Many
-polymers are comprised of a very large number of subunits. For
-example, DNA is a polymer that consists of a linear chain of tens of
-millions of nucleic acids. Because of the large number of molecular
-degrees of freedom, statistical mechanics and computer simulations are
-the basic tools for understanding polymer structure.
-
-This work focuses on the computer simulation of one important polymer
-model, the wormlike chain (WLC). It was originally developed by Kratky
-and Porod to incorporate the flexibility of a polymer into the models
-of the time \cite{kratkyporod-1949}. This flexibility emerges from the
-underlying details of the electronic bonds that hold the atoms and
-molecules in the chain together. Despite the fact that it is now over
-65 years old, the WLC still finds many uses in describing physical
-phenomena. Furthermore, its details are still being uncovered by
-scientists.
-
-This work first describes the basic theory. After this, the algorithm
-used to generate the 3D chains is explained. It is one of the simpler
-algorithms and produces the essential results of the model. Finally, I
-describe how the algorithm is implemented on the computer, using
-Python as a programming language.
-
-** Theory of the wormlike chain
+** Theory of the wormlike chain and a simulation approach
 In the simplest WLC model, we treat the polymer as a semiflexible and
 homogeneous rod with a negligible thickness and a length $L_c$, known
 as the contour length. The flexibility of the rod is described by its
@@ -135,7 +218,6 @@ than shorter ones.
 Mathematically, the persistence length is the characteristic length
 describing the exponential decay of the tanget-tanget correlation
 function \cite{phillips-pbotc-2009},
-
 
 \begin{equation}
   \label{eq-tantancorr}
@@ -159,6 +241,7 @@ in one of any of its possible conformations at an instant in time is
 proportional to the Boltzmann factor
 
 \begin{equation}
+  \label{eq-boltzmann}
   P \left( U \right) \sim \exp \left( -\frac{U}{k_B T}\right)
 \end{equation}
 
@@ -172,91 +255,284 @@ The energy $U$ required from the environment to achieve a given
 conformation can be determined by dividing the polymer into many short
 sections such that it can be reprensented as the summation of the
 energies of many small circular arcs. The energy required to bend a
-rod with Young's modulus $E$, moment of 
+rod through an angle $\theta$ with Young's modulus $E$, moment of
+inertia $I$ is
 
-** Simulation Testing
+\begin{equation}
+\label{eq-bending-energy}
+  U = \frac{EI}{2s}\theta^{2}
+\end{equation}
 
-*** Accuracy as a function of segment length and number of chains
-The purpose of the simulations is to compute the probability
-distribution function for randomly selecting a telomere with a certain
-radius of gyration from a population of telomeres. This requires that
-a large number of conformations to be generated so that the
-distribution function is accurate. First, we must know how many
-conformations and are required and the size of the individual segments
-to accurately reflect the mean radius of gyration of the corresponding
-theoretical polymer.
+The persistence length is related to the rod's mechanical properites
+by \cite{phillips-pbotc-2009}
 
-In the simulation, the polymer is constructed from a number of
-equal-sized segments. (The last segment can be shorter than all the
-others if a non-integer value is supplied as a parameter for the
-polymer contour length.) In addition, the Path object and its children
-in the simulation code treat all distances in segment units, i.e. a
-distance of 1 represents 1 segment.
+\begin{equation}
+  \ell_p = \frac{EI}{k_{B}T}
+\end{equation}
 
-The agreement of the mean radius of gyration from the simulation and
-the theoretical expression for the radius of gyration is a function of
-this segment length. Intuitively, the segment length must be short
-enough to accurately model the conformations of the polymer; if it's
-too large, the accuracy of the mean $R_g$ values can be so large that
-we cannot expect that the probability distribution of $R_g$ values to
-reflect the model.
+To simulate a wormlike chain, it suffices to create small linear
+segments with angles between the segments governed the probability
+distribution obtained by substituting Eq. \ref{eq-bending-energy} into
+Eq. \ref{eq-boltzmann} and using the relationship above for the
+persistence length. This will produce a Gaussian distribution, which
+is easily sampled on a computer. To produce a 3D chain, one must also
+include a random rotation of uniform probability between 0 and $2\pi$
+along the axis of one of the segments. Doing so effectively extends
+the simulation of 2D chains described in \cite{rivetti-jmolbiol-1996}.
 
-Fig. \ref{fig-accuracy1} displays the errors between the simulated
-mean radius of gyration and the theoretical one using version 0.1 of
-the code. The polymer chains were 25,000 bp long. Values for the
-linear packing density and the persistence length were taken from the
-range $\left[ 10, 30, 50, 70, 90 \right]$ and $\left[ 10, 30, 50,
-\ldots, 170, 190\right]$, respectively. For each pair of these values,
-1000 polymer confirmations were simluated and their mean $R_g$
-calculated from the discretized probability distribution generated by
-the simulation. Importantly, the segment length in user-defined units
-was 0.4 nm, or 25 times smaller than the smallest persistence
-length. The highest error is $0.05\%$. Note that errors are defined by
-the absolute difference between simulated and theoretical $R_g$,
-divided by the theoretical value for $R_g$.
+** Strategy for estimating telomere polymer properties
+We want to estimate the packing density $c$ and the persistence length
+$\ell_p$ for the telomeres. This would allow us to quantitatively
+understand how shelterin modulates their physical structures.
 
-#+CAPTION: The accuracy of the mean radii of gyration for a number of polymer experiments with different packing densities and persistence lengths. 1000 polymer conformations were simulated for each parameter pair. Each segment was 0.4 nm long.
+We have the distributions of measured 3D gyration radii for about 1000
+telomeres in each of many conditions, including wild type and
+shelterin knockdowns of different proteins.
+
+Our strategy is to simulate a large number of polymers with input
+parameter-pair values $\left(c, \ell_p \right)$ that we can
+choose. The genomic lengths of the telomeres are constrained by the
+mean genomic length and the minimum and maximum values, all three of
+which can be estimated from the Southern blot data. (Gaining more
+precise genomic length distribution information is not possible due to
+the nature of the Southern blot measurement). After simulating each
+polymer, it is ``labeled'' with flourophores whose positions have been
+randomly bumped to reflect the estimated localization imprecision of
+the measurement (see Fig. \ref{fig-sampling} above). The radius of
+gyration for the displaced fluorophores is measured, and a probability
+distribution of measured radii of gyration for all simulated and
+sampled polymers is constructed.
+
+The simulated probability distribution for every parameter pair
+$\left(c, \ell_p \right)$ is then compared to the measured STORM
+distribution using maximum likelihood reconstruction. The goal is to
+find which pair of polymer properties was most likely to have produced
+the measured dataset.
+
+In other words, we're searching for the values of $c$ and $\ell_p$
+that produce a probability distribution of gyration radii that best
+matches the measured distribution.
+
+** Preliminary results for telomere maximum likelihood reconstruction
+In Fig. \ref{fig-mlr}, we plot the log-likelihood function for each
+pair of values for the packing density and persistence lengths. The
+redder the color, the higher the log-likelihood value, and the better
+the $R_g$ distribution for that pair of parameter values matches the
+measured distribution.
+
+#+CAPTION: Log-likelihood that the simulated distribution of $R_g$ values matches the measured one from STORM. Redder colors denote higher log-likelihoods. In particular, regions near $c=30$ and $\ell_p = 50$, as well as $c=50$ and $\ell_p = 90$ match the measured data well.
 #+ATTR_LATEX: scale=0.5
-#+LABEL: fig-accuracy1
-[[./images/accuracy1.pdf]]
+#+LABEL: fig-mlr
+[[./images/mlr.pdf]]
 
-In \ref{fig-accuracy2}, the errors are displayed for the same
-simulation as above, but with a segment length equal 1 nm, or 10 times
-smaller than the smallest persistence length tested. The errors appear
-roughly the same, which suggests that a segment length on the order of
-1 nm is a good length for accurate simulation of chromatin polymers in
-these range of parameters.
+There are a few things to note here: for one, contours of constant
+log-likelihood are very crooked. This is actually because of
+under-sampling the conformational distribution in the simulations and
+because a discrete number of parameter-pair values were
+simulated. 1000 conformations were simulated for each pair of
+parameter values in this plot. Prior simulations with 50,000
+conformations produced much smoother contours. Also, in
+Fig. \ref{fig-mlrgrid}, we mark what pair of values were
+simulated. Once the full parameter space is mapped like this, we can
+explore the important regions by doing a finer sampling over a smaller
+region.
 
-#+CAPTION: Errors between simulation and theory for the same simulation as parameters as in the previous graph, but with a segment length of 1 nm.
+#+CAPTION: Same as above, but with a grid denoting what parameter-pair values were simulated.
 #+ATTR_LATEX: scale=0.5
-#+LABEL: fig-accuracy2
-[[./images/accuracy2.pdf]]
+#+LABEL: fig-mlrgrid
+[[./images/mlrgrid.pdf]]
 
-Finally, in \ref{fig-accuracy3} the errors are displayed for a
-simulation with the same range of values for packing density and
-persistence length, a segment length of 0.4 nm (25 times less than the
-smallest persistence length tested, and only 100 polymers simulated
-for each pair of values. Note that range of errors is about three
-times as high as when 1000 polymers were tested.
+Importantly, the region near $c=30 \, bp/nm$ and $\ell_p = 50 \, nm$
+has a high likelihood value. This means that there should be a good
+overlap between the simulated $R_g$ distributions and the measured
+STORM $R_g$ distributions. To show this, we plot the measured and
+simulated distributions for $\ell_p = 50 \, nm$ with $c=30 \, bp/nm$
+and $c=50 \, bp/nm$ in Figs. \ref{fig-distc30} and
+Fig. \ref{fig-distc50}, respectively. A much better agreement between
+the simulated model and the measured data is seen in the first figure.
 
-#+CAPTION: Errors for a simulation with 100 polymer conformations and 0.4 nm length segments.
+#+CAPTION: Measured and simulated $R_g$ distributions for $c=30 \, bp/nm$ and $\ell_p = 50 nm$.
 #+ATTR_LATEX: scale=0.5
-#+LABEL: fig-accuracy3
-[[./images/accuracy3.pdf]]
+#+LABEL: fig-distc30
+[[./images/Probabilities_c30_lp50.png]]
 
-These results suggest that a segment length of 0.1 nm and a minimum of
-1000 bp be used to create the probability distribution function for a
-chromatin polymer of a single contour length (25000 bp in these
-examples). When the population also involves sampling multiple contour
-lengths, more polymers will likely be required.
+#+CAPTION: Measured and simulated $R_g$ distributions for $c=50 \, bp/nm$ and $\ell_p = 50 nm$.
+#+ATTR_LATEX: scale=0.5
+#+LABEL: fig-distc50
+[[./images/Probabilities_c50_lp50.png]]
 
-*** Tests to be performed
-These are the crucial tests to be performed on the polymer simulation
-code before simulating polymer conformations.
+These values allow us to make a comparison with known chromatin
+models. For example, the /10 nm fiber/ has a packing density of 15
+bp/nm and persistence length of 30 nm. The /30 nm fiber/ has a packing
+density of 100 bp/nm and a persistence length of 200 nm. This
+preliminary data suggests that the telomere packing is actually much
+closer to the 10 nm fiber. Our initial estimates also show that Hela S
+cells have a lower packing density than Hela L, which may be due to
+the higher amounts of shelterin in Hela L. We do not yet have the
+simulation results yet to show this.
+
+* What's next?
+** Refine the parameter estimations
+First, we need to run the simulations with a larger number of steps
+(about 100,000 compared to 1000). This will take several days, so
+Christmas break is an ideal time to do this. This will allow us to
+better refine the parameter space plots and identify what regions need
+to be sampled with a finer grid.
+
+We also need to determine the uncertainty in the parameter value
+estimates. Judging by the extreme differences between distributions
+when $c=30 \, bp/nm$ and $c=50 \, bp/nm$, it looks like the
+uncertainty in the packing density is going to be small. $\ell_p$
+cannot be so easily constrained, though, in part because the telomeres
+are so small. The poor constraint on one parameter could be expected
+since $c$ and $\ell_p$ are actually only independent parameters when
+the polymer contour length is shorter than the persistence
+length. When the contour length is much greater than the persistence
+length, the only parameter governing polymer configuration is the
+ratio $\frac{c}{\ell_p}$ \cite{martin-thesis-2008}. At this point, the
+wormlike chain becomes the freely-jointed chain.
+
+One way to address uncertainty in maximum likelihood estimates is to
+compute the local curvature of the parameter space at the point of the
+best estimate. This involves taking the second derivative of the
+parameter space and requires a finely sampled grid at the maximum. Due
+to the prohibitive computation times involved, we're delaying this
+uncertainty estimation for now and instead looking at the overlap
+between measured and simulated distributions to qualitatively judge
+the uncertainty in the parameters.
+
+** Improve simulation speeds
+A portion of the simulation code can be rewritten to utilize parallel
+processing. On my 12-core machine, this should result in a 12-times
+reduction in the computation time. This isn't so important now and
+will likely be done after the break, since I can get a number of
+simulations to finish with the current code over Christmas.
+
+** Compare parameter value estimations for Shelterin knockdowns
+We've observed that the mean radius of gyration is always smaller when
+TRF2 is knocked down. There is also a larger number of heterochromatic
+marks on the telomeres in TRF2 knockdowns, which suggests that charge
+screening on the histones should result in telomere compaction. In
+Fig. \ref{fig-trfKDs}, we show measured mean gyration radii for TRF1,
+TRF2, and TRF1/TRF2 double knockdowns, compared to the control
+pSuper. It also intersting to note that TRF1 knockdowns result in
+telomere decompaction, which might be seen in the figure as well,
+though the results are less obvious and the cause less clear
+\cite{sfeir-jcellsci-2012}.
+
+#+CAPTION: Mean gyration radii for the TRF1, TRF2, and TRF1/TRF2 knockdown experiments. The control is pSuper. Error bars are standard errors of the mean.
+#+ATTR_LATEX: scale=0.75
+#+LABEL: fig-trfKDs
+[[./images/sizes-TRF12.png]]
+
+We would like to quantitatively assess exactly how much more compact
+the TRF2 knockdowns are than the controls, which is reflected in the
+value for the packing density. At this point, though, it's unclear
+whether we can say that there is a statistically significant
+difference in packing densities since the change in mean size is
+rather small.
+
+If we are however capable of determining the change in packing
+density, this will be the first physical measurement (to my knowledge)
+of small scale compaction in chromatin due to heterochromatic marks
+that are caused by charge screening on the histones.
+
+* Additional features not included in the model
+** Excluded volume interactions
+The polymer/STORM model I've developed does not take into account
+excluded volume interactions, though these have been suggested to be
+important for some chromatin fiber interactions.
+
+The reason for this is that excluded volume interactions would require
+an additional parameter in the model, which is the radius of the
+excluded volume around a polymer segment. However, I know of no
+constraints on this value that we can use, except for maybe the known
+diameter of the 10 nm and 30 nm fibers. This is a poor constraint
+because it only reflects hard-core electrostatic interactions, not the
+the longer-range interactions that would more likely determine the
+polymer conformation.
+
+I also have good reason to think that excluded volume interactions are
+not going to matter in telomeres anyway. We're finding a minimum
+persistance length consistent with the data of about 50 nm. Since the
+telomeres are only about 200 nm in diameter, the chromatin fiber
+probably doesn't bend over onto itself in this condition because it's
+too stiff, and thus there simply aren't enough conformations in the
+ensemble where the fiber overlaps itself.
+
+** T-loops
+We are not including the T-loop in the polymer model. The T-loop is a
+structure where the single strand overhang folds back and inserts
+itself into the double-stranded portion of the telomere. I have been
+told that these have only been observed in vitro (c.f. the work from
+Prof. Zhuang's lab \cite{doksani-cell-2013}, where they isolated
+telomeres and spread them out on a surface before
+imaging). Additionally, our biology colleagues seem to think the
+T-loop is some sort of fascination of other groups and that their
+existence is in vivo is questionable.
+
+I think it might be challenging to address this point. Our results
+might in fact conflict with \cite{doksani-cell-2013} since we see a
+shrinking telomere when TRF2 is knocked down. They see in vitro that
+the T-loop is not formed when TRF2 is knocked down, and I suspect
+(though on very limited grounds) that T-loop removal in vivo would
+cause an increase in telomere size. This point really needs to be
+thought about before we submit, but I haven't received much help on
+this point.
+
+** G-quadruplex
+There is a higher-order structure in the telomere called a
+G-quadruplex \cite{ray-pnas-2014}. It is formed by interactions
+between guanines in double stranded DNA. My limited knowledge on the
+subject is that the 4-guanine interaction is weak, that G-quadruplex
+existence is questionable by some in vivo, and that the relatively
+harsh conditions of FISH preparation would essentially remove these
+formations during labeling, if they did indeed exist.
+
+Still, we also have to address this point, like the T-loops. One way
+is to suggest that the estimated packing density $c$ effectively
+includes contributions from the G-quadruplexes. After all, we measure
+a packing density that's higher than the 10 nm fiber; this increase
+could reflect more compaction due to the formation of G-quadruplexes.
+
+* Misc. and Project TODO's
+
+1. [ ] Determine the mean and width of the N distributions from
+   Southern blot data : Original dataset Hela L and S, TRF1/TRF2 L and
+   S
+2. [ ] Write code to randomly sample the length of the telomere
+3. [ ] Determine what the localization precision is for the Original
+   dataset Hela S and L, and the TRF1/TRF2 dataset, Hela S and L
+4. [ ] Tests of significance on the differences in the distributions
+5. [X] Remove localizations that are on for more than one frame (this
+   was already done in the Nikon software, see the e-mail with Fabian
+   at Nikon)
+6. [X] Remove all code related to saving/reading histograms
+7. [X] Clean up code for deciding which distribution of Rg to save
+
+** Tests to be performed
+   These are the crucial tests to be performed on the polymer
+   simulation code before simulating polymer conformations.
 
 1. [X] The dependence of the simulated mean RG on segment length.
    This test was performed with code version 0.1 on <2014-11-28 Fri>.
 2. [X] The dependence of the simulated mean RG on the number of
    paths. Test performed with code version 0.1 on <2014-11-28 Fri>
+
+** Southern blots
+
+*** Hela L WT
+| Left bound | Right bound | Mean     | Width   | Half width |
+|------------+-------------+----------+---------+------------|
+| 19.3 kb    | 33.2 kb     | 26.25 kb | 13.9 kb | 6.95 kb    |
+
+Localization precision (1D): 2.12
+
+*** Hela S WT
+| Left bound | Right bound | Mean     | Width   | Half width |
+|------------+-------------+----------+---------+------------|
+| 9.2 kb     | 14.3 kb     | 11.75 kb | 5.1 kb  | 2.6 kb     |
+
+Localization precision (1D): 2.45
 
 \printbibliography

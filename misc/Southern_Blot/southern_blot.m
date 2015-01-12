@@ -48,10 +48,10 @@ Nkb = 10.^(polyval(p, scale(:,1)));
 %% Create probability distributions from Southern blot data
 % Define boundaries of blots (determined visually)
 % This is the most important, but unfortunately most subjective part
-boundaryL = [1.03, 2.65]; % Scale 1
-boundaryS = [0.38, 1.45 ]; % Scale 1
-%boundaryL = [112, 138]; % Scale 2
-%boundaryS = [100, 120]; % Scale 2
+%boundaryL = [1.03, 2.65]; % Scale 1
+%boundaryS = [0.38, 1.45 ]; % Scale 1
+boundaryL = [112, 138]; % Scale 2
+boundaryS = [100, 120]; % Scale 2
 
 % Filter out distributions from the full line profile
 distL = hL(hL(:,1) >= boundaryL(1) & hL(:,1) <= boundaryL(2), :); distL(:,2) = 256 - distL(:,2);
@@ -59,6 +59,13 @@ distS = hS(hS(:,1) >= boundaryS(1) & hS(:,1) <= boundaryS(2), :); distS(:,2) = 2
 NkbL = 10.^(polyval(p, scale(scale(:,1) >= boundaryL(1) & scale(:,1) <= boundaryL(2))));
 NkbS = 10.^(polyval(p, scale(scale(:,1) >= boundaryS(1) & scale(:,1) <= boundaryS(2))));
 
+%% Plot the Hela L distribution
+plot(Nkb, hL(:,2))
+
+%% Plot Hela S distribution
+plot(Nkb, hS(:,2))
+
+%% continue from the above
 % Perform a cubic spline smoothing and interpolation to the data
 smoothingFactorL = 0.5;
 smoothingFactorS = 0.75;

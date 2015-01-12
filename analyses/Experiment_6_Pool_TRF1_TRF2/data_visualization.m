@@ -93,6 +93,30 @@ fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 
+%% Pooled data from TRF1 and TRF2 double knockdowns : Plots of Medians
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
 %% 08-09-2014 TRF1 and TRF2 double knockdowns : Hela L
 disp('===================================================================')
 disp('08-09-2014 TRF1 and TRF2 double knockdowns')
@@ -174,6 +198,32 @@ fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 
+%% 08-09-2014 TRF1 and TRF2 double knockdowns : Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
 %% 09-09-2014 TRF1 and TRF2 double knockdowns : Hela L
 disp('===================================================================')
 disp('09-09-2014 TRF1 and TRF2 double knockdowns')
@@ -253,6 +303,32 @@ errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 09-09-2014 TRF1 and TRF2 double knockdowns: Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 
 %% 21-10-2014 TRF1 and TRF2 double knockdowns : Hela L
 disp('===================================================================')
@@ -334,6 +410,32 @@ fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 
+%% 21-10-2014 TRF1 and TRF2 double knockdowns : Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
 %% 05-11-2014 TRF1 and TRF2 double knockdowns : Hela L
 disp('===================================================================')
 disp('05-11-2014 TRF1 and TRF2 double knockdowns')
@@ -414,6 +516,32 @@ fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 
+%% 05-11-2014 TRF1 and TRF2 double knockdowns : Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
 %% 17-11-2014 TRF1 and TRF2 double knockdowns : Hela L
 disp('===================================================================')
 disp('17-11-2014 TRF1 and TRF2 double knockdowns')
@@ -493,6 +621,32 @@ errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
 plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 17-11-2014 TRF1 and TRF2 double knockdowns : Plot of Medians
+
+filterData = findData(data, filterDataNames);
+
+% Median RgTrans's for all datasets
+clear figParams
+figParams.title = 'Median R_g';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume for all datasets
+clear figParams
+figParams.title = 'Median Volume';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Volume, nm^3';
+figParams.legend = {'Hela L'; 'Hela S'};
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMediansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 
 % Switch back to parent directory
 cd ..

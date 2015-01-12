@@ -182,7 +182,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S (set 19)
+% Hela L (set 19)
 dataIn.experimentShortName = '09-09-2014 TRF1';
 dataIn.datasetShortName = 'L dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/09_09_2014_HelaS_L_Trf1_Trf2_KD/';
@@ -200,7 +200,7 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
-% Hela S (set 21)
+% Hela L (set 21)
 dataIn.experimentShortName = '09-09-2014 TRF2';
 dataIn.datasetShortName = 'L dataset';
 dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/09_09_2014_HelaS_L_Trf1_Trf2_KD/';
