@@ -7,11 +7,21 @@ https://bespokeblog.wordpress.com/2011/07/11/basic-data-plotting-with-matplotlib
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
+from matplotlib import rcParams
+
+fontpath = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf'
+prop = font_manager.FontProperties(fname = fontpath)
+rcParams['font.family'] = prop.get_name()
+rcParams.update({'font.size' : 12})
+rcParams.update({'legend.fontsize' : 12})
+rcParams.update({'axes.titlesize' : 12})
 
 hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans.txt')
 hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans.txt')
 
 myBins = np.arange(10, 200, 5)
+fig = plt.figure(figsize = (3.5 , 3.5), dpi = 90)
 nL, binsL, patchesL = plt.hist(hl,
                                bins = myBins,
                                histtype = 'stepfilled',
@@ -26,10 +36,13 @@ nH, binsH, patchesH = plt.hist(hs,
                                label = 'Hela S',
                                normed = True)
 
+fig.tight_layout(pad = 2)
+
 plt.title('Non-transfected cell lines')
 plt.xlabel('Radius of gyration, nm')
 plt.ylabel('Normalized frequency')
 plt.grid(True)
 plt.legend()
+plt.show()
 plt.savefig('fig1b.pdf')
 plt.close()

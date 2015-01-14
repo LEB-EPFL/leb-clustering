@@ -4,24 +4,27 @@
 
 function southern_blot(data)
 %% Read in line profiles of Southern blots
-hL = dlmread('helaL2.txt');
-hS = dlmread('helaS2.txt');
-scale = dlmread('scale2.txt');
+hL = dlmread('Blot_Used_in_Paper/HelaL_Blot_Paper.txt');
+hS = dlmread('Blot_Used_in_Paper/HelaS_Blot_Paper.txt');
+scale = dlmread('Blot_Used_in_Paper/Scale_Left.txt');
+scaleR = dlmread('Blot_Used_in_Paper/Scale_Right.txt'); % Use only with blot used in the paper
 
 %% Convert from image distance scale to genomic scale
 % Find locations of tick marks in the scale profile
 % Set by visual inspection of line profiles
 %filterLevel = 90; % For scale 1
-filterLevel = 126; % For scale 2
-scaleTicks = scale(scale(:,2) <= filterLevel, 1);
+%filterLevel = 126; % For scale 2
+%scaleTicks = scale(scale(:,2) <= filterLevel, 1);
+scaleTicks = [3, 45, 63, 82, 96, 100, 111, 116, 119, 123, 132];
 
 % Number of kilobase pairs correspoinding to the ticks
 %NTicks = [8, 10, 17, 29.9, 38.5, 48.5]'; % For scale 1
-NTicks = [2, 2.5, 3, 4, 5, 6, 8, 10, 15, 17, 24, 29, 33, 38, 48.5]'; % For scale 2
+%NTicks = [2, 2.5, 3, 4, 5, 6, 8, 10, 15, 17, 24, 29, 33, 38, 48.5]'; % For scale 2
+NTicks = [3, 5, 7, 10, 15, 17, 24, 29, 33, 38, 48.5];
 
 % Adjust for out of range marks (only for scale 2!)
-scaleTicks = scaleTicks(7:end);
-NTicks = NTicks(7:end);
+%scaleTicks = scaleTicks(7:end);
+%NTicks = NTicks(7:end);
 
 % Check for logarithmic scale and fit a line
 p = polyfit(scaleTicks, log10(NTicks),1);
@@ -65,6 +68,11 @@ plot(Nkb, hL(:,2))
 %% Plot Hela S distribution
 plot(Nkb, hS(:,2))
 
+%% Write distributions to file
+% HL = [Nkb, hL(:,2)];
+% HS = [Nkb, hS(:,2)];
+% csvwrite('HelaL_SBlot', HL)
+% csvwrite('HelaS_SBlot', HS)
 %% continue from the above
 % Perform a cubic spline smoothing and interpolation to the data
 smoothingFactorL = 0.5;

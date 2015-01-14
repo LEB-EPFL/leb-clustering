@@ -524,14 +524,14 @@ could reflect more compaction due to the formation of G-quadruplexes.
 *** Hela L WT
 | Left bound | Right bound | Mean     | Width   | Half width |
 |------------+-------------+----------+---------+------------|
-| 19.3 kb    | 33.2 kb     | 26.25 kb | 13.9 kb | 6.95 kb    |
+| 15 kb      | 39 kb       | 27 kb    | 24 kb   | 12 kb      |
 
 Localization precision (1D): 2.12
 
 *** Hela S WT
 | Left bound | Right bound | Mean     | Width   | Half width |
 |------------+-------------+----------+---------+------------|
-| 9.2 kb     | 14.3 kb     | 11.75 kb | 5.1 kb  | 2.6 kb     |
+| 9 kb       | 16 kb       | 12.5 kb  | 7 kb    | 3.5 kb     |
 
 Localization precision (1D): 2.45
 
