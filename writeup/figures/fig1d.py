@@ -11,6 +11,8 @@ fontpath = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf'
 prop = font_manager.FontProperties(fname = fontpath)
 rcParams['font.family'] = prop.get_name()
 rcParams.update({'font.size' : 12})
+rcParams.update({'legend.fontsize' : 12})
+rcParams.update({'axes.titlesize' : 12})
 
 hl = np.loadtxt('figure_data/HelaL_SBlot', delimiter = ',')
 hs = np.loadtxt('figure_data/HelaS_SBlot', delimiter = ',')
@@ -29,7 +31,7 @@ plt.plot(NS, BlotS,
 fig.tight_layout(pad = 1.5)
 
 plt.xlabel('Genomic length, kb')
-plt.ylabel('Line profile, pixel intensities')
+plt.ylabel('Inverse pixel intensity')
 plt.xlim((0, 70))
 plt.grid(True)
 plt.legend()
