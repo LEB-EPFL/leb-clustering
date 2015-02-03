@@ -43,7 +43,7 @@ maxLoc = 1000;
 % descriptive names and root directories for each dataset.
 
 cd data_structures/
-data = experiment_0_Hela_LS();
+data = experiment_5_SmchD1_TRF2();
 cd ..
 
 

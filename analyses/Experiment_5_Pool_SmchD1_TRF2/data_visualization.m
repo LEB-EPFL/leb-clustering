@@ -220,21 +220,21 @@ fullScreen = true;
 fieldName = 'volume';
 plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
 
-%% 24-08-2014 SmchD1 and TRF2 knockdowns : Hela S
+%% 21-01-2015 SmchD1 and TRF2 knockdowns : Hela S
 disp('===================================================================')
-disp('24-08-2014 SmchD1 and TRF2 knockdowns')
+disp('21-01-2014 SmchD1 and TRF2 knockdowns')
 disp('===================================================================')
 
-filterDataNames = {'24-08-2014 pSuper';
-                   '24-08-2014 TRF2';
-                   '24-08-2014 pLVP041';
-                   '24-08-2014 pLVP041 TRF2';
-                   '24-08-2014 pLVP042';
-                   '24-08-2014 pLVP042 TRF2'};
+filterDataNames = {'21-01-2015 pSuper';
+                   '21-01-2015 TRF2';
+                   '21-01-2015 pLVP041';
+                   '21-01-2015 pLVP041 TRF2';
+                   '21-01-2015 pLVP042';
+                   '21-01-2015 pLVP042 TRF2'};
 filterData = findData(data, filterDataNames, 'S dataset');
 
 clear figParams
-figParams.title = '24-08-2014 KD of SmchD1 and TRF2 / Hela S';
+figParams.title = '21-01-2015 KD of SmchD1 and TRF2 / Hela S';
 figParams.xlabel = 'R_g, nm';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -243,7 +243,7 @@ figParams.ylim = [0 0.03];
 plotDist(filterData, 'RgTrans', numBins, figParams)
 
 clear figParams
-figParams.title = '24-08-2014 KD of SmchD1 and TRF2 / Hela S';
+figParams.title = '21-01-2015 KD of SmchD1 and TRF2 / Hela S';
 figParams.xlabel = 'Volume, nm^3';
 figParams.ylabel = 'Normalized frequency';
 figParams.legend = filterDataNames;
@@ -253,11 +253,11 @@ plotDist(filterData, 'volume', numBins, figParams)
 
 printStatistics(filterData);
 
-%% 24-08-2014 SmchD1 and TRF2 knockdowns : Plot of Means
+%% 21-01-2015 SmchD1 and TRF2 knockdowns : Plot of Means
 
 % Mean RgTrans
 clear figParams
-figParams.title = 'Mean R_g for 24-08-2014 datasets';
+figParams.title = 'Mean R_g for 21-01-2015 datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
 errorBar = 'stdErr';
@@ -267,7 +267,7 @@ plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
 
 % Volume
 clear figParams
-figParams.title = 'Mean volume for 24-08-2014 datasets';
+figParams.title = 'Mean volume for 21-01-2015 datasets';
 figParams.ylim = [0 8e6];
 figParams.ylabel = 'Mean volume, nm^3';
 errorBar = 'stdErr';
@@ -275,11 +275,11 @@ fullScreen = true;
 fieldName = 'volume';
 plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
 
-%% 24-08-2014 SmchD1 and TRF2 knockdowns : Plot of Medians
+%% 21-01-2015 SmchD1 and TRF2 knockdowns : Plot of Medians
 
 % Median RgTrans
 clear figParams
-figParams.title = 'Median R_g for 24-08-2014 datasets';
+figParams.title = 'Median R_g for 21-01-2015 datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
 errorBar = 'stdErr';
@@ -289,7 +289,7 @@ plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
 
 % Median volume
 clear figParams
-figParams.title = 'Median volume for 24-08-2014 datasets';
+figParams.title = 'Median volume for 21-01-2015 datasets';
 figParams.ylim = [0 8e6];
 figParams.ylabel = 'Median volume, nm^3';
 errorBar = 'stdErr';
