@@ -21,7 +21,7 @@ hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans.txt')
 hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans.txt')
 
 myBins = np.arange(10, 200, 5)
-fig = plt.figure(figsize = (3.5 , 3.5), dpi = 90)
+fig = plt.figure(figsize = (3.46 , 3.46), dpi = 300)
 nL, binsL, patchesL = plt.hist(hl,
                                bins = myBins,
                                histtype = 'stepfilled',
@@ -43,5 +43,5 @@ plt.xlabel('Radius of gyration, nm')
 plt.ylabel('Normalized frequency')
 plt.grid(True)
 plt.legend()
-plt.savefig('fig1b.png')
+plt.savefig('fig1b.pdf')
 plt.close()

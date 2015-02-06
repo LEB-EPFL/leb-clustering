@@ -132,7 +132,7 @@ ax5.set_xlabel('Radius of gyration, nm')
 ax5.annotate('N = %d' % len(TRF1TRF2L), xy = (10, 0.016), xytext = (10, 0.016))
 
 # Hela S TRF1/TRF2
-ax6.hist(pSupL,
+ax6.hist(pSupS,
          bins = myBins,
          histtype = 'stepfilled',
          color = '#333333',
@@ -153,6 +153,5 @@ ax6.annotate('N = %d' % len(TRF1TRF2S), xy = (10, 0.016), xytext = (10, 0.016))
 
 fig.tight_layout(pad = 1.5)
 
-plt.show()
 plt.savefig('fig3c.pdf')
 plt.close()
