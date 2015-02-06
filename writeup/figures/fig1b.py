@@ -20,8 +20,13 @@ rcParams.update({'axes.titlesize' : 7})
 hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans.txt')
 hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans.txt')
 
+# For plotting the means
+hlMean = [np.mean(hl), np.mean(hl)]
+hsMean = [np.mean(hs), np.mean(hs)]
+ysMean = [0, 0.025]
+
 myBins = np.arange(10, 200, 5)
-fig = plt.figure(figsize = (3.46 , 3.46), dpi = 300)
+fig = plt.figure(figsize = (3.46 , 2.5), dpi = 300)
 nL, binsL, patchesL = plt.hist(hl,
                                bins = myBins,
                                histtype = 'stepfilled',
@@ -35,13 +40,26 @@ nH, binsH, patchesH = plt.hist(hs,
                                alpha = 0.5,
                                label = 'Hela S',
                                normed = True)
+"""
+plt.plot(hlMean,
+         ysMean,
+         color = '#000000',
+         linestyle = '--',
+         linewidth = 1.5)
+plt.plot(hsMean,
+         ysMean,
+         color = '#AAAAAA',
+         linestyle = '--',
+         linewidth = 1.5)"""
 
 fig.tight_layout(pad = 2)
 
 plt.title('Non-transfected cell lines')
 plt.xlabel('Radius of gyration, nm')
 plt.ylabel('Normalized frequency')
+plt.ylim(tuple(ysMean))
 plt.grid(True)
 plt.legend()
-plt.savefig('fig1b.pdf')
+#plt.show()
+plt.savefig('fig1b_nomeans.pdf')
 plt.close()
