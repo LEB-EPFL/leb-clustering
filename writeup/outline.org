@@ -1,0 +1,215 @@
+#+OPTIONS: toc:2 author:nil ^:nil date:nil
+
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [12pt, a4paper]
+#+LATEX_HEADER: \usepackage{fullpage}
+#+LATEX_HEADER: \usepackage{authblk}
+#+LATEX_HEADER: \usepackage{setspace} % for adjust TOC line spacing
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: \setlength{\parskip}{1em}
+#+LATEX_HEADER: \setlength{\affilsep}{0.5em}
+
+#+TITLE: Telomere project: outline of main results
+#+LATEX_HEADER: \author{Kyle M. Douglass}
+#+LATEX_HEADER: \affil{Institute of Physics of Biological Systems, EPFL, Lausanne, Switzerland}
+
+#+BEGIN_ABSTRACT
+Presented at the top level of the outline are the main assertions and
+conclusions concerning the telomere project and what will be discussed
+in the manuscript. The main pieces of evidence that support these
+conclusions are discussed, as well as the weak points.
+#+END_ABSTRACT
+
+#+LATEX: % adjust TOC line spacing
+#+LATEX: \addtocontents{toc}{\protect\setstretch{0.1}}
+
+* Telomere sizes can be assessed using STORM microscopy
+
+** Reasoning: Fluorescent molecules mark DNA positions
+   The radius of gyration of a point cloud that represents one
+   telomere reflects the radius of gyration ($R_g$) of the underlying
+   telomere. This is largely an assertion based on what we know of how
+   STORM microscopy works and not necessarily a conclusion that can be
+   strictly proven.
+
+** Support: Our numbers are similar to the Zhuang lab paper
+   The Zhuang lab measured diameters of the localization
+   distribution. This number is roughly the same as our mean radius of
+   gyration. While not direct evidence of this point, we can claim
+   consistency with prior results. Also, the genomic lengths of their
+   mouse embryonic fibroblasts are similar to ours.
+
+** Weak point: the telomeres are not fully labeled
+   The average number of localizations found in a telomere is between
+   100 and 200. However, given a label size of 18 base pairs and an
+   average genomic size of 10 kb for Hela S and 25 kb for Hela L, we
+   know that this corresponds to a labeling efficiency of
+   $\frac{100}{10000 / 18} = 0.18$, or about 20\%. This means
+   undersampling might bias the results.
+
+*** TODO variation in $R_g$ is small when subsampling
+    We can remove points from telomere clusters and show the
+    dependence of $R_g$ on the number of points removed. This would
+    tell us how strongly the value depends on any given set of points.
+
+*** TODO simulations of real $R_g$ vs. subsampled $R_g$
+    We can simulate a large number of polymers and simulate what
+    happens if we label only a fraction of their points.
+
+** Weak point: the telomere size depends on number of frames
+   We see a slight increase (~5 nm, or about 5\% to 6\% of the mean)
+   in average size when the we image with 30,000 frames. This could be
+   due to stage drift. It's supposedly corrected for using the
+   autocorrelation method, but how precise is this method?
+
+** Weak point: cluster sizes depend on staining
+   Immunofluorescence staining of TRF1 showed a slightly smaller
+   telomere size than DNA FISH staining. \textbf{But}, these
+   measurements label different parts and may have different linker
+   sizes between the label and the fluorescent marker. Is this a fair
+   comparison?
+
+** Weak point: small telomeres will appear disproportionately large
+   Smaller telomere sizes will \textit{appear} disproportionately
+   larger than their real size than larger ones due to the
+   localization uncertainty.
+
+*** Counter argument : this can be taken into account
+    If we know the localization precision, we can correct for this. In
+    fact, this effect is already taken into account in our estimation
+    of the model parameters for compaction and persistence length.
+    
+** Weak point: DNA FISH ruins the local DNA structure
+   I'm not sure if we can really debate this point or whether its
+   known to what extent higher order structure is destroyed when
+   performing FISH.
+
+*** Counter argument: IF TRF1 measurements show similar sizes
+    The immunofluorescence labeling can actually be a strong point in
+    this case. Because we only measure a small change in size from IF,
+    we can claim that the compaction of is roughly preserved when FISH
+    is performed.
+
+    The actual difference in Hela L TRF1 IF and Hela L WT FISH is
+    about 20 nm in the mean radius of gyration.
+
+-----
+* Telomeres in Hela cells have a large range of sizes
+
+** Reasoning: the distributions tell us this
+   Telomere sizes in Hela S(hort) and Hela L(ong) were measured by
+   computing the radius of gyration of localized fluorescent molecules
+   attached to the telomeres using DNA FISH. Wild type Hela S cells
+   had telomeres with a mean radius of gyration of about 80 nm and a
+   standard deviation between 25 and 30 nm. Hela L cells had a mean
+   radius of gyration of about 100 nm and a standard deviation also
+   between 25 and 30 nm.
+
+   Both Hela L and S distributions contain one single, broad
+   peak. They are slightly skewed to the left, suggesting a
+   proportionally greater number of telomeres with larger gyration
+   radii than smaller.
+
+** Support: Consistency with Zhuang lab paper
+   Our results for the $R_g$ distribution shape, mean, and width are
+   also consistent with the previously mentioned Zhuang lab paper.
+
+-----
+* Telomeres can be modeled as linear polymers
+
+** Reasoning: DNA is a linear polymer
+   DNA is a linear polymer, so why not model telomeres like this?
+   Strictly speaking, we're modeling the DNA as a linear polymer, not
+   the DNA + telomere-associating proteins.
+
+** Weak point: t-loops
+   T-loops will make part of the polymer appear as circular, not
+   linear. One of the best arguments we have for not including them is
+   that t-loops contribute to the higher order structure in a way that
+   influences the packing density. Since we assess the packing density
+   in our model, we indirectly measure the effect of t-loops.
+
+*** Counter argument: t-loops are highly heterogeneous
+    Not all in vitro telomeres in the Zhuang paper have
+    t-loops. Furthermore, if they did, the size of the loop relative
+    to the entire size of the telomere varied by a very large amount
+    (it was almost uniform, see Fig. 2G in the paper).
+
+    Therefore, not accounting for the t-loop probably has less of an
+    effect on our results than if every telomere had a t-loop. If
+    every telomere had a t-loop, the linear polymer model would be
+    much more biased.
+
+*** Counter argument: t-loops are included in the packing density
+    We measure the packing density of the linear polymer, in which
+    higher order structure abstracted way into the details of the
+    polymer fiber itself. t-loops may be one such higher order
+    structure.
+
+*** Counter argument: they've only been observed in vitro
+    Is this true? Is it really a good argument to suggest they don't
+    exist because we've never seen them in vivo?
+    
+** Weak point: G-quadruplexes
+   We don't specifically allow for G-quadruplexies, at least
+   directly...
+
+*** Counter argument: These actually cause greater compaction
+    Packaging by G-quadruplexes should effectively appear as a larger
+    telomeric compaction in our model. Since we account for/measure
+    compaction, we are indirectly including them. This also follows
+    the same line of reasoning as the t-loops.
+
+-----
+* We can infer values for compaction and persistence length
+** Reasoning: maximum likelihood reconstructions
+   We perform a simulation of a large number of polymers at
+   thermodynamic equilibrium and compare the $R_g$ distributions of
+   the simulations to the measured data. This lets us place bounds on
+   the compaction and to some extent the persistence length.
+
+   Interestingly, \textbf{we find no evidence of a 30nm fiber}.
+** Support: Timothée has also done MLE work
+** Weak point: The validity depends on linear polymer assumption
+   See above for counter arguments.
+** Weak point: We use the Southern blots as constraints
+   We need to constrain the length of the polymer to infer its
+   compaction. To do this, we use the Southern blots to make an
+   estimate of the distribution of genomic lengths in the telomeres.
+
+   I estimate the distributions as uniform, instead of Gaussian,
+   because this is a maximum entropy estimate. The edges of the
+   Southern blots might not reflect the genomic size but may instead
+   be a result of the blot spreading, sort of like an impulse response
+   of a linear system. This is also why I use the sharp edges of the
+   uniform distribution.
+
+*** TODO weak sensitivity to Southern blots
+    I should run multiple simulations with different means and widths
+    of the distributions to show that the results don't strongly
+    depend on them.
+
+-----
+* TRF1 and TRF2 knockdowns affect telomere size
+** Evidence: Visual comparison of distributions
+   We see a consistent difference in $R_g$ distributions for Shelterin
+   knockdowns.
+*** TODO Plot individual dataset distributions
+** Evidence: Significance tests
+   The significance tests that I performed showed differences and a
+   typical uncertainty in the mean of about 5 nm.
+*** TODO Permutation tests
+** Evidence: ChIP shows a correlation
+   ChIP measurements show that TRF2 knockdowns should have a large
+   amount of heterochromatic marks.
+** Weak point: the controls differed from the wild type
+   The control means differ from the wild type means, but not by as
+   much as the Shelterin knockdowns. We can claim that this puts a
+   limit of about 5 nm on what we can tell based on distributions.
+
+-----
+* Transfection causes subpopulations to appear
+  We see a small spike at very small gyration radii when we transfect
+  cells, either with a control or a real knockdown.
+** Evidence: the distributions
+   
