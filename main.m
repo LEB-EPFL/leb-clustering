@@ -33,17 +33,22 @@ end
 % minLoc - Discard all clusters with localizations fewer than this number.
 % maxLoc - Discard all clusters with localizations greater than this
 %          number. (Set to Inf if there you don't want an upper cutoff.)
+% zAxisDist - Retain clusters with a center of mass that is less than or
+%             equal to +/- this distance from the z=0 focal plane.
+%             (300 nm is good for our experiments)
 k = 8;
 Eps = 65;
 
 minLoc = 50;
 maxLoc = 1000;
+
+zAxisDist = 300;
 %% Setup the data structure and designate files for analysis.
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
 
 cd data_structures/
-data = experiment_0_Hela_LS();
+data = experiment_1_FISH_immuno();
 cd ..
 
 
@@ -87,14 +92,14 @@ if useParallel
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
         currDataF = [currData.Xc currData.Yc currData.Zc];
-        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc);
+        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist);
     end
 else
     for ctr = 1:length(files)
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
         currDataF = [currData.Xc currData.Yc currData.Zc];
-        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc);
+        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist);
     end
 end
 

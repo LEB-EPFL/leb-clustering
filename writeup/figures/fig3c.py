@@ -138,7 +138,7 @@ ax6.hist(pSupS,
          color = '#333333',
          label = 'pSuper',
          normed = True)
-ax6.hist(TRF2L,
+ax6.hist(TRF1TRF2S,
          bins = myBins,
          histtype = 'stepfilled',
          color = '#AAAAAA',

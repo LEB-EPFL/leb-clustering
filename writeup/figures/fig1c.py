@@ -17,8 +17,8 @@ rcParams.update({'font.size' : 7})
 rcParams.update({'legend.fontsize' : 7})
 rcParams.update({'axes.titlesize' : 7})
 
-hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans.txt')
-hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans.txt')
+hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans')
+hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans')
 
 stdprops = dict(linewidth = 1.0, color = 'k')
 meanprops = dict(markerfacecolor = 'k', markersize = 2.0)
@@ -37,7 +37,7 @@ boxL = plt.boxplot([hs, hl],
                    flierprops = flierprops,
                    labels = labels)
 
-fig.tight_layout(pad = 1.5)
+fig.tight_layout(pad = 1.6)
 
 plt.xlim((0, 200))
 plt.xlabel('Radius of gyration, nm')

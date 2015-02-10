@@ -7,11 +7,13 @@
 %   minLoc - Minimum number of points in a cluster
 %   maxLoc - Maximum number of points in a cluster
 %            (set to Inf if there's no upper bound filtering)
+%   zAxisDist - Remove clusters with centers of mass that are greater than
+%               +/- this distance from the 0 nm z-plane.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/02/09 $ $REVISION: 1.5 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/02/10 $ $REVISION: 1.6 $
 %
 
-function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
+function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc, zAxisDist)
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)
@@ -35,7 +37,7 @@ cellLength = cellfun(@length, clusters);
 clustersF = clusters(cellLength > minLoc & cellLength < maxLoc);
 numClustersF = length(clustersF);
 
-%% Filter out clusters that lie within 100 nm of the z-borders
+%% Filter out clusters that lie within a given distance of the z-borders
 % Find average z position of each cluster
 zAvg = cellfun(@mean, clustersF, 'UniformOutput', false);
 for ctr = 1:length(zAvg)
@@ -43,7 +45,7 @@ for ctr = 1:length(zAvg)
 end
 zAvg = cell2mat(zAvg);
 
-clustersF = clustersF(abs(zAvg) <= 300);
+clustersF = clustersF(abs(zAvg) <= zAxisDist);
 numClustersF = length(clustersF);
 
 %% Find moments of the distribution of localizations within the clusters.

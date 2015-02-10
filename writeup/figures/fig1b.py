@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
 
+
 fontpath = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf'
 prop = font_manager.FontProperties(fname = fontpath)
 rcParams['font.family'] = prop.get_name()
@@ -17,8 +18,8 @@ rcParams.update({'font.size' : 7})
 rcParams.update({'legend.fontsize' : 7})
 rcParams.update({'axes.titlesize' : 7})
 
-hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans.txt')
-hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans.txt')
+hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans')
+hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans')
 
 # For plotting the means
 hlMean = [np.mean(hl), np.mean(hl)]
@@ -40,6 +41,7 @@ nH, binsH, patchesH = plt.hist(hs,
                                alpha = 0.5,
                                label = 'Hela S',
                                normed = True)
+
 """
 plt.plot(hlMean,
          ysMean,
@@ -50,7 +52,8 @@ plt.plot(hsMean,
          ysMean,
          color = '#AAAAAA',
          linestyle = '--',
-         linewidth = 1.5)"""
+         linewidth = 1.5)
+"""
 
 fig.tight_layout(pad = 2)
 
@@ -61,5 +64,5 @@ plt.ylim(tuple(ysMean))
 plt.grid(True)
 plt.legend()
 #plt.show()
-plt.savefig('fig1b_nomeans.pdf')
+plt.savefig('fig1b_nomeans.png')
 plt.close()
