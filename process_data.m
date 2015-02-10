@@ -8,7 +8,7 @@
 %   maxLoc - Maximum number of points in a cluster
 %            (set to Inf if there's no upper bound filtering)
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/03 $ $REVISION: 1.4 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/02/09 $ $REVISION: 1.5 $
 %
 
 function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc)
@@ -33,6 +33,17 @@ noise = dataF(class == -1, :);
 % Remove clusters with fewer than minLoc localizations
 cellLength = cellfun(@length, clusters);
 clustersF = clusters(cellLength > minLoc & cellLength < maxLoc);
+numClustersF = length(clustersF);
+
+%% Filter out clusters that lie within 100 nm of the z-borders
+% Find average z position of each cluster
+zAvg = cellfun(@mean, clustersF, 'UniformOutput', false);
+for ctr = 1:length(zAvg)
+    zAvg{ctr} = zAvg{ctr}(3);
+end
+zAvg = cell2mat(zAvg);
+
+clustersF = clustersF(abs(zAvg) <= 300);
 numClustersF = length(clustersF);
 
 %% Find moments of the distribution of localizations within the clusters.

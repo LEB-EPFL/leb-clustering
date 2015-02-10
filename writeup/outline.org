@@ -25,7 +25,7 @@ conclusions are discussed, as well as the weak points.
 
 * Telomere sizes can be assessed using STORM microscopy
 
-** Reasoning: Fluorescent molecules mark DNA positions
+** Reasoning: The radius of gyration is a good measure of size
    The radius of gyration of a point cloud that represents one
    telomere reflects the radius of gyration ($R_g$) of the underlying
    telomere. This is largely an assertion based on what we know of how
@@ -38,6 +38,10 @@ conclusions are discussed, as well as the weak points.
    gyration. While not direct evidence of this point, we can claim
    consistency with prior results. Also, the genomic lengths of their
    mouse embryonic fibroblasts are similar to ours.
+
+** Support: Size correlates to the genomic distance
+   Hela S telomeres have shorter genomic lengths than Hela L. They
+   also have smaller measured sizes.
 
 ** Weak point: the telomeres are not fully labeled
    The average number of localizations found in a telomere is between
@@ -63,11 +67,10 @@ conclusions are discussed, as well as the weak points.
    autocorrelation method, but how precise is this method?
 
 ** Weak point: cluster sizes depend on staining
-   Immunofluorescence staining of TRF1 showed a slightly smaller
-   telomere size than DNA FISH staining. \textbf{But}, these
-   measurements label different parts and may have different linker
-   sizes between the label and the fluorescent marker. Is this a fair
-   comparison?
+   Immunofluorescence staining of TRF1 showed a smaller telomere size
+   than DNA FISH staining. \textbf{But}, these measurements label
+   different parts and may have different linker sizes between the
+   label and the fluorescent marker. Is this a fair comparison?
 
 ** Weak point: small telomeres will appear disproportionately large
    Smaller telomere sizes will \textit{appear} disproportionately
@@ -93,34 +96,80 @@ conclusions are discussed, as well as the weak points.
     The actual difference in Hela L TRF1 IF and Hela L WT FISH is
     about 20 nm in the mean radius of gyration.
 
------
-* Telomeres in Hela cells have a large range of sizes
-
-** Reasoning: the distributions tell us this
-   Telomere sizes in Hela S(hort) and Hela L(ong) were measured by
-   computing the radius of gyration of localized fluorescent molecules
-   attached to the telomeres using DNA FISH. Wild type Hela S cells
-   had telomeres with a mean radius of gyration of about 80 nm and a
-   standard deviation between 25 and 30 nm. Hela L cells had a mean
-   radius of gyration of about 100 nm and a standard deviation also
-   between 25 and 30 nm.
-
-   Both Hela L and S distributions contain one single, broad
-   peak. They are slightly skewed to the left, suggesting a
-   proportionally greater number of telomeres with larger gyration
-   radii than smaller.
-
-** Support: Consistency with Zhuang lab paper
-   Our results for the $R_g$ distribution shape, mean, and width are
-   also consistent with the previously mentioned Zhuang lab paper.
+    What constitutes a small change in size here?
 
 -----
-* Telomeres can be modeled as linear polymers
+* Hela L telomeres are more compact than Hela S telomeres
+** Support: The density increases with volume when comparing Hela types
+   We can easily make this statement by taking the wild type mean
+   radius of gyration for both cell types as a characteristic radius
+   of a telomere. The mean gyration radii for Hela L and Hela S are
+   $R_g \approx 100 \, nm$ and $R_g \approx 77 \, nm$
+   respectively. The average genomic lengths are $N = 25 \, kb$ and $N
+   = 10 \, kb$, respectively.
 
-** Reasoning: DNA is a linear polymer
-   DNA is a linear polymer, so why not model telomeres like this?
-   Strictly speaking, we're modeling the DNA as a linear polymer, not
-   the DNA + telomere-associating proteins.
+   The ratio of the average telomere volume is therefore
+
+   \begin{equation*}
+\frac{R_g^3 \left( L \right)}{R_g^3 \left( S \right)} \approx 2.2
+   \end{equation*}
+
+   However, the ratio of the genomic lengths is
+
+   \begin{equation*}
+\frac{N \left( L \right)}{N \left( S \right)} = 2.5
+   \end{equation*}
+
+    Because the ratio of genomic lengths is larger than the volume, this
+    suggests that there is more Hela L telomeric DNA per volume than Hela
+    S DNA.
+
+    /textbf{Note that some of the biochemical tests have placed the
+    average of the Hela L genomic length at an even larger value, which
+    would mean there's even more compaction.}
+
+    Also, the ratio of the volumes using the median radius of gyration
+    is 2.1148, similar to the ratio of means.
+
+** Support: There are more heterochromatic marks on Hela L
+   There are more H3K9me3 marks on Hela L cells, a mark that
+   correlates to heterochromatin.
+
+** Support: Polymer modeling places larger compaction limit on Hela L
+   The results of the polymer modeling places the upper limit on the
+   packing ratio for Hela L at about 50 bp/nm, where as the upper
+   limit is about 40 bp/nm in Hela S.
+
+   This is not proof that Hela L is more compact, but supports the
+   other conclusions listed here.
+
+** Weak point: Small changes to compaction
+   I've made estimates that we need a precision in the mean values for
+   the radius of gyration that's between plus or minus 5 and 15 nm to
+   make accurate statements about compaction of one cell type
+   vs. another. The precision is probably closer to 15 nm since it is
+   derived from the scaling law for a Gaussian chain ($N \sim R_g^2$)
+   and the 5 nm value is derived from the scaling law for constant
+   density ($N \sim R_g^3$). Other work suggests the scaling at this
+   length scale is closer to the Gaussian chain (Bancaud, 2012).
+
+   We're probably right at the limits of the achievable precision to
+   assess compaction differences.
+
+-----
+* There is no 30 nm-fiber like structure in Hela telomeres
+** Reasoning: Best-fit packing ratios are well below 30 nm fiber ratio
+   The highest upper limit on the packing ratios that describe our
+   data is about 50 bp/nm, but the 30 nm fiber is twice this at 100
+   bp/nm.
+** Support: parameter estimations undoubtedly say this
+   The parameter plots place upper bounds on the polymer parameters
+   that best describe the telomeres, and these upper bounds lie
+   nowhere near the 30 nm packing density of 100 bp/nm. I believe this
+   is both a strong and unambiguous conclusion.
+
+   The only weak points concern the application of the worm-like chain
+   model to the data.
 
 ** Weak point: t-loops
    T-loops will make part of the polymer appear as circular, not
@@ -161,44 +210,14 @@ conclusions are discussed, as well as the weak points.
     the same line of reasoning as the t-loops.
 
 -----
-* We can infer values for compaction and persistence length
-** Reasoning: maximum likelihood reconstructions
-   We perform a simulation of a large number of polymers at
-   thermodynamic equilibrium and compare the $R_g$ distributions of
-   the simulations to the measured data. This lets us place bounds on
-   the compaction and to some extent the persistence length.
-
-   Interestingly, \textbf{we find no evidence of a 30nm fiber}.
-** Support: Timothée has also done MLE work
-** Weak point: The validity depends on linear polymer assumption
-   See above for counter arguments.
-** Weak point: We use the Southern blots as constraints
-   We need to constrain the length of the polymer to infer its
-   compaction. To do this, we use the Southern blots to make an
-   estimate of the distribution of genomic lengths in the telomeres.
-
-   I estimate the distributions as uniform, instead of Gaussian,
-   because this is a maximum entropy estimate. The edges of the
-   Southern blots might not reflect the genomic size but may instead
-   be a result of the blot spreading, sort of like an impulse response
-   of a linear system. This is also why I use the sharp edges of the
-   uniform distribution.
-
-*** TODO weak sensitivity to Southern blots
-    I should run multiple simulations with different means and widths
-    of the distributions to show that the results don't strongly
-    depend on them.
-
------
 * TRF1 and TRF2 knockdowns affect telomere size
 ** Evidence: Visual comparison of distributions
    We see a consistent difference in $R_g$ distributions for Shelterin
    knockdowns.
-*** TODO Plot individual dataset distributions
 ** Evidence: Significance tests
    The significance tests that I performed showed differences and a
    typical uncertainty in the mean of about 5 nm.
-*** TODO Permutation tests
+
 ** Evidence: ChIP shows a correlation
    ChIP measurements show that TRF2 knockdowns should have a large
    amount of heterochromatic marks.
@@ -207,9 +226,10 @@ conclusions are discussed, as well as the weak points.
    much as the Shelterin knockdowns. We can claim that this puts a
    limit of about 5 nm on what we can tell based on distributions.
 
+** Weak point: day-to-day variation is large
+   The day-to-day variation in the means (and medians) is roughly the
+   same as the minimum precision I estimated above that was necessary
+   to unequivocally assess compaction changes between two cell
+   types. Is this enough precision?
+
 -----
-* Transfection causes subpopulations to appear
-  We see a small spike at very small gyration radii when we transfect
-  cells, either with a control or a real knockdown.
-** Evidence: the distributions
-   
