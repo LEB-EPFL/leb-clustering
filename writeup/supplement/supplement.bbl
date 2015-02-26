@@ -1,0 +1,579 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 1.7 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{huang-science-2008}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Huang}{H.}%
+     {Bo}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wang}{W.}%
+     {Wenqin}{W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bates}{B.}%
+     {Mark}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Zhuang}{Z.}%
+     {Xiaowei}{X.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{HB+1}
+  \strng{fullhash}{HBWWBMZX1}
+  \field{abstract}{%
+  Recent advances in far-field fluorescence microscopy have led to substantial
+  improvements in image resolution, achieving a near-molecular resolution of 20
+  to 30 nanometers in the two lateral dimensions. Three-dimensional (3D)
+  nanoscale-resolution imaging, however, remains a challenge. We demonstrated
+  3D stochastic optical reconstruction microscopy (STORM) by using optical
+  astigmatism to determine both axial and lateral positions of individual
+  fluorophores with nanometer accuracy. Iterative, stochastic activation of
+  photoswitchable probes enables high-precision 3D localization of each probe,
+  and thus the construction of a 3D image, without scanning the sample. Using
+  this approach, we achieved an image resolution of 20 to 30 nanometers in the
+  lateral dimensions and 50 to 60 nanometers in the axial dimension. This
+  development allowed us to resolve the 3D morphology of nanoscopic cellular
+  structures.%
+  }
+  \verb{doi}
+  \verb 10.1126/science.1153529
+  \endverb
+  \field{issn}{10959203}
+  \field{number}{5864}
+  \field{pages}{810\bibrangedash 813}
+  \field{title}{{Three-Dimensional Super-Resolution Imaging by Stochastic
+  Optical Reconstruction Microscopy}}
+  \verb{url}
+  \verb http://www.ncbi.nlm.nih.gov/pubmed/18174397
+  \endverb
+  \field{volume}{319}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/huang-science-2008.pdf:pd
+  \verb f
+  \endverb
+  \field{journaltitle}{Science}
+  \field{year}{2008}
+\endentry
+
+\entry{annibale-natmethods-2011}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Annibale}{A.}%
+     {Paolo}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vanni}{V.}%
+     {Stefano}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Scarselli}{S.}%
+     {Marco}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rothlisberger}{R.}%
+     {Ursula}{U.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Radenovic}{R.}%
+     {Aleksandra}{A.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Nature Publishing Group}%
+  }
+  \keyw{counting}
+  \strng{namehash}{AP+1}
+  \strng{fullhash}{APVSSMRURA1}
+  \field{abstract}{%
+  Fluorescent proteins are known to display in certain cases an on-off blinking
+  and switching behavior. We could not yet find a report investigating the
+  impact of this phenomenon on super-resolution techniques that are based on
+  the sequential photoactivation and bleaching of individual emitters such as
+  photoactivated localization microscopy (PALM). In our hands, even monomeric
+  (m)Eos2, one of the most promising photoconvertible fluorescent proteins
+  reported in this journal, had non-negligible light-induced fluorescence
+  recovery (Supplementary Figs. 1 and 2). This is particularly important for
+  imaging membrane receptors, for which phenomena such as oligomerization and
+  clustering of proteins can be properly identified only if the number of their
+  constituents is correctly estimated.%
+  }
+  \verb{doi}
+  \verb 10.1038/nmeth.1627
+  \endverb
+  \field{number}{7}
+  \field{pages}{527\bibrangedash 528}
+  \field{title}{{Identification of clustering artifacts in photoactivated
+  localization microscopy}}
+  \verb{url}
+  \verb http://www.nature.com/nmeth/journal/v8/n7/abs/nmeth.1627.html
+  \endverb
+  \field{volume}{8}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/kmdouglass.bib:bib;:home/
+  \verb douglass/opt/mendeley/lib/mendeleydesktop/libexec/annibale-natmethods-2
+  \verb 011.pdf:pdf
+  \endverb
+  \field{journaltitle}{Nature methods}
+  \field{year}{2011}
+\endentry
+
+\entry{daszykowski-chemometrintelllab-2001}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Daszykowski}{D.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Walczak}{W.}%
+     {B.}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Massart}{M.}%
+     {D.~L.}{D.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{Density-based clustering,Outliers and inliers identification,Pattern
+  recognition}
+  \strng{namehash}{DMWBMDL1}
+  \strng{fullhash}{DMWBMDL1}
+  \field{abstract}{%
+  A density-based unsupervised clustering approach for detecting natural
+  patterns in data (further denoted as NP) is presented, and its performance is
+  illustrated for data sets with different types of clusters. NP works for
+  arbitrary clusters, is a single-scan technique, requires no presumptions
+  regarding data distribution and requires only one input parameter, which
+  describes the minimal number of objects, considered as cluster. Moreover, a
+  comparison of NP with partitioning approaches is demonstrated. NP can be
+  applied not only for data clustering, but also for the identification of
+  outliers. Copyright ?? 2001 Elsevier Science B.V.%
+  }
+  \verb{doi}
+  \verb 10.1016/S0169-7439(01)00111-3
+  \endverb
+  \field{isbn}{01697439 (ISSN)}
+  \field{issn}{01697439}
+  \field{pages}{83\bibrangedash 92}
+  \field{title}{{Looking for natural patterns in data. Part 1. Density-based
+  approach}}
+  \field{volume}{56}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/daszykowski-chemometrinte
+  \verb lllab-2001.pdf:pdf
+  \endverb
+  \field{journaltitle}{Chemometrics and Intelligent Laboratory Systems}
+  \field{year}{2001}
+\endentry
+
+\entry{flory-statmechchainmolecules-1989}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Flory}{F.}%
+     {Paul~J.}{P.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \name{editor}{1}{}{%
+    {{}%
+     {Jackson}{J.}%
+     {J~G}{J.~G.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Hanser}%
+  }
+  \keyw{polymers}
+  \strng{namehash}{FPJ1}
+  \strng{fullhash}{FPJ1}
+  \field{isbn}{9781569900192}
+  \field{title}{{Statistical Mechanics of Chain Molecules}}
+  \verb{url}
+  \verb https://books.google.ch/books?id=NJxTPgAACAAJ
+  \endverb
+  \field{year}{1989}
+\endentry
+
+\entry{bystricky-pnas-2004}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Bystricky}{B.}%
+     {Kerstin}{K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Heun}{H.}%
+     {Patrick}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gehlen}{G.}%
+     {Lutz}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Langowski}{L.}%
+     {J\"{o}rg}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gasser}{G.}%
+     {Susan~M}{S.~M.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{Chromatin,Chromatin: chemistry,Chromatin: genetics,Chromatin:
+  ultrastructure,Chromosomes,Computer-Assisted,DNA,Fluorescence,Fungal,Fungal:
+  chemistry,Fungal: genetics,Fungal: ultrastructure,Image Processing,In Situ
+  Hybridization,Interphase,Microscopy,Nucleic Acid Conformation,Saccharomyces
+  cerevisiae,Saccharomyces cerevisiae: chemistry,Saccharomyces cerevisiae:
+  cytology,Saccharomyces cerevisiae: genetics}
+  \strng{namehash}{BK+1}
+  \strng{fullhash}{BKHPGLLJGSM1}
+  \field{abstract}{%
+  Little is known about how chromatin folds in its native state. Using
+  optimized in situ hybridization and live imaging techniques have determined
+  compaction ratios and fiber flexibility for interphase chromatin in budding
+  yeast. Unlike previous studies, ours examines nonrepetitive chromatin at
+  intervals short enough to be meaningful for yeast chromosomes and functional
+  domains in higher eukaryotes. We reconcile high-resolution fluorescence in
+  situ hybridization data from intervals of 14-100 kb along single chromatids
+  with measurements of whole chromosome arms (122-623 kb in length), monitored
+  in intact cells through the targeted binding of bacterial repressors fused to
+  GFP derivatives. The results are interpreted with a flexible polymer model
+  and suggest that interphase chromatin exists in a compact higher-order
+  conformation with a persistence length of 170-220 nm and a mass density of
+  approximately 110-150 bp/nm. These values are equivalent to 7-10 nucleosomes
+  per 11-nm turn within a 30-nm-like fiber structure. Comparison of long and
+  short chromatid arm measurements demonstrates that chromatin fiber extension
+  is also influenced by nuclear geometry. The observation of this surprisingly
+  compact chromatin structure for transcriptionally competent chromatin in
+  living yeast cells suggests that the passage of RNA polymerase II requires a
+  very transient unfolding of higher-order chromatin structure.%
+  }
+  \verb{doi}
+  \verb 10.1073/pnas.0402766101
+  \endverb
+  \field{issn}{0027-8424}
+  \field{number}{47}
+  \field{pages}{16495\bibrangedash 500}
+  \field{title}{{Long-range compaction and flexibility of interphase chromatin
+  in budding yeast analyzed by high-resolution imaging techniques.}}
+  \verb{url}
+  \verb http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=534505\&tool=
+  \verb pmcentrez\&rendertype=abstract
+  \endverb
+  \field{volume}{101}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/bystricky-pnas-2004.pdf:p
+  \verb df
+  \endverb
+  \field{journaltitle}{Proceedings of the National Academy of Sciences of the
+  United States of America}
+  \field{month}{11}
+  \field{year}{2004}
+\endentry
+
+\entry{huet-2014}{book}{}
+  \name{author}{6}{}{%
+    {{}%
+     {Huet}{H.}%
+     {S\'{e}bastien}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lavelle}{L.}%
+     {Christophe}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ranchon}{R.}%
+     {Hubert}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Carrivain}{C.}%
+     {Pascal}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Victor}{V.}%
+     {Jean-Marc}{J.-M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bancaud}{B.}%
+     {Aur\'{e}lien}{A.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Elsevier Inc.}%
+  }
+  \keyw{Animals,Biological,Cell Nucleus,Cell Nucleus:
+  metabolism,Chromosomes,DNA,DNA: metabolism,Human,Human:
+  metabolism,Humans,Models,Nucleic Acid Conformation}
+  \strng{namehash}{HS+1}
+  \strng{fullhash}{HSLCRHCPVJMBA1}
+  \field{abstract}{%
+  Chromosome architecture plays an essential role for all nuclear functions,
+  and its physical description has attracted considerable interest over the
+  last few years among the biophysics community. These researches at the
+  frontiers of physics and biology have been stimulated by the demand for
+  quantitative analysis of molecular biology experiments, which provide
+  comprehensive data on chromosome folding, or of live cell imaging experiments
+  that enable researchers to visualize selected chromosome loci in living or
+  fixed cells. In this review our goal is to survey several nonmutually
+  exclusive models that have emerged to describe the folding of DNA in the
+  nucleus, the dynamics of proteins in the nucleoplasm, or the movements of
+  chromosome loci. We focus on three classes of models, namely molecular
+  crowding, fractal, and polymer models, draw comparisons, and discuss their
+  merits and limitations in the context of chromosome structure and dynamics,
+  or nuclear protein navigation in the nucleoplasm. Finally, we identify future
+  challenges in the roadmap to a unified model of the nuclear environment.%
+  }
+  \field{booktitle}{International review of cell and molecular biology}
+  \verb{doi}
+  \verb 10.1016/B978-0-12-800046-5.00013-8
+  \endverb
+  \field{edition}{1}
+  \field{isbn}{9780128000465}
+  \field{issn}{1937-6448}
+  \field{pages}{443\bibrangedash 79}
+  \field{title}{{Relevance and limitations of crowding, fractal, and polymer
+  models to describe nuclear architecture.}}
+  \verb{url}
+  \verb http://www.ncbi.nlm.nih.gov/pubmed/24380602
+  \endverb
+  \field{volume}{307}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/huet-modelsofthenucleus-2
+  \verb 014.pdf:pdf
+  \endverb
+  \field{month}{01}
+  \field{year}{2014}
+\endentry
+
+\entry{kratkyporod-1949}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Kratky}{K.}%
+     {O.}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Porod}{P.}%
+     {G.}{G.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{KOPG1}
+  \strng{fullhash}{KOPG1}
+  \field{pages}{1106\bibrangedash 1123}
+  \field{title}{{R\"{o}ntgenuntersuchung gel\"{o}ster Fadenmolek\"{u}le}}
+  \field{volume}{68}
+  \field{journaltitle}{Rec. Trav. Chim. Pays-Bas.}
+  \field{year}{1949}
+\endentry
+
+\entry{phillips-pbotc-2009}{book}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Phillips}{P.}%
+     {Rob}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Kondev}{K.}%
+     {Jane}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Theriot}{T.}%
+     {Julie}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Orme}{O.}%
+     {Nigel}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Garcia}{G.}%
+     {Hernan}{H.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Garland Science New York}%
+  }
+  \strng{namehash}{PR+1}
+  \strng{fullhash}{PRKJTJONGH1}
+  \field{edition}{2}
+  \field{isbn}{0815341636, 9780815341635}
+  \field{title}{{Physical Biology of the Cell}}
+  \verb{url}
+  \verb http://microsite.garlandscience.com/pboc2/home.html
+  \endverb
+  \field{year}{2009}
+\endentry
+
+\entry{schellman-biopolymers-1974}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Schellman}{S.}%
+     {John~A}{J.~A.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{SJA1}
+  \strng{fullhash}{SJA1}
+  \field{abstract}{%
+  A model for the flexibility of DNA is proposed that is based on discrete
+  variations in the direction of propagation in going from one subunit to the
+  next. Expansion of the local free energy in terms of the local bending gives
+  a Gaussian distribution function. The assumption of the independence of local
+  bends on neighbors lead to very simple formulae for the persistence length
+  and the characteristic ratio. Emphasis, however, is placed on the application
+  of the formulae for molecules of finite size where the persistence length and
+  \$C\_\{\backslash infty\}\$ are not defined. The formulae are worked out for
+  two models, which should serve as limits for the real physical situtation.%
+  }
+  \verb{doi}
+  \verb 10.1146/annurev.biophys.17.1.265
+  \endverb
+  \field{isbn}{0610026550}
+  \field{issn}{10568700}
+  \field{pages}{217\bibrangedash 226}
+  \field{title}{{Flexibility of DNA.}}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1002/bip.1974.360130115/abstract
+  \endverb
+  \field{volume}{13}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/schellman-biopolymers-197
+  \verb 4.pdf:pdf
+  \endverb
+  \field{journaltitle}{Biopolymers}
+  \field{year}{1974}
+\endentry
+
+\entry{nakamura-2008}{incollection}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Nakamura}{N.}%
+     {Y}{Y}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Norisuye}{N.}%
+     {T}{T}%
+     {}{}%
+     {}{}}%
+  }
+  \name{editor}{2}{}{%
+    {{}%
+     {Borsali}{B.}%
+     {R}{R}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pecora}{P.}%
+     {R}{R}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Springer Science \& Business Media}%
+  }
+  \strng{namehash}{NYNT1}
+  \strng{fullhash}{NYNT1}
+  \field{booktitle}{Soft Matter Characterization}
+  \field{chapter}{5}
+  \field{pages}{235\bibrangedash 286}
+  \field{title}{{Brush-Like Polymers}}
+  \list{location}{1}{%
+    {New York}%
+  }
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/nakamura-softmattercharac
+  \verb terization-chap5-2008.pdf:pdf
+  \endverb
+  \field{year}{2008}
+\endentry
+
+\entry{rivetti-jmolbiol-1996}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Rivetti}{R.}%
+     {Claudio}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Guthold}{G.}%
+     {Martin}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bustamante}{B.}%
+     {Carlos}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Medical}{M.}%
+     {Howard~Hughes}{H.~H.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{dna,dna deposition,excluded volume effects,mica,persistence
+  length,scanning force microscopy}
+  \strng{namehash}{RC+1}
+  \strng{fullhash}{RCGMBCMHH1}
+  \field{pages}{919\bibrangedash 932}
+  \field{title}{{Scanning Force Microscopy of DNA Deposited onto Mica:
+  Equilibration versus Kinetic Trapping Studied by Statistical Polymer Chain
+  Analysis}}
+  \verb{url}
+  \verb http://www.sciencedirect.com/science/article/pii/S0022283696906877
+  \endverb
+  \field{volume}{264}
+  \verb{file}
+  \verb :home/douglass/Dropbox/Documents/Bibliography/rivetti-jmolbiol-1996.pdf
+  \verb :pdf
+  \endverb
+  \field{journaltitle}{Journal of Molecular Biology}
+  \field{year}{1996}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput
