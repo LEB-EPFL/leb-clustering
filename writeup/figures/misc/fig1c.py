@@ -1,5 +1,5 @@
-"""Code for generating Fig. 1C -- Box plots of gyration radii
-distributions.
+"""Code for generating Fig. 1B -- Distribution of gyration radii for
+WT Hela L and Hela S cells.
 
 See
 https://bespokeblog.wordpress.com/2011/07/11/basic-data-plotting-with-matplotlib-part-3-histograms/
@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
+
 
 fontpath = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf'
 prop = font_manager.FontProperties(fname = fontpath)
@@ -20,27 +21,61 @@ rcParams.update({'axes.titlesize' : 7})
 hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans')
 hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans')
 
-stdprops = dict(linewidth = 1.0, color = 'k')
-meanprops = dict(markerfacecolor = 'k', markersize = 2.0)
-flierprops = dict(markersize = 2.0)
-labels = ['Hela S', 'Hela L']
-fig = plt.figure(figsize = (3.46 , 2.5), dpi = 300)
-boxL = plt.boxplot([hs, hl],
-                   vert = False,
-                   sym = 'kD',
-                   showmeans = True,
-                   boxprops = stdprops,
-                   medianprops = stdprops,
-                   whiskerprops = stdprops,
-                   capprops = stdprops,
-                   meanprops = meanprops,
-                   flierprops = flierprops,
-                   labels = labels)
+# For plotting the means
+hlMean = [np.mean(hl), np.mean(hl)]
+hsMean = [np.mean(hs), np.mean(hs)]
+ysMean = [0, 0.025]
 
-fig.tight_layout(pad = 1.6)
+myBins = np.arange(10, 200, 5)
+fig, ax = plt.subplots(1, 1, figsize = (3.46 , 2.5), dpi = 300)
+nL, binsL, patchesL = ax.hist(hl,
+                               bins = myBins,
+                               histtype = 'stepfilled',
+                               color = '#333333',
+                               label = 'Hela L',
+                               normed = True)
+nH, binsH, patchesH = ax.hist(hs,
+                               bins = myBins,
+                               histtype = 'stepfilled',
+                               color = '#AAAAAA',
+                               alpha = 0.5,
+                               label = 'Hela S',
+                               normed = True)
 
-plt.xlim((0, 200))
+
+'''plt.plot(hlMean,
+         ysMean,
+         color = '#000000',
+         linestyle = '--',
+         linewidth = 0.5)
+plt.plot(hsMean,
+         ysMean,
+         color = '#AAAAAA',
+         linestyle = '--',
+         linewidth = 0.5)'''
+
+fig.tight_layout(pad = 2)
+
+# Remove top and right frame lines
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+# Only show ticks on the left and bottom parts of the frame
+ax.yaxis.set_ticks_position('left')
+ax.xaxis.set_ticks_position('bottom')
+
+# Change remaining frame linewidths
+ax.spines['left'].set_linewidth(0.5)
+ax.spines['bottom'].set_linewidth(0.5)
+
+# Remove the legend frame
+leg = plt.legend()
+leg.draw_frame(False)   
+
 plt.xlabel('Radius of gyration, nm')
-plt.grid(True)
+plt.ylabel('Normalized frequency')
+plt.ylim(tuple(ysMean))
+plt.grid(False)
+#plt.show()
 plt.savefig('fig1c.pdf')
 plt.close()

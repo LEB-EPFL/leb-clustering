@@ -27,14 +27,14 @@ hsMean = [np.mean(hs), np.mean(hs)]
 ysMean = [0, 0.025]
 
 myBins = np.arange(10, 200, 5)
-fig = plt.figure(figsize = (3.46 , 2.5), dpi = 300)
-nL, binsL, patchesL = plt.hist(hl,
+fig, ax = plt.subplots(1, 1, figsize = (3.46 , 2.5), dpi = 300)
+nL, binsL, patchesL = ax.hist(hl,
                                bins = myBins,
                                histtype = 'stepfilled',
                                color = '#333333',
                                label = 'Hela L',
                                normed = True)
-nH, binsH, patchesH = plt.hist(hs,
+nH, binsH, patchesH = ax.hist(hs,
                                bins = myBins,
                                histtype = 'stepfilled',
                                color = '#AAAAAA',
@@ -43,24 +43,39 @@ nH, binsH, patchesH = plt.hist(hs,
                                normed = True)
 
 
-plt.plot(hlMean,
+'''plt.plot(hlMean,
          ysMean,
          color = '#000000',
          linestyle = '--',
-         linewidth = 1.5)
+         linewidth = 0.5)
 plt.plot(hsMean,
          ysMean,
          color = '#AAAAAA',
          linestyle = '--',
-         linewidth = 1.5)
+         linewidth = 0.5)'''
 
 fig.tight_layout(pad = 2)
+
+# Remove top and right frame lines
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+# Only show ticks on the left and bottom parts of the frame
+ax.yaxis.set_ticks_position('left')
+ax.xaxis.set_ticks_position('bottom')
+
+# Change remaining frame linewidths
+ax.spines['left'].set_linewidth(0.5)
+ax.spines['bottom'].set_linewidth(0.5)
+
+# Remove the legend frame
+leg = plt.legend()
+leg.draw_frame(False)   
 
 plt.xlabel('Radius of gyration, nm')
 plt.ylabel('Normalized frequency')
 plt.ylim(tuple(ysMean))
 plt.grid(False)
-plt.legend()
 #plt.show()
 plt.savefig('fig1b.pdf')
 plt.close()

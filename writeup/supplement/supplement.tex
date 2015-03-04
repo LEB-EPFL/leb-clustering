@@ -1,4 +1,4 @@
-% Created 2015-02-26 Thu 10:35
+% Created 2015-03-03 Tue 17:17
 \documentclass[12pt, a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -30,6 +30,7 @@
 \usepackage[backend=bibtex,sorting=none]{biblatex}
 \usepackage{hyperref}
 \addbibresource{refs_supplement.bib}
+\newcommand{\LH}{\mathcal{L}}
 \author[1]{Aleksandra Vancevska}
 \author[1]{Verena Pfeiffer}
 \author[2]{Kyle M. Douglass}
@@ -122,18 +123,19 @@ localizations are identified within the neighborhood, the
 localization is labeled as noise and a new point is chosen for
 processing.
 
-If, on the other hand, there is a sufficient number of other
-localizations within the current localization's neighborhood, then
-a new cluster is started from this point. The current localization
-and all points in its neighborhood are added to the cluster. Then,
-the localizations within the neighborhoods of the other points of
-the cluster are added if they contain at least $k$
-localizations. This process is repeated until all localizations
-that are within the cluster are identified. Note that
-localizations that may have been identified as noise during
-previous iterations of the algorithm can be grouped into a
-cluster. These localizations are located at the outer regions of
-individual clusters.
+If, on the other hand, there is a number of other localizations
+within the current localization's neighborhood that is greater
+than $k$, then a new cluster is started from this point. The
+current localization and all points in its neighborhood are added
+to the cluster. Then, the localizations within the neighborhoods
+of the other points of the cluster are added if they contain at
+least $k$ localizations. This process is repeated until all
+localizations that are within the cluster are identified. The
+process starts again with a new point that is neither noise nor
+part of a cluster. Note that localizations that may have been
+identified as noise during previous iterations of the algorithm
+can be grouped into a cluster. These localizations are located at
+the outer regions of individual clusters.
 
 The optimum values for the input parameters to the DBSCAN
 algorithm are those that group all localizations from individual
@@ -184,6 +186,7 @@ where the surface is flat would have worked equally well.
 
 \subsubsection{Focal volume filtering}
 \label{sec-1-2-3}
+\label{sec-focalVolumeFiltering}
 Axial (z-) coordinates of the localizations were distributed
 nonuniformly in the focal volume of the microscope with the
 greatest number of localizations identified near the volume's
@@ -238,7 +241,7 @@ Fig. \ref{fig-widefield-overlay}.
 \hline
 Temporal grouping & Keep and group localizations that are on for 10 frames or fewer; Remove localizations on for more than 10 frames\\
 \hline
-Spatial clustering & Minimum neighborhood number: $k = 8$; neighborhood size: $\epsilon = 65$\\
+Spatial clustering with DBSCAN & Minimum neighborhood number: $k = 8$; neighborhood size: $\epsilon = 65$\\
 \hline
 Focal volume filtering & Remove clusters with center of mass z-coordinates outside the range $\left[ -300 \, nm, 300 \, nm \right]$\\
 \hline
@@ -258,21 +261,21 @@ is defined by the following expression:
 
 \begin{equation}
 \label{eq-rgSquared}
-R_g^2 \coloneqq \left[ \frac{1}{n} \sum_{i = 1}^{n} \left( \mathbf{r}_i - \bar{\mathbf{r}} \right)^{\intercal} \left( \mathbf{r}_i - \bar{\mathbf{r}} \right) \right]^{1/2}
+R_g \coloneqq \left[ \frac{1}{n} \sum_{i = 1}^{n} \left( \mathbf{r}_i - \bar{\mathbf{r}} \right)^{\intercal} \left( \mathbf{r}_i - \bar{\mathbf{r}} \right) \right]^{1/2}
 \end{equation}
 
 where $n$ is the number of localizations in the cluster,
 $\mathbf{r}_i$ is the vector representing the position of the
-$i$'th localization, $\bar{\mathbf{r}}$ is the mean position of all
-the localizations, and $\intercal$ is the symbol denoting vector
-transpose. Eq. \eqref{eq-rgSquared} is equivalent to the
-root-mean-square distance of the of localizations from the center
-of gravity of the cluster.
+$i$'th localization, $\bar{\mathbf{r}}$ is the mean position of
+all the localizations, and $\intercal$ is the symbol denoting
+vector transpose. Eq. \eqref{eq-rgSquared} is equivalent to the
+root-mean-square distance of the localizations from the center of
+gravity of the cluster.
 
 The radius of gyration of a linear chain polymer is given by the
 same expression as in Eq. \eqref{eq-rgSquared}, except that $n$
 becomes the number of Kuhn statistical segments while
-$\mathbf{r}_i$ and $\bar{\mathbf{r}}$ represents their individual
+$\mathbf{r}_i$ and $\bar{\mathbf{r}}$ represent their individual
 positions and mean location, respectively
 \cite{flory-statmechchainmolecules-1989}.
 
@@ -284,7 +287,15 @@ from the analysis. In other words, the radius of gyration of the
 cluster of localizations is a biased estimator of the radius of
 gyration of a telomere's Kuhn statistical segments, and this bias
 is less than a nanometer in magnitude. The case of a non-zero
-localization precision is treated in Sec. \ref{sec-LocPrecision}.
+localization precision is treated in Sec. \ref{sec-STORMDatasets}.
+
+Because the localization precision in the z-coordinate is worse
+than in the x- and -y directions, $R_g$ values for constellations
+of localizations were computed from only the x- and y-coordinates
+and multiplied by a factor of $\sqrt{3/2}$ to convert them to a
+three-dimensional value \cite{rivetti-jmolbiol-1996}. The
+z-coordinate was used for filtering out telomeres close to the
+edges of the focal volume in Sec. \ref{sec-focalVolumeFiltering}.
 
 \subsubsection{Reasons for choosing $R_g$ as a measure of telomere size}
 \label{sec-1-3-2}
@@ -314,29 +325,30 @@ were about 25 kbp in length. Typically, there were about 100 to 200
 localizations identified in each cluster of Hela S and Hela L
 telomeres, respectively. Given a DNA-FISH oligonucleotide label
 length of 18 bp, this means that the labeling efficiency of
-telomeres in this study was only about 0.15 to 0.20.
+telomeres in this study was only about 15\% to 20\%.
 
 Because the labeling efficiency is small, a series of simulations
 was performed to assess the accuracy and precision in the estimate
-of the telomere radius of gyration. 100,000 wormlike chain
+of the telomere mean radius of gyration. 100,000 wormlike chain
 conformations were simulated with a packing ratio of $50 \,
     bp/nm$, a persistence length of $50 \, nm$, and a length of $25 \,
-    kbp$. Each chain was then downsampled by randomly and uniformly
-removing all but a set number of localizations. The mean and
-variance of the radius of gyration estimates as a function of the
-number of segments preserved in the downsampling are displayed in
+    kbp$ as described in Sec. \ref{sec-WLCSimulation}. Each chain was
+labeled and then downsampled by randomly and uniformly removing
+all but a set number of localizations. The mean and variance of
+the radius of gyration estimates as a function of the number of
+segments preserved in the downsampling are displayed in
 Fig. \ref{fig-downsampling}.
 
 \begin{figure}
   \centering
   \includegraphics[scale = 0.75]{fig-downsampling_subplots.pdf}
-  \caption{The bias in the radius of gyration estimate from a constellation of localizations as a function of the number of localizations. This data was generated by simulating 100,000 different polymer conformations and randomly labeling them with fluorophores. The solid horizontal lines denote the values for the fully-labeled polymer. The polymers were generated from an ensemble with a packing ratio of $50 \, bp/nm$, a persistence length of $\ell_p = 50 \, nm$, and a length of $25 \, kbp$.}
+  \caption{The bias in the mean radius of gyration estimate from a constellation of localizations as a function of the number of localizations. This data was generated by simulating 100,000 different polymer conformations and randomly labeling them with fluorophores. The solid horizontal lines denote the values for the fully-labeled polymer. The polymers were generated from an ensemble with a packing ratio of $50 \, bp/nm$, a persistence length of $\ell_p = 50 \, nm$, and a length of $25 \, kbp$.}
   \label{fig-downsampling}
 \end{figure}
 
 The results of the simulations presented in
 Fig. \ref{fig-downsampling} show that, for the given set of
-simulated polymer parameters, telomeres with fifty or more
+simulated polymer parameters, telomeres with 50 or more
 localizations will have, on the average, $R_g$ values within one
 nanometer and a variance in $R_g$ that is less than 5\% of the
 real population of telomeres.
@@ -348,15 +360,15 @@ less compact telomeres, the bias will be worse. The lower cutoff
 for filtering clusters based on their number of localizations was
 set to 50 in all analyses as discussed in
 Sec. \ref{sec-filter_num_loc}. This was chosen as a compromise
-between accurately determing the radius of gyration of a telomere
-based on a constellation of localizations and excluding very small
-and sparsely labeled telomeres in the size distributions.
+between accuracy in determining the radius of gyration by removing
+sparsely-labeled telomeres and excluding very small but
+well-labeled telomeres in the size distributions.
 
 Another source of error, namely the precision in the location of a
 fluorophore, will add an additional bias to the $R_g$
-estimate. This bias is taken into account in the maximum
-likelihood estimates of the polymer parameters in
-Sec. \ref{sec-MLE}.
+estimate. This bias is taken into account when generating STORM
+datasets for performing parameter estimation in
+Sec. \ref{sec-STORMDatasets}.
 
 \section{Polymer modeling of STORM datasets}
 \label{sec-2}
@@ -384,7 +396,7 @@ with a longer persistence length will be more rigid than shorter
 ones.
 
 Mathematically, the persistence length is the characteristic length
-describing the exponential decay of the tanget-tanget correlation
+describing the exponential decay of the tangent-tangent correlation
 function of an infinitely long WLC
 \cite{phillips-pbotc-2009, schellman-biopolymers-1974},
 
@@ -413,7 +425,18 @@ $2 L_c \ell_{p}/6$, which is equivalent to the expression for the
 mean-square radius of gyration of the freely-jointed chain
 (sometimes known as the Gaussian chain) \cite{phillips-pbotc-2009}.
 
-\subsubsection{The second moment of the WLC bending angle distribution}
+The packing ratio $c$, which describes the linear density of base
+pairs per length of the telomere fiber, is related to the contour
+length through the simple relation
+
+\begin{equation}
+  \label{eq-packingRatio}
+  L_c = \frac{n}{c}
+\end{equation}
+
+where $n$ is the number of base pairs in the telomere.
+
+\subsubsection{The probability distribution for the bending angle between segments}
 \label{sec-2-1-1}
 
 Linear, semiflexible polymers are composed of small molecules and
@@ -422,94 +445,102 @@ solvent molecules in their environment. These collisions cause the
 polymer to adopt one of many random configurations at any given
 moment in time. According to Boltzmann's statistics, the
 probability that a semiflexible polymer in thermodynamic
-equilibrium will be found in one of any of its possible
-conformations is proportional to the Boltzmann factor
+equilibrium will bend into of its possible conformations is
+proportional to the Boltzmann factor
 
 \begin{equation}
   \label{eq-boltzmann}
-  P \left( U \right) \sim \exp \left( -\frac{U}{k_B T}\right)
+  P \left( \Delta U \right) \sim \exp \left( -\frac{\Delta U}{k_B T}\right)
 \end{equation}
 
-where $P \left( U \right)$ represents of the probability of
-observing a polymer conformation with associated free energy $U$,
-$k_B$ is Boltzmann's constant and $T$ is the absolute temperature
-of the system. The fact that it takes energy to bend the polymer
-into a particular conformation reflects the ``semiflexible''
-qualities of the polymer.
+where $P \left( \Delta U \right)$ represents of the probability of
+observing a polymer conformation requiring a free energy change of
+$\Delta U$, $k_B$ is Boltzmann's constant and $T$ is the absolute
+temperature of the system. The fact that it takes energy to bend
+the polymer into a particular conformation reflects the
+``semiflexible'' qualities of the polymer.
 
-The energy $U$ required from the environment to achieve a given
-conformation can be determined by dividing the polymer into many
-short sections such that it can be reprensented as the summation
-of the bending energies of many small circular arcs
-\cite{phillips-pbotc-2009}. The energy required to bend a rod
-through an angle $\theta$ with Young's modulus $E$ and moment of
-inertia $I$ is
+The energy $U$ of a particular conformation can be approximated by
+first discretizing the polymer by dividing it into very short line
+segments and determining the local energy associated with the bend
+between segments $i$ and $i+1$. The total energy $U$ of the chain
+is then the summation of all the local bending energies.
+
+The local bending energy $U_i$ may be Taylor expanded about its
+average
+
+\begin{align}
+  &U_i = U_{0,i} + \frac{dU_i}{d\theta_i} \theta_{i} + \frac{1}{2} \frac{d^2 U_i}{d \theta_i^2}\theta_i^2 + \ldots \\
+  &\Delta U_i \approx \frac{1}{2} U_i'' \theta_i^2 \label{eq-bending-energy}
+\end{align}
+
+where terms higher than second order have been dropped and the
+constant $U_{0,i}$ has been subtracted from both sides in
+Eq. \eqref{eq-bending-energy} to arrive at the change in
+energy. The first derivative is zero when the polymer is at
+equilibrium
+\cite{schellman-biopolymers-1974}. Eq. \eqref{eq-bending-energy}
+and Eq. \eqref{eq-boltzmann} can be combined to give the
+unnormalized probability distribution function for the bending
+angle. If the axis about which the two segments $i$ and $i+1$ bend
+is fixed and perpendicular to both segments, then the integration
+producing the normalization factor is only over the zenith angle
+$\theta$ and the probability distribution for the bending angle
+$\theta_i$ is of the form
 
 \begin{equation}
-\label{eq-bending-energy}
-  U = \frac{EI}{2s}\theta^{2}
+  P\left( \theta_i \right) = \left( \frac{1}{2 \pi \sigma^2} \right)^{1/2} \exp \left( -\frac{\theta_i^2}{2 \sigma^2} \right) \label{eq-gaussianPDF}
 \end{equation}
 
-Now consider a continuously bending WLC in three dimesions. If the
-initial unit tangent vector at its origin points in the
-z-direction, then the dot product with the unit tangent vector at
-any other position $s$ along the chain is just the cosine of the
-angle between the tangent vectors. The tangent-tangent correlation
-function in Eq. \eqref{eq-tantancorr} is then
+with the variance equivalent to $\sigma_i^2 = k_{B} T/U_i''$. This
+model was developed and called the \textit{hinge model} in
+Ref. \cite{schellman-biopolymers-1974}; its probability
+distribution function for the bending angle is simply a
+Gaussian. Letting $s$ now represent the length of a line segment
+forming the polymer, the persistence length of the hinge model was
+shown to be
 
-\begin{align}
-  \langle \mathbf{t} \left( s \right) \cdot \mathbf{t} \left( 0 \right) \rangle &= \langle \cos \theta\rangle \\
-  &\approx \left< 1 - \frac{\theta^2 \left( s\right) }{2} \right> \label{eq-cosineseries}
-\end{align}
+\begin{equation}
+  \label{eq-pLength}
+  \ell_p = 2 s \left( \frac{U_i''}{k_{B} T} \right)
+\end{equation}
 
-where all but the first two terms in the power series expansion
-for the cosine have been dropped in the last line. The
-thermodynamic average of $\left< \theta^2 \left( s \right)
-    \right>$ can be determined by using Eq. \eqref{eq-bending-energy}
-and integrating $\theta^2 \left( s \right) \exp \left( -U /
-    k_{B}T\right)$ over a full $4 \pi$ solid angle in three dimensions
-and then dividing by the partition function. This calculation is
-carried out in Ref. \cite{phillips-pbotc-2009}. The result is
+Substituting Eq. \eqref{eq-pLength} into Eq.
+\eqref{eq-gaussianPDF} and using $\sigma_i^2 = k_{B}T/U_i''$
 
-\begin{align}
-  \left< \theta^2 \left( s \right) \right> &= \frac{2 k_{B} Ts}{EI} \\
-  &= \frac{2s}{\ell_p} \label{eq-thetaM2}
-\end{align}
+\begin{equation}
+  \label{eq-bendingPDF}
+  P \left( \theta_i \right) = \left( \frac{\ell_p}{4 \pi s} \right)^{1/2} \exp \left[ -\left( \frac{\ell_p}{4 s} \right) \theta_i^2 \right]
+\end{equation}
 
-where the definition of the persistence length $\ell_p \coloneqq
-    EI/k_{B}T$ is used in Eq. \eqref{eq-thetaM2}.
-
-Eq. \eqref{eq-thetaM2} is significant because it specifies the
-second moment of a probability distribution for the bending angle
-as a function of the distance along the WLC and its persistence
-length. This moment can be used when generating random numbers
-that simulate the conformation of a polymer, as described in the
-next section.
+Eq. \eqref{eq-bendingPDF} is important because it shows that the
+bending angle between consecutive line segments is a random number
+drawn from a Gaussian probability distribution with a mean of zero
+and a variance of $2s / \ell_p$. Gaussian random numbers are
+easily generated by computers, so individual WLC conformations can
+be simulated using this approach.
 
 \subsection{Wormlike chain simulation}
 \label{sec-2-2}
-A continuous WLC may be simulated by approximating the chain
-contour as a series of discrete line segments of equal length with
-a random angle between the line segments. According to
-Eq. \eqref{eq-cosineseries} and Eq. \eqref{eq-thetaM2}, the first
-moment of the probability distribution function that describes the
-angle between any two line segments in a WLC is zero and the second
-moment is $2s/\ell_p$, where $s$ is now considered to be the length
-of a line segment. Since higher order moments were truncated in the
-power series expansion in Eq. \eqref{eq-cosineseries}, we can
-approximate a WLC by drawing a series of line segments with angles
-between the line segments determined by random numbers generated
-from a zero-mean Gaussian distribution having a variance given by
-Eq. \eqref{eq-thetaM2}.
+\label{sec-WLCSimulation}
+As described in the previous section, a continuous WLC may be
+simulated by approximating the chain contour as a series of
+discrete line segments of equal length with a random angle between
+the line segments drawn from a probability distribution function
+given by Eq. \eqref{eq-bendingPDF}.
 
-This approach was used in Ref. \cite{rivetti-jmolbiol-1996} to
-simulate WLC's in two dimensions. In three dimensions, the line
-segments are no longer confined to a plane, which means the
-chain-generating algorithm must allow for an additional random
-rotation.
+An extra random variable that describes the orientation of the
+hinge axis at each joint is required to simulate a WLC in three
+dimensions. This number does not count as a degree of freedom when
+determining the form of the probability distribution in
+Eq. \eqref{eq-bendingPDF}. If it did, the properties of the
+simulated chains would remain the same but the form of the
+probability distribution would be modified and the expression for
+the persistence length in Eq. \eqref{eq-pLength} would be smaller
+by a factor of two \cite{schellman-biopolymers-1974}.
 
 The algorithm for generating a three dimensional WLC based on
-these probability distribution functions is as follows:
+these ideas is as follows:
 
 \begin{algorithm}
   \caption{Generating 3D wormlike chains}
@@ -523,11 +554,11 @@ these probability distribution functions is as follows:
       \State $\theta\gets \text{Gaussian random number with variance equal to } 2/\ell_{p}$
       \State $\mathbf{a}\gets \text{uniformly and randomly oriented unit vector}$
       \Statex
-      \While{$\mathbf{r}_i \times \mathbf{a} = 0$}
+      \While{$\mathbf{r}_i \times \mathbf{a} = 0$} \Comment{Prevents division by zero in a later step}
         \State $\mathbf{a}\gets \text{uniformly and randomly oriented unit vector}$
       \EndWhile
     \Statex
-    \State $\mathbf{d}\gets \left( \sin \theta \right) \frac{\mathbf{r}_i \times \mathbf{a}}{\lVert \mathbf{r}_i \times \mathbf{a} \rVert}$ \Comment{$\mathbf{d}$ is perpendicular to $\mathbf{r}_i$}
+    \State $\mathbf{d}\gets \frac{\mathbf{r}_i \times \mathbf{a}}{\lVert \mathbf{r}_i \times \mathbf{a} \rVert} \left( \sin \theta \right)$ \Comment{$\mathbf{d}$ is perpendicular to $\mathbf{r}_i$}
     \State $\mathbf{r}_{i+1}\gets \mathbf{r}_i \left( \cos \theta \right) + \mathbf{d}$
     \State $i\gets i + 1$
     \EndWhile
@@ -538,32 +569,216 @@ these probability distribution functions is as follows:
 
 This algorithm generates the WLC by generating a random walk on the
 surface of the unit sphere. Each point on the walk is represented
-by a vector $\mathbf{r}_i$ point from the origin to the
-surface. The polymer is created in the end by cumulatively summing
-all the vectors in the ordered set $\{\mathbf{r}_i\}$ that form the
-random walk. The $\times$ operator denotes the vector cross product
-and $\lVert \cdots \rVert$ denotes the Euclidean norm of a vector.
+by a vector $\mathbf{r}_i$ that points from the origin to the
+surface. The orientation of the hinge axis at each joint is
+determined by the cross product between the current line segment
+and a random vector equally likely to point in any direction. In
+the end, the polymer is created by cumulatively summing all the
+vectors in the ordered set $\{\mathbf{r}_i\}$ that form the random
+walk. The $\times$ operator denotes the vector cross product and
+$\lVert \cdots \rVert$ denotes the Euclidean norm of a vector. The
+$\gets$ symbol denotes assignment since $=$ is used for testing
+equality.
 
 \subsubsection{Accuracy of the simulation}
 \label{sec-2-2-1}
+The truncation of terms higher than second order in the Taylor
+series expansion for the local bending energy in
+Eq. \eqref{eq-bending-energy} should result in a small error when
+determining the bending angle between segments in this
+simulation. This error should get worse as the chain length
+increases since each small error will gradually accumulate into a
+larger one.
 
-\subsection{Generating STORM datasets from wormlike chain ensembles}
+100,000 polymers with different packing ratios were simulated with
+a persistence length of $50 \, nm$ and a genomic lengths of $10 \,
+    kbp$ and $25 \, kbp$, which roughly correspond to typical lengths
+for Hela S and Hela L telomeres. The segment length was set to 2.5
+segments per nanometer. In Fig. \ref{fig-simAccuracy} the mean
+values of the simulated ensembles as a function of their packing
+ratio were subtracted from the theoretical value for $R_g$ given
+by Eq. \eqref{eq-rgSquared} to show the bias due to the previously
+mentioned approximation. The figure shows that an ensemble of
+chains with about 3000 segments, or equivalently a packing ratio
+close to $20 \, bp/nm$ with $n = 25 \, kbp$, will have a negative
+bias in $R_g$ of about $3 \, nm$ \footnote{The contour length in number of segments is $L_c = nS/c$, where
+$n$ is the number of base pairs, $S$ is the number of segments per
+nanometer, and $c$ is the packing ratio in $bp/nm$.}. A chain with roughly 6000
+segments, for which the packing ratio in this simulation is about
+$10 \, bp/nm$ at $n = 25 \, kbp$, will have a negative bias of
+about $5 \, nm$.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale = 0.6]{fig-simulation_accuracy.pdf}
+  \caption{The difference between the mean theoretical $R_g$ in Eq. \eqref{eq-rgSquared} and the mean $R_g$ of an ensemble of 100,000 simulated polymers as a function of their packing ratio. The persistence length is $\ell_p = 50 \, nm$ and the number of base pairs was either $10 \, kbp$ or $25 \, kbp$. There were 2.5 segments per nanometer of chain contour in this simulation. The grayed region does not correspond to human telomeres but is included for completeness.}
+  \label{fig-simAccuracy}
+\end{figure}
+
+The majority of chains in this work were from a region of the
+parameter space where the chain length was less than 3000
+segments. In the Hela S simulations the number of base pairs was
+about $10 \, kbp$ on average, resulting in simulated chains that
+are a factor of two to three times shorter.
+
+For these reasons, and taking the results in
+Fig. \ref{fig-downsampling} into consideration, the methodology
+presented in this manuscript should be adequate for
+differentiating between telomere populations with chromatin
+packaging models that lead to differences in $R_g$ of a few
+nanometers or more when the biases are left uncorrected.
+
+\subsection{Simulating STORM datasets from wormlike chain ensembles}
 \label{sec-2-3}
+\label{sec-STORMDatasets}
+A simulated STORM data set was obtained from the polymer
+simulations as follows: First, two values for the packing ratio,
+$c$, and the persistence length, $\ell_p$, were chosen from a range
+of possible values to test. In this work, the range of values for
+$c$ was $\left[ 10 \, bp/nm, 90 \, bp/nm \right]$ and the range of
+values for the persistence length was $\left[ 10 \, nm, 200 \, nm
+   \right]$
 
-\subsubsection{Accounting for localization precision}
-\label{sec-2-3-1}
-\label{sec-LocPrecision}
+Next, 100,000 WLC conformations were simulated with these
+parameters. Each individual chain was assigned a number of base
+pairs that was a random number drawn from a uniform probability
+distribution. The mean of the distribution was determined from the
+peak location in a line profile drawn through the telomere Southern
+blot images. The width of the distribution for the number of base
+pairs was set to the full width at half maximum of the profile
+above the background noise. For Hela L telomeres, the distribution
+had a mean of $27 \, kbp$ and a width of $24 \, kbp$, whereas for
+Hela S the distribution had a mean of $12.5 \, kbp$ and a width of
+$7 \, kbp$. These considerations ensure that the simulated chains
+have the same heterogeneity in their lengths as the real telomeres.
 
-\section{Maximum likelihood estimation of polymer parameters}
+\begin{figure}
+   \centering
+   \includegraphics[scale = 1.5]{fig-GenerateSTORMDataset.png}
+   \caption{Simulating datasets for comparing to the measured STORM telomere data. WLC conformations were generated and labeled with fluorophores. The fluorophores were randomly displaced to simulate the effects of the imperfect localization precision in the measurement. The radius of gyration was computed from these displaced localizations.}
+   \label{fig-GenerateSTORMDataset}
+ \end{figure}
+
+Once the polymer conformations were generated, the x-, y-, and
+z-coordinates of the endpoints of the segments forming the chain
+were randomly bumped by adding a Gaussian random number to each of
+them with a mean of zero and a standard deviation equivalent to the
+mean localization precision in one transverse dimension. This
+reflects the well-known fact in STORM and PALM imaging that the
+localized coordinates of a molecule's center are approximately
+Gaussian random numbers whose standard deviations decrease with the
+number of recorded photons. This idea is illustrated in
+Fig. \ref{fig-GenerateSTORMDataset}.
+
+The radius of gyration of the resulting constellation of bumped
+points was then computed. The result was one distribution of $R_g$
+values of an ensemble of WLC's with parameters $\left( c, \ell_p
+   \right)$ and with genomic lengths that reflect the spread in the
+real telomere lengths. This process was then repeated for a large
+number of different pairs of values for $\left( c, \ell_p
+   \right)$. Parameters that led to simulated distributions of $R_g$
+values that closely resembled the experimental distributions were
+then judged as valid parameters for describing telomere packing and
+persistence length. The process of searching for valid parameters
+is described in the next section.
+
+\section{Reducing the valid telomere parameter space}
 \label{sec-3}
 \label{sec-MLE}
-\section{Abbreviations}
+The size and less-than-perfect labeling efficiency (see
+Sec. \ref{sec-RgPrecision}) makes it impossible to determine the
+conformation of any given telomere with STORM in fixed cells. For
+these reasons, a statistical forward-problem approach to
+determining their packing density and persistence length was
+employed in this work.
+
+Simulations of polymer ensembles were generated with different
+values for the packing ratio and persistence length. From these
+simulated ensembles, distributions of the values for $R_g$ were
+computed and compared to the experimental distributions. The
+agreement between the measured distributions and the simulated ones,
+including the effects of an imperfect localization precision, was
+assessed using the likelihood function. The result is a map of the
+parameter space of the polymer properties indicating the relative
+likelihood that a given set of parameter values produced the
+measured data set.
+
+\subsection{The likelihood and log-likelihood functions}
+\label{sec-3-1}
+The likelihood function is a quantity that is typically used in
+maximum likelihood estimation (MLE) for determining best-fit model
+parameters. The likelihood function specific to this work is given
+by the expression
+
+\begin{align}
+  \LH \left( c, \ell_p \mid R_{g,1}, \ldots , R_{g,N} \right) &= P \left( R_{g,1} \mid c, \ell_p \right) \times \ldots \times P \left( R_{g,N} \mid c, \ell_p \right) \\
+  &= \prod_{i=1}^{N} P \left( R_{g,i} \mid c, \ell_p \right) \label{eq-LLHProduct}
+\end{align}
+
+where $\LH \left( c, \ell_p \mid R_{g,1}, \ldots , R_{g,N} \right)$
+is the likelihood that the two parameters for the packing density,
+$c$ and the persistence length $\ell_p$ led to the measured dataset
+$\left{ R_{g,1} \ldots R_{g,N} \right}$ and $P \left( R_{g,i} \mid
+   c, \ell_p \right)$ is the probability of observing a telomere with
+radius of gyration $R_{g,i}$ given that the ensemble could be
+described by the parameters $c$ and $\ell_p$. The likelihood is
+therefore a function of the polymer parameters and computed by
+multiplying together the the probabilities of each measured radius
+of gyration given the parameters.
+
+Because $N$ is large and the probability of observing any
+particular value of $R_g$ is small, the product in
+Eq. \eqref{eq-LLHProduct} is too small to compute using typical
+floating point data types on computers. Taking the logarithm of
+Eq. \eqref{eq-LLHProduct} and working with the log-likelihood
+solves this problem. In this case, the product becomes a sum over
+all values of the logarithm of the probabilities for $R_g$ but the
+analysis remains the same.
+
+\subsection{The likelihood is used to reduce the size of the parameter space}
+\label{sec-3-2}
+Typically, the maximum of the (log-)likelihood function is used to
+find the single set of model parameters that were most likely to
+have led to the measured dataset. However, in this work it is used
+as a relative measure of how well a simulated distribution of $R_g$
+values from a given set of parameters matches the measured set of
+$R_g$ values. The reason for this is that a meaningful maximum
+value of $\LH \left( c, \ell_p \right)$ doesn't exist because,
+depending on the actual size of the telomere, $c$ and $\ell_p$ are
+not fully independent parameters for determining $R_g$; $R_g \sim
+   \ell_p / c$ when the contour length is much greater than the
+persistence length \footnote{This can be seen by allowing the ratio $L_{c}/\ell_p$ to become
+very large in Eq. \eqref{eq-meanWLCRg}}.  For this reason, there are multiple pairs
+of parameters that are likely to lead to the measured dataset for
+small packing ratios.
+
+On the other hand, the packing ratio predominantly determines $R_g$
+when the contour length is the same order of magnitude as or less
+than the persistence length. There are two reasons for this: the
+packing ratio determines the contour length as in
+Eq. \eqref{eq-packingRatio} and the telomere is not physically long
+enough to measure its persistence length, which is defined in the
+limit of an infinite contour length
+\cite{schellman-biopolymers-1974}. This explains the sharp, upward
+bend in large likelihood values in the parameter space maps where
+the log-likelihood becomes independent of $\ell_p$.
+
+Given these considerations, the purpose of this analysis has been
+to reduce the size of the parameter space describing the telomeres
+so that some models of telomere compaction can be excluded as being
+physically likely. An attempt at estimating the exact values for
+$c$ and $\ell_p$ has not been made, and is not possible from the
+data.
+
+\section{Symbols Abbreviations}
 \label{sec-4}
 \begin{description}
 \item[{DBSCAN}] Density-based spatial clustering of applications with
 noise
 \item[{FOV}] Field of view
+\item[{kbp}] Kilo-base pairs
 \item[{PSF}] Point spread function
+\item[{$\mathbf{R_g}$}] Radius of gyration
 \item[{WLC}] Wormlike chain
 \end{description}
 
