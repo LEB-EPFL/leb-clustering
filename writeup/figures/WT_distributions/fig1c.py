@@ -1,8 +1,9 @@
-"""Code for generating Fig. 1B -- Distribution of gyration radii for
-WT Hela L and Hela S cells.
+"""Code for generating Fig. distribution of gyration radii for WT Hela
+L and Hela S cells.
 
 See
 https://bespokeblog.wordpress.com/2011/07/11/basic-data-plotting-with-matplotlib-part-3-histograms/
+
 """
 
 import numpy as np
@@ -18,8 +19,8 @@ rcParams.update({'font.size' : 7})
 rcParams.update({'legend.fontsize' : 7})
 rcParams.update({'axes.titlesize' : 7})
 
-hl = np.loadtxt('figure_data/Original_Data_L_dataset_RgTrans')
-hs = np.loadtxt('figure_data/Original_Data_S_dataset_RgTrans')
+hl = np.loadtxt('../figure_data/Original_Data_L_dataset_RgTrans')
+hs = np.loadtxt('../figure_data/Original_Data_S_dataset_RgTrans')
 
 # For plotting the means
 hlMean = [np.mean(hl), np.mean(hl)]
@@ -32,14 +33,14 @@ nL, binsL, patchesL = ax.hist(hl,
                                bins = myBins,
                                histtype = 'stepfilled',
                                color = '#333333',
-                               label = 'Hela L',
+                               label = 'Hela L (N = %i)' % len(hl),
                                normed = True)
 nH, binsH, patchesH = ax.hist(hs,
                                bins = myBins,
                                histtype = 'stepfilled',
                                color = '#AAAAAA',
                                alpha = 0.5,
-                               label = 'Hela S',
+                               label = 'Hela S (N = %i)' % len(hs),
                                normed = True)
 
 
