@@ -1,0 +1,7 @@
+* Locations of vertical line profiles
+  | File        | x pixel location from left |
+  |-------------+----------------------------|
+  | Hela L      | x = 42                     |
+  | Hela S      | x = 27px                   |
+  | Scale right | x = 57px                   |
+  | Scale left  | x = 8px                    |
