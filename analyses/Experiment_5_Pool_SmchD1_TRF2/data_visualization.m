@@ -374,6 +374,82 @@ fullScreen = true;
 fieldName = 'volume';
 plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
 
+%% 13-03-2015 SmchD1 and TRF2 knockdowns : Hela S
+disp('===================================================================')
+disp('13-03-2015 SmchD1 and TRF2 knockdowns')
+disp('===================================================================')
+
+filterDataNames = {'13-03-2015 pSuper';
+                   '13-03-2015 TRF2';
+                   '13-03-2015 pLVP041';
+                   '13-03-2015 pLVP041 TRF2';
+                   '13-03-2015 pLVP042';
+                   '13-03-2015 pLVP042 TRF2'};
+filterData = findData(data, filterDataNames, 'S dataset');
+
+clear figParams
+figParams.title = '13-03-2015 KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'R_g, nm';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 200];
+figParams.ylim = [0 0.03];
+plotDist(filterData, 'RgTrans', numBins, figParams)
+
+clear figParams
+figParams.title = '13-03-2015 KD of SmchD1 and TRF2 / Hela S';
+figParams.xlabel = 'Volume, nm^3';
+figParams.ylabel = 'Normalized frequency';
+figParams.legend = filterDataNames;
+figParams.xlim = [0 3e7];
+figParams.ylim = [0 2e-7];
+plotDist(filterData, 'volume', numBins, figParams)
+
+printStatistics(filterData);
+
+%% 13-03-2015 SmchD1 and TRF2 knockdowns : Plot of Means
+
+% Mean RgTrans
+clear figParams
+figParams.title = 'Mean R_g for 13-03-2015 datasets';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Volume
+clear figParams
+figParams.title = 'Mean volume for 13-03-2015 datasets';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Mean volume, nm^3';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMeans(filterData, fieldName, figParams, errorBar, fullScreen);
+
+%% 13-03-2015 SmchD1 and TRF2 knockdowns : Plot of Medians
+
+% Median RgTrans
+clear figParams
+figParams.title = 'Median R_g for 13-03-2015 datasets';
+figParams.ylim = [0 120];
+figParams.ylabel = 'R_g, nm';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'RgTrans';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
+
+% Median volume
+clear figParams
+figParams.title = 'Median volume for 13-03-2015 datasets';
+figParams.ylim = [0 8e6];
+figParams.ylabel = 'Median volume, nm^3';
+errorBar = 'stdErr';
+fullScreen = true;
+fieldName = 'volume';
+plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
 
 % Switch back to parent directory
 cd ..

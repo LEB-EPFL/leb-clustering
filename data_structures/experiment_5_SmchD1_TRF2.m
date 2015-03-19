@@ -254,4 +254,69 @@ dataIn.distributions = [];
 dataIn.fits = [];
 data = [data, dataIn]; % Appends this dataset to the data array.
 
+%==========================================================================
+% 13-03-2015 SmchD1 / TRF2 KD experiments
+%==========================================================================
+% Hela S (set 25)
+dataIn.experimentShortName = '13-03-2015 pSuper';
+dataIn.datasetShortName = 'S dataset';
+dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/13_03_2015_HeLaS_SMCHD1_TRF2_doubleKD_FISH/';
+dataIn.datasetDir = 'HelaS/Molecule_Lists/pSuper/';
+dataIn.distributions = [];
+dataIn.fits = [];
+data = [data, dataIn]; % Appends this dataset to the data array.
+
+% Hela S (set 26)
+dataIn.experimentShortName = '13-03-2015 TRF2';
+dataIn.datasetShortName = 'S dataset';
+dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/13_03_2015_HeLaS_SMCHD1_TRF2_doubleKD_FISH/';
+dataIn.datasetDir = 'HelaS/Molecule_Lists/TRF2/';
+dataIn.distributions = [];
+dataIn.fits = [];
+data = [data, dataIn]; % Appends this dataset to the data array.
+
+%==========================================================================
+% pLVP041 and pLVP041 + TRF2 KD
+%==========================================================================
+
+% Hela S (set 27)
+dataIn.experimentShortName = '13-03-2015 pLVP041';
+dataIn.datasetShortName = 'S dataset';
+dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/13_03_2015_HeLaS_SMCHD1_TRF2_doubleKD_FISH/';
+dataIn.datasetDir = 'HelaS/Molecule_Lists/pLVP041/';
+dataIn.distributions = [];
+dataIn.fits = [];
+data = [data, dataIn]; % Appends this dataset to the data array.
+
+% Hela S (set 28)
+dataIn.experimentShortName = '13-03-2015 pLVP041 TRF2';
+dataIn.datasetShortName = 'S dataset';
+dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/13_03_2015_HeLaS_SMCHD1_TRF2_doubleKD_FISH/';
+dataIn.datasetDir = 'HelaS/Molecule_Lists/pLVP041_TRF2/';
+dataIn.distributions = [];
+dataIn.fits = [];
+data = [data, dataIn]; % Appends this dataset to the data array.
+
+%==========================================================================
+% pLVP042 and pLVP042 + TRF2 KD
+%==========================================================================
+
+% Hela S (set 29)
+dataIn.experimentShortName = '13-03-2015 pLVP042';
+dataIn.datasetShortName = 'S dataset';
+dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/13_03_2015_HeLaS_SMCHD1_TRF2_doubleKD_FISH/';
+dataIn.datasetDir = 'HelaS/Molecule_Lists/pLVP042/';
+dataIn.distributions = [];
+dataIn.fits = [];
+data = [data, dataIn]; % Appends this dataset to the data array.
+
+% Hela S (set 30)
+dataIn.experimentShortName = '13-03-2015 pLVP042 TRF2';
+dataIn.datasetShortName = 'S dataset';
+dataIn.rootDir = '/media/My Book/Kyle/Telomere_Data/13_03_2015_HeLaS_SMCHD1_TRF2_doubleKD_FISH/';
+dataIn.datasetDir = 'HelaS/Molecule_Lists/pLVP042_TRF2/';
+dataIn.distributions = [];
+dataIn.fits = [];
+data = [data, dataIn]; % Appends this dataset to the data array.
+
 end

@@ -48,7 +48,7 @@ zAxisDist = 300;
 % descriptive names and root directories for each dataset.
 
 cd data_structures/
-data = experiment_1_FISH_immuno();
+data = experiment_5_SmchD1_TRF2();
 cd ..
 
 
