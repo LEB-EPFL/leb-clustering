@@ -4,12 +4,12 @@
 % These functions require a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/19 $ $REVISION: 1.3 $
 
 %% Original dataset : Hela L
 
 % Access to the helper functions for plotting
-cd private/
+cd ../../private/
 
 numBins = 20;
 
@@ -82,7 +82,7 @@ plotMeansPaired(filterData, fieldName, figParams, errorBar, fullScreen);
 % Volume for all datasets
 clear figParams
 figParams.title = 'Mean Volume';
-figParams.ylim = [0 9e6];
+figParams.ylim = [0 15e6];
 figParams.ylabel = 'Volume, nm^3';
 figParams.legend = {'Hela L'; 'Hela S'};
 errorBar = 'stdErr';

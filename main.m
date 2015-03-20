@@ -3,7 +3,7 @@
 % This script should be run after the analysis workflow is determined from
 % data_mining.m.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.4 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/03/19 $ $REVISION: 1.5 $
 %
 
 function [data] = main()
@@ -43,12 +43,14 @@ minLoc = 50;
 maxLoc = 1000;
 
 zAxisDist = 300;
+
+maxOnTime = 10;
 %% Setup the data structure and designate files for analysis.
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
 
 cd data_structures/
-data = experiment_5_SmchD1_TRF2();
+data = experiment_1_FISH_immuno();
 cd ..
 
 
@@ -91,15 +93,15 @@ if useParallel
     parfor ctr = 1:length(files)
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
-        currDataF = [currData.Xc currData.Yc currData.Zc];
-        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist);
+        currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
+        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
     end
 else
     for ctr = 1:length(files)
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
-        currDataF = [currData.Xc currData.Yc currData.Zc];
-        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist);
+        currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
+        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
     end
 end
 

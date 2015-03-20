@@ -4,12 +4,12 @@
 % These functions require a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/03/19 $ $REVISION: 1.3 $
 
 %% FISH vs. TRF1 IF : Hela L
 
 % Access to the helper functions for plotting
-cd private/
+cd ../../private/
 
 numBins = 20;
 

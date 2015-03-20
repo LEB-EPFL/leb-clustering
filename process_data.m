@@ -9,11 +9,17 @@
 %            (set to Inf if there's no upper bound filtering)
 %   zAxisDist - Remove clusters with centers of mass that are greater than
 %               +/- this distance from the 0 nm z-plane.
+%   maxOnTime - Maximum number of frames that a molecule can be on for
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/02/10 $ $REVISION: 1.6 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/19 $ $REVISION: 1.7 $
 %
 
-function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc, zAxisDist)
+function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime)
+%% Remove localizations on for more than maxOnTime frames.
+%Separate onTimes from the rest of the data.
+onTimes = dataF(:,end);
+dataF = dataF(onTimes <= maxOnTime,1:3);
+
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
 % (minimal number of objects considered as a cluster)

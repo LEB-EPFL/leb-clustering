@@ -4,12 +4,12 @@
 % These functions require a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/05 $ $REVISION: 1.2 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/19 $ $REVISION: 1.3 $
 
 %% Pooled data from SmchD1 and TRF2 double knockdowns : Hela S
 
 % Access to the helper functions for plotting
-cd private/
+cd ../../private/
 
 numBins = 20;
 
@@ -54,7 +54,7 @@ clear figParams
 figParams.title = 'Mean R_g for pooled datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'RgTrans';
@@ -65,7 +65,7 @@ clear figParams
 figParams.title = 'Mean volume for pooled datasets';
 figParams.ylim = [0 8e6];
 figParams.ylabel = 'Mean volume, nm^3';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
@@ -78,7 +78,7 @@ clear figParams
 figParams.title = 'Median R_g for pooled datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'RgTrans';
@@ -89,7 +89,7 @@ clear figParams
 figParams.title = 'Median volume for pooled datasets';
 figParams.ylim = [0 8e6];
 figParams.ylabel = 'Median volume, nm^3';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
@@ -102,7 +102,7 @@ clear figParams
 figParams.title = 'Mean R_g for pooled datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'RgTrans';
@@ -113,7 +113,7 @@ clear figParams
 figParams.title = 'Mean volume for pooled datasets';
 figParams.ylim = [0 8e6];
 figParams.ylabel = 'Mean volume, nm^3';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
@@ -126,7 +126,7 @@ clear figParams
 figParams.title = 'Median R_g for pooled datasets';
 figParams.ylim = [0 120];
 figParams.ylabel = 'R_g, nm';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'RgTrans';
@@ -137,7 +137,7 @@ clear figParams
 figParams.title = 'Median volume for pooled datasets';
 figParams.ylim = [0 8e6];
 figParams.ylabel = 'Median volume, nm^3';
-figParams.dividers = [6.5, 12.5, 18.5];
+figParams.dividers = [6.5, 12.5, 18.5, 24.5];
 errorBar = 'stdErr';
 fullScreen = true;
 fieldName = 'volume';
