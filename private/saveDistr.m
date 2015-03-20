@@ -3,7 +3,7 @@
 % This function requires a .mat file containing the relevant data loaded
 % into the workspace.
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2014/12/17 $ $REVISION: 0.1 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/20 $ $REVISION: 0.2 $
 
 function saveDistr(data, experimentName, datasetName, distribution)
     filterData = findData(data, experimentName, datasetName);
@@ -22,6 +22,7 @@ function saveDistr(data, experimentName, datasetName, distribution)
     
     formatSpec = '%.4f\n';
     
+    disp(['Writing data to file: ' fName])
     fileID = fopen(['saved_distrs/' fName], 'w');
     fprintf(fileID, formatSpec, distr);
     fclose(fileID);
