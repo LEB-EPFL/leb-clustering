@@ -8,7 +8,7 @@ SAVED_DATA_DIR = saved_distrs
 .PHONY: dataVis
 
 # Runs all data processing steps
-all: analyses saveData
+all: analyses saveData dataVis
 
 # Process the localization data
 analyses:
@@ -20,4 +20,4 @@ saveData: analyses
 
 dataVis: analyses
 	echo "Generating Matlab plots for process inspection."
-	$(ML) "data_visualization_main()"
+	$(ML) "data_visualization_main(); exit"
