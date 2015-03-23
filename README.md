@@ -75,7 +75,9 @@ Individual analyses may be run by doing one of two steps:
 2. Use the Makefile in the _analyses/_ folder with an argument
    corresponding to a certain experiment to process. For example,
 
+```
 	make experiment0
+```
 
    generates the Matlab .mat file for experiment number 0, which studied
    the wild type Hela cells.
