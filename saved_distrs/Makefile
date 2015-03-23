@@ -27,5 +27,8 @@ all: $(E0_DISTRS) $(E1_DISTRS) $(E6_DISTRS)
 # updated by the analyses Makefile. The use of a pattern-rule here
 # ensures that the command to resave the distribution files is run
 # only once, regardless of how many *RgTrans files need updating.
+# See, for example, the following link:
+#
+# http://stackoverflow.com/questions/7081284/gnu-make-multiple-targets-in-a-single-rule
 %RgTrans: $(SAVE_DISTRS)
 	$(RESAVE_DISTRS)

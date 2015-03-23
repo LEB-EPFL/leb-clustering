@@ -19,6 +19,9 @@ estimations.
   report for each experiment.
 + *dbscan.m* - DBSCAN implementation in Matlab. Originally written by
   Michal Daszykowski at the University of Silesia.
++ *dbscan_sweep_params.m* Performs a parameter sweep of the DBSCAN
+  input parameters to find the best set of inputs. (_Warning_: this
+  can take a long time to run.)
 + *Makefile* - Used to automatically run the various scripts in the
   correct order for analyzing the localization data and saving the
   results.
