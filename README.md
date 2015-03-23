@@ -14,8 +14,11 @@ estimations.
 ### Files ###
 + *data_mining.m* - Helper script for investigating new data; use for
   exploring the datasets before processing all the data with main.m.
++ *data_visualization_main.m* - Runs all the different visualization
+  scripts for the various experiments. It also generates an HTML
+  report for each experiment.
 + *dbscan.m* - DBSCAN implementation in Matlab. Originally written by
-Michal Daszykowski at the University of Silesia.
+  Michal Daszykowski at the University of Silesia.
 + *Makefile* - Used to automatically run the various scripts in the
   correct order for analyzing the localization data and saving the
   results.
@@ -48,5 +51,45 @@ Michal Daszykowski at the University of Silesia.
 + *saved_distrs* - Folder containing the distributions of the
   statistics computed from the clustered localizations. Currently,
   this is only the radius of gyration data.
-+ *writeup* - Files for the writeup. 
++ *writeup* - Files for the writeup.
 
+## Instructions ##
+
+### Running the entire analysis ###
+
+The entire analyses can be run simply by navigating to the root
+directory (which contains the process\_helper.m and process\_data.m
+scripts) and typing
+
+	make
+
+Note that this currently requires that localization data are stored in
+a certain directory on the external harddrive on Kyle's office
+computer. This is planned to change soon.
+
+### Running only selected analyses
+Individual analyses may be run by doing one of two steps:
+
+1. Use the *process\_helper.m* and *process\_data.m* scripts to
+   generate .mat files containing the processed localizations.
+2. Use the Makefile in the _analyses/_ folder with an argument
+   corresponding to a certain experiment to process. For example,
+
+	make experiment0
+
+   generates the Matlab .mat file for experiment number 0, which studied
+   the wild type Hela cells.
+
+## Software Versions ##
+
+The following software packages were used to perform this
+analysis. This list is not meant to serve as a dependency list, but
+instead as documentation for the versions of software used.
+
+### Matlab
+
++ Matlab R2014a (8.3.0.532) 64-bit
+
+### Linux tools
+
++ Make (3.81-8.2) 64-bit
