@@ -1,8 +1,5 @@
 % Save the processed distributions from all experiments.
 %
-% This function requires a .mat file containing the relevant data loaded
-% into the workspace.
-%
 % $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/20 $ $REVISION: 0.1 $
 
 function saveDistFiles()
