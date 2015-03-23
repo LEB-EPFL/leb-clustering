@@ -8,6 +8,12 @@
 
 %% FISH vs. TRF1 IF : Hela L
 
+% Load the data into memory.
+load('matlab.mat', 'data');
+
+% Save current directory location
+currDir = pwd;
+
 % Access to the helper functions for plotting
 cd ../../private/
 
@@ -88,5 +94,5 @@ fullScreen = true;
 fieldName = 'volume';
 plotMedians(filterData, fieldName, figParams, errorBar, fullScreen);
 
-% Switch back to parent directory
-cd ..
+% Switch back to original directory
+cd(currDir)
