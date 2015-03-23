@@ -15,9 +15,9 @@ analyses:
 	$(MAKE) -C $(ANALYSES_DIR)
 
 # Save processed Matlab data to text files
-saveData: analyses
+saveData:
 	$(MAKE) -C $(SAVED_DATA_DIR)
 
-dataVis: analyses
+dataVis:
 	echo "Generating Matlab plots for process inspection."
 	$(ML) "data_visualization_main(); exit"

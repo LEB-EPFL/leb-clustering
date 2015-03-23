@@ -67,6 +67,10 @@ Note that this currently requires that localization data are stored in
 a certain directory on the external harddrive on Kyle's office
 computer. This is planned to change soon.
 
+It is also assumed that you are using GNU Make on a Linux-based
+system. It may be possible to use GNU Make to assemble this analysis
+on a Windows system, but this has not been tested.
+
 ### Running only selected analyses
 Individual analyses may be run by doing one of two steps:
 
@@ -79,8 +83,16 @@ Individual analyses may be run by doing one of two steps:
 	make experiment0
 ```
 
-   generates the Matlab .mat file for experiment number 0, which studied
-   the wild type Hela cells.
+   generates the Matlab .mat file for experiment number 0, which
+   studied the wild type Hela cells. Note that this _will not_
+   generate updated distribution files or run the data_visualization
+   scripts for the experiment. To do this, you must go to the
+   project's root directory and type
+
+```
+	make saveData
+	make dataVis
+```
 
 ## Software Versions ##
 
