@@ -6,7 +6,11 @@ SAVED_DATA_DIR = saved_distrs
 
 PUBPLOT_REQS = \
 	saved_distrs/Original_Data_L_dataset_RgTrans \
-	saved_distrs/Original_Data_S_dataset_RgTrans
+	saved_distrs/Original_Data_S_dataset_RgTrans \
+	simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy \
+	simulation_data/llh_Original_Data_S_dataset_RgTrans2015-2-2.npy \
+	simulation_data/rw_2015-1-26_HelaL* \
+	simulation_data/rw_2015-2-2_HelaS*
 
 .PHONY: analyses
 .PHONY: saveData
@@ -41,3 +45,17 @@ pubPlots : $(PUBPLOT_REQS)
 	@echo "figures/output_figs/plotDistributions.png"
 	@echo "Generating publication parameter space plots and distributions from plotParamSpaces.py"
 	cd figures && python plotParamSpaces.py && cd ..
+	@echo "The following figures were generated:"
+	@echo "figures/output_figs/HelaL_param_space.svg"
+	@echo "figures/output_figs/HelaL_param_space.pdf"
+	@echo "figures/output_figs/HelaL_param_space.png"
+	@echo "figures/output_figs/HelaS_param_space.svg"
+	@echo "figures/output_figs/HelaS_param_space.pdf"
+	@echo "figures/output_figs/HelaS_param_space.png"
+	@echo "figures/output_figs/HelaL_param_space_dists.svg"
+	@echo "figures/output_figs/HelaL_param_space_dists.pdf"
+	@echo "figures/output_figs/HelaL_param_space_dists.png"
+	@echo "figures/output_figs/HelaS_param_space_dists.svg"
+	@echo "figures/output_figs/HelaS_param_space_dists.pdf"
+	@echo "figures/output_figs/HelaS_param_space_dists.png"
+	@echo "All publication figures have been generated."
