@@ -1,8 +1,5 @@
-"""Code for generating Fig. distribution of gyration radii for WT Hela
-L and Hela S cells.
-
-See
-https://bespokeblog.wordpress.com/2011/07/11/basic-data-plotting-with-matplotlib-part-3-histograms/
+"""Script for generating publication-quality figures of the
+distributions of the radius of gyration for Hela L and Hela S.
 
 """
 
@@ -11,16 +8,17 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
 
-
+# Set global matplotlib settings
+journalFontSize = 7
 fontpath = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf'
 prop = font_manager.FontProperties(fname = fontpath)
 rcParams['font.family'] = prop.get_name()
-rcParams.update({'font.size' : 7})
-rcParams.update({'legend.fontsize' : 7})
-rcParams.update({'axes.titlesize' : 7})
+rcParams.update({'font.size'       : journalFontSize})
+rcParams.update({'legend.fontsize' : journalFontSize})
+rcParams.update({'axes.titlesize'  : journalFontSize})
 
-hl = np.loadtxt('../figure_data/Original_Data_L_dataset_RgTrans')
-hs = np.loadtxt('../figure_data/Original_Data_S_dataset_RgTrans')
+hl = np.loadtxt('../saved_distrs/Original_Data_L_dataset_RgTrans')
+hs = np.loadtxt('../saved_distrs/Original_Data_S_dataset_RgTrans')
 
 # For plotting the means
 hlMean = [np.mean(hl), np.mean(hl)]
@@ -77,6 +75,7 @@ plt.xlabel('Radius of gyration, nm')
 plt.ylabel('Normalized frequency')
 plt.ylim(tuple(ysMean))
 plt.grid(False)
-#plt.show()
-plt.savefig('fig1c.pdf')
+plt.savefig('output_figs/plotDistributions.svg')
+plt.savefig('output_figs/plotDistributions.pdf')
+plt.savefig('output_figs/plotDistributions.png')
 plt.close()
