@@ -3,3 +3,6 @@ writeup/figures/figure_data/*
 org/images/*
 *.png
 *.zip
+*__pycache__*
+*.dat
+*.map

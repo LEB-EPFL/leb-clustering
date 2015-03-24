@@ -56,8 +56,9 @@ estimations.
 + *saved_distrs* - Folder containing the distributions of the
   statistics computed from the clustered localizations. Currently,
   this is only the radius of gyration data.
-+ *simulation_data* Python CPickle databases containing the simulated
-  datasets for generating the parameter space plots.
++ *simulation_data* - Numpy files and pickled Python databases
+  containing the simulated radius of gyration data for generating the
+  parameter space plots.
 + *writeup* - Miscellaneous files for the writeup.
 
 ## Instructions ##
