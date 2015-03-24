@@ -4,7 +4,7 @@ ANALYSES_DIR = analyses
 FIGURES_DIR = figures
 SAVED_DATA_DIR = saved_distrs
 
-PLOTHIST_REQS = \
+PUBPLOT_REQS = \
 	saved_distrs/Original_Data_L_dataset_RgTrans \
 	saved_distrs/Original_Data_S_dataset_RgTrans
 
@@ -13,7 +13,7 @@ PLOTHIST_REQS = \
 .PHONY: MLdataVis
 
 # Runs all data processing steps
-all: analyses saveData dataVis plotHist
+all: analyses saveData dataVis plotPlots
 
 # Process the localization data
 analyses:
@@ -28,12 +28,16 @@ MLdataVis:
 	echo "Generating Matlab plots for process inspection."
 	$(ML) "data_visualization_main(); exit"
 
-# Plots the publication-quality histogram representing the radius of
-# gyration distribution for Hela L and Hela S wild types.
-plotHist : $(PLOTHIST_REQS)
+# Makes publication-quality plots, including
+#     + wild type distributions
+#     + parameter spaces
+#     + comparision of simulated and measured distributions
+pubPlots : $(PUBPLOT_REQS)
 	@echo "Generating publication figure from plotDistributions.py"
 	cd figures && python plotDistributions.py && cd ..
 	@echo "The following figures were generated:"
 	@echo "figures/output_figs/plotDistributions.svg"
 	@echo "figures/output_figs/plotDistributions.pdf"
 	@echo "figures/output_figs/plotDistributions.png"
+	@echo "Generating publication parameter space plots and distributions from plotParamSpaces.py"
+	cd figures && python plotParamSpaces.py && cd ..
