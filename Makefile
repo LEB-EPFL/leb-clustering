@@ -1,4 +1,4 @@
-# Used to rebuild entire Telomere STORM project analysis.
+# Used to rebuild the entire Telomere STORM project analysis.
 ML = matlab -nodesktop -r
 ANALYSES_DIR = analyses
 FIGURES_DIR = figures
@@ -7,6 +7,10 @@ SAVED_DATA_DIR = saved_distrs
 LLH_REQS = \
 	saved_distrs/Original_Data_L_dataset_RgTrans \
 	saved_distrs/Original_Data_S_dataset_RgTrans \
+
+# Pickled database files (rw_2015...) are required for finding the
+# simulated distributions with mean values within +/- 5 nm of the
+# measured distribution.
 PUBPLOT_REQS = \
 	saved_distrs/Original_Data_L_dataset_RgTrans \
 	saved_distrs/Original_Data_S_dataset_RgTrans \
@@ -20,7 +24,7 @@ PUBPLOT_REQS = \
 .PHONY: MLdataVis
 
 # Runs all data processing steps
-all: analyses saveData dataVis plotPlots
+all: analyses saveData dataVis calcLLH pubPlots
 
 # Process the localization data
 analyses:
@@ -46,7 +50,7 @@ calcLLH: $(LLH_REQS)
 # Makes publication-quality plots, including
 #     + wild type distributions
 #     + parameter spaces
-#     + comparision of simulated and measured distributions
+#     + comparison of simulated and measured distributions
 pubPlots : $(PUBPLOT_REQS)
 	@echo "Generating publication figure from plotDistributions.py"
 	cd figures && python plotDistributions.py && cd ..
