@@ -56,7 +56,9 @@ estimations.
 + *saved_distrs* - Folder containing the distributions of the
   statistics computed from the clustered localizations. Currently,
   this is only the radius of gyration data.
-+ *writeup* - Files for the writeup.
++ *simulation_data* Python CPickle databases containing the simulated
+  datasets for generating the parameter space plots.
++ *writeup* - Miscellaneous files for the writeup.
 
 ## Instructions ##
 
@@ -76,7 +78,7 @@ It is also assumed that you are using GNU Make on a Linux-based
 system. It may be possible to use GNU Make to assemble this analysis
 on a Windows system, but this has not been tested.
 
-### Running only selected analyses
+### Running only selected localization analyses
 Individual analyses may be run by doing one of two steps:
 
 1. Use the *process\_helper.m* and *process\_data.m* scripts to
@@ -85,14 +87,18 @@ Individual analyses may be run by doing one of two steps:
    corresponding to a certain experiment to process. For example,
 
 ```
+	cd analyses
 	make experiment0
 ```
 
    generates the Matlab .mat file for experiment number 0, which
-   studied the wild type Hela cells. Note that this _will not_
-   generate updated distribution files or run the data_visualization
-   scripts for the experiment. To do this, you must go to the
-   project's root directory and type
+   studied the wild type Hela cells. The *cd analyses* command is not
+   necessary if you're already inside the analyses folder.
+
+   Note that running an individual analysis this way _will not_
+   generate updated distribution text files or run the
+   data_visualization scripts for the experiment. To do this, you must
+   go back to the project's root directory and type
 
 ```
 	make saveData
