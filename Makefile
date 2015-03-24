@@ -4,6 +4,9 @@ ANALYSES_DIR = analyses
 FIGURES_DIR = figures
 SAVED_DATA_DIR = saved_distrs
 
+LLH_REQS = \
+	saved_distrs/Original_Data_L_dataset_RgTrans \
+	saved_distrs/Original_Data_S_dataset_RgTrans \
 PUBPLOT_REQS = \
 	saved_distrs/Original_Data_L_dataset_RgTrans \
 	saved_distrs/Original_Data_S_dataset_RgTrans \
@@ -31,6 +34,14 @@ saveData:
 MLdataVis:
 	echo "Generating Matlab plots for process inspection."
 	$(ML) "data_visualization_main(); exit"
+
+# Calculate the log-likelihood (llh) data files.
+
+# This is still something that needs to be worked on. Specifically, I
+# need to make the Python polymer code into a package and then use
+# some of its utilities for computing the LLH datasets.
+calcLLH: $(LLH_REQS)
+	@echo "TODO: Automatically compute log-likelihood data."
 
 # Makes publication-quality plots, including
 #     + wild type distributions
