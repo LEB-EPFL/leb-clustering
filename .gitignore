@@ -6,3 +6,4 @@ org/images/*
 *__pycache__*
 *.dat
 *.map
+*.pyc
