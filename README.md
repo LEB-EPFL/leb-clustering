@@ -125,29 +125,21 @@ instead as documentation for the versions of software used.
 Python 3.4.1 was used for this project, though in general any Python3
 interpretor with the proper packages installed should work.
 
-The following Python packages were installed in a virtualenv:
+The following Python packages were installed in a virtualenv. The long
+line from github is the PolymerPy package that was developed in the
+LEB for inferring polymer properties from super-resolution datasets.
 
 ```sh
-(python3-general)douglass@lebpc18:~/Telomeres$ pip freeze
-certifi==14.5.14
-docutils==0.12
-ipython==2.4.1
-jedi==0.8.1
-Jinja2==2.7.3
-MarkupSafe==0.23
-matplotlib==1.4.2
+(PolymerPy)douglass@lebpc18:~/Telomeres$ pip freeze
+matplotlib==1.4.3
 nose==1.3.4
-numpy==1.9.1
-numpydoc==0.5
-pandas==0.15.2
-Pygments==2.0.2
+numpy==1.9.2
+-e git+https://github.com/kmdouglass/PolymerPy@56dd01b19fef417c39429034285faf91119c9b15#egg=PolymerPy-master
 pyparsing==2.0.3
-python-dateutil==2.4.0
-pytz==2014.10
-pyzmq==14.5.0
+python-dateutil==2.4.1
+pytz==2015.2
 scikit-learn==0.15.2
 scipy==0.15.1
 six==1.9.0
-Sphinx==1.2.3
-tornado==4.1
+wheel==0.24.0
 ```
