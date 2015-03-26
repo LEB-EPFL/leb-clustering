@@ -23,12 +23,12 @@ PUBPLOT_REQS = \
 
 .PHONY: analyses
 .PHONY: saveData
-.PHONY: MLdataVis
+.PHONY: MLDataVis
 
 # Runs all data processing steps. The first two (analyses and
 # saveData) generate the text data in the saved_distrs folder for the
 # last two steps (calcLLH and pubPlots).
-all: analyses saveData dataVis calcLLH pubPlots
+all: analyses saveData MLDataVis calcLLH pubPlots
 
 # Process the localization data
 analyses:
@@ -39,7 +39,7 @@ saveData:
 	$(MAKE) -C $(SAVED_DATA_DIR)
 
 # Run the Matlab visualization scripts.
-MLdataVis:
+MLDataVis:
 	echo "Generating Matlab plots for process inspection."
 	$(ML) "data_visualization_main(); exit"
 
