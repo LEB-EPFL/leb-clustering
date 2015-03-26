@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
-from rw_helpers import unpackLLH, loadModel
+from PolymerPy.PolymerPy_helpers import unpackLLH, loadModel
 
 # Set global matplotlib settings
 journalFontSize = 7
@@ -190,8 +190,8 @@ ax2.set_ylim((0, 0.025))
 ax3.set_ylim((0, 0.025))
 ax4.set_ylim((0, 0.025))
 
-fig.text(0.525, 0.00, 'Radius of gyration, nm', ha='center', va='center')
-fig.text(0.00, 0.5, 'Normalized frequency', ha='center', va='center', rotation='vertical')
+fig.text(0.525, 0.019, 'Radius of gyration, nm', ha='center', va='center')
+fig.text(0.015, 0.5, 'Normalized frequency', ha='center', va='center', rotation='vertical')
 
 ax1.spines['top'].set_visible(False);   ax1.xaxis.set_ticks_position('bottom')
 ax1.spines['right'].set_visible(False); ax1.yaxis.set_ticks_position('left')
@@ -333,8 +333,8 @@ ax2.set_ylim((0, 0.05))
 ax3.set_ylim((0, 0.05))
 ax4.set_ylim((0, 0.05))
 
-fig.text(0.525, 0.00, 'Radius of gyration, nm', ha='center', va='center')
-fig.text(0.00, 0.5, 'Normalized frequency', ha='center', va='center', rotation='vertical')
+fig.text(0.525, 0.019, 'Radius of gyration, nm', ha='center', va='center')
+fig.text(0.015, 0.5, 'Normalized frequency', ha='center', va='center', rotation='vertical')
 
 ax1.spines['top'].set_visible(False);   ax1.xaxis.set_ticks_position('bottom')
 ax1.spines['right'].set_visible(False); ax1.yaxis.set_ticks_position('left')
