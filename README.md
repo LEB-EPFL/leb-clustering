@@ -28,7 +28,7 @@ estimations.
   results.
 + **process\_helper.m** - The script used for reading in raw
   localization data, setting filtering properties, and sending the
-  data to the **process\_data.m** script. *process\_data.m* does the
+  data to the *process\_data.m* script. *process\_data.m* does the
   actual filtering and computation of the radius of gyration and other
   calculations.
 + **process_data.m** - Primary function for clustering localization
