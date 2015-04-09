@@ -7,9 +7,11 @@
 %workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 %workDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2/';
 %workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/08_09_2014_HelaS_L_Trf1_Trf2_KD_DAPI_FISH_mol_lists/08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD/';
-workDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
+%workDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
+workDir = '/media/My Book/Kyle/Telomere_Data/29_08_2014_Hela_L_TRF1_IF/HelaL/';
 
-fName = '11_06_2014_FISH_HelaL_8_list.txt';
+fFolder = 'Molecule_Lists/';
+fName = 'TRF1_1000/29_08_2014_HelaS_TRF1_1_1000_LG_IF_4';
 %fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
@@ -20,18 +22,15 @@ fName = '11_06_2014_FISH_HelaL_8_list.txt';
 %fName = '11_08_2014_HeLa S_SmchD1_Trf2_KD_FISH_pLVP Trf2_5_list.txt';
 %fName = '08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD_1_list.txt';
 
-%imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pSuper/';
-%fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pSuper_1.jp2'];
+imgDir = [workDir] ;
+fNameImg = [imgDir 'TRF1_1000/29_08_2014_WF_HelaS_TRF1_1_1000_LG_IF_4.jp2'];
 
-imgDir = 'file:///media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pLVP0 Trf2/';
-fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pLVTP Trf2_5.jp2'];
-
-% imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa L_SMCHD1_Trf2_KD_FISH_pLVPTrf2/';
-% fNameImg = [imgDir '11_08_2014_WF_HeLa L_SMCHD1_Trf2_KD_pLVTP Trf2_2.jp2'];
-
-data = tdfread([workDir fName]);
+data = tdfread([workDir fFolder fName '_list.txt']);
 
 %% Filter out unnecessary columns and condition data for input to DBSCAN.
+data.Xc  = data.Xc(data.Length <= 10);
+data.Yc  = data.Yc(data.Length <= 10);
+data.Zc  = data.Zc(data.Length <= 10);
 dataF = [data.Xc data.Yc data.Zc];
 
 %% Cluster localizations using DBSCAN.

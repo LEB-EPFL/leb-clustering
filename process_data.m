@@ -101,8 +101,8 @@ distr.M2 = M2;
 if isempty(M2)
     distr.RgTrans = [];
 else
-    % Factor of sqrt(3/2) converts to a 3D Rg
-    distr.RgTrans = sqrt(3/2) * sqrt(M2(:,1) + M2(:,2)); 
+    % If 3D is wanted, multiply by a factor of sqrt(3/2)
+    distr.RgTrans = sqrt(M2(:,1) + M2(:,2)); 
 end
 distr.Rg = Rg;
 distr.numLoc = numLoc;
