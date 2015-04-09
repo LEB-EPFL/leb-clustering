@@ -16,10 +16,12 @@ LLH_REQS = \
 PUBPLOT_REQS = \
 	saved_distrs/Original_Data_L_dataset_RgTrans \
 	saved_distrs/Original_Data_S_dataset_RgTrans \
-	simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy \
 	simulation_data/llh_Original_Data_S_dataset_RgTrans2015-2-2.npy \
-	simulation_data/rw_2015-1-26_HelaL* \
+	simulation_data/llh_Original_Data_L_dataset_RgTrans2015-4-8.npy \
+	simulation_data/simData_HelaL_WT_2015-4-8* \
 	simulation_data/rw_2015-2-2_HelaS*
+#	simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy \
+#	simulation_data/rw_2015-1-26_HelaL* \
 
 .PHONY: analyses
 .PHONY: saveData

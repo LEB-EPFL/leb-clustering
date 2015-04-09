@@ -43,7 +43,7 @@ results = {'Hela L' : {'LLH' : None,
 # In[2]:
 
 # Read in Hela L
-currDataset = '../simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy'
+currDataset = '../simulation_data/llh_Original_Data_L_dataset_RgTrans2015-4-8.npy'
 
 with open(currDataset, mode = 'rb') as inFile:
     hl = np.load(inFile)
@@ -93,7 +93,7 @@ LSEM = sem(LExpDist)
 SSEM = sem(SExpDist)
 
 # Model distributions
-LModelDists = loadModel(['../simulation_data/rw_2015-1-26_HelaL_WT'])
+LModelDists = loadModel(['../simulation_data/simData_HelaL_WT_2015-4-8'])
 SModelDists = loadModel(['../simulation_data/rw_2015-2-2_HelaS_WT'])
 
 LModelMeans = {k: np.mean(v[1]) for k, v in LModelDists.items()}
