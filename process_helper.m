@@ -83,7 +83,8 @@ completeDir = [data(dataCtr).rootDir data(dataCtr).datasetDir];
 
 files = dir(completeDir);
 
-%% Filter out upper level directors.
+%% Filter out upper level directors (. and .. on Linux).
+%  This step may not be necessary on Windows
 files = files(3:end);
 
 %% Process the data within each file.
