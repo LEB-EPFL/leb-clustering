@@ -7,10 +7,11 @@
 % Inputs:
 %   dataStructFile - (string)
 %                    Name of file defining an experiment's data structure
+%                    without the .m extension
 %   saveFolder     - (string)
 %                    Where should the .mat file be saved?
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/20 $ $REVISION: 1.6 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/20 $ $REVISION: 1.7 $
 % $FORMER NAME: main.m $
 %
 
@@ -24,7 +25,7 @@ filterFit = false;
 fitAll = true;
 
 %% Use parallel processing to speed up computation? (use 'false' if unsure)
-useParallel = true;
+useParallel = false;
 
 if useParallel
     % Start a Matlab pool if one hasn't started.
@@ -102,14 +103,14 @@ if useParallel
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
         currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
-        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
+        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
     end
 else
     for ctr = 1:length(files)
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
         currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
-        procData(ctr) = process_data(currDataF, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
+        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
     end
 end
 

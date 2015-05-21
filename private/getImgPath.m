@@ -62,6 +62,6 @@ fileNameImgSplit = [fileNameSplit{end}(1:end-length(fileType)) '.jp2'];
 
 % Rejoin parts leading to the full path, without the folder
 % 'Molecule_Lists'.
-imgPath = strjoin([fileNameSplit(1:end-2), {fileNameImgSplit}], '/');
+imgPath = strjoin([fileNameSplit(1:end-2), {fileNameImgSplit}], delimiter);
 
 end

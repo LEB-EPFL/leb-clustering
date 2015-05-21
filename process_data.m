@@ -1,20 +1,21 @@
 % Process the data from the telomere experiments.
 %
 % Inputs:
-%   dataF  - N X 3 array of unclustered point coordinates.
-%   k      - Number of objects in a neighborhood of an cluster
-%   Eps    - Neighborhood radius, if not known put []
-%   minLoc - Minimum number of points in a cluster
-%   maxLoc - Maximum number of points in a cluster
-%            (set to Inf if there's no upper bound filtering)
+%   dataF     - N X 3 array of unclustered point coordinates
+%   fileName  - Name of the current localization data file
+%   k         - Number of objects in a neighborhood of an cluster
+%   Eps       - Neighborhood radius, if not known put []
+%   minLoc    - Minimum number of points in a cluster
+%   maxLoc    - Maximum number of points in a cluster
+%               (set to Inf if there's no upper bound filtering)
 %   zAxisDist - Remove clusters with centers of mass that are greater than
 %               +/- this distance from the 0 nm z-plane.
 %   maxOnTime - Maximum number of frames that a molecule can be on for
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/03/19 $ $REVISION: 1.7 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/20 $ $REVISION: 2.0 $
 %
 
-function [distr] = process_data(dataF, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime)
+function [distr] = process_data(dataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime)
 %% Remove localizations on for more than maxOnTime frames.
 %Separate onTimes from the rest of the data.
 onTimes = dataF(:,end);
@@ -53,6 +54,15 @@ zAvg = cell2mat(zAvg);
 
 clustersF = clustersF(abs(zAvg) <= zAxisDist);
 numClustersF = length(clustersF);
+
+%% Display the widefield image
+fileNameImg = getImgPath(fileName);
+
+figure;
+img = imread(fileNameImg);
+imshow(img, [min(img(:)) max(img(:))])
+
+keyboard
 
 %% Find moments of the distribution of localizations within the clusters.
 % Rows of M1 are the first moments of the distribution for each coordinate
