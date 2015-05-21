@@ -101,7 +101,8 @@ img = imread(fileNameImg);
 windowSize = 10;
 
 % Distance-to-pixel conversion factor
-dist2pix = 1/155;
+dist2pixX = 1/163;
+dist2pixY = 1/158;
 
 s = get(0, 'ScreenSize');
 hFig = figure();
@@ -117,28 +118,43 @@ set(hFig, 'Position', [0, 0, s(3)/2, s(4)]);
 % Overlay the localizations on the widefield image
 hold(hAx1, 'on')
 for ctr = 1:numClustersF
-    plot(dist2pix * clustersF{ctr}(:,1), dist2pix * clustersF{ctr}(:,2), 'r+', 'Parent', hAx1)
+    plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'r+', 'Parent', hAx1)
 end
 hold(hAx1, 'off')
 
+% Do the same for the second axis
+imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx2)
+
+% Divide width by two because I'm using dual monitors. Remove this if using
+% a single monitor.
+set(hFig, 'Position', [0, 0, s(3)/2, s(4)]);
+
+% Overlay the localizations on the widefield image
+hold(hAx2, 'on')
+for ctr = 1:numClustersF
+    plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'r+', 'Parent', hAx2)
+end
+hold(hAx2, 'off')
 
 % Loop through each cluster and display it in the zoomed-region window
 ctr = 1;
 
-% Used to slice the widefield image around the cluster
-currClusterCenter = round(dist2pix * M1{ctr});
-currImgSlice      = img(currClusterCenter(1) - windowSize:currClusterCenter(1) + windowSize, currClusterCenter(2) - windowSize:currClusterCenter(2) + windowSize);
-imshow(currImgSlice, [min(currImgSlice(:)), max(currImgSlice(:))], 'Parent', hAx2);
-hold(hAx2, 'on')
+% Used to zoom the widefield image around the cluster
+%currClusterCenter = round(dist2pix * M1{ctr});
+currClusterCenter = round([dist2pixX * M1{ctr}(1), dist2pixY * M1{ctr}(2)]);
+xlim(hAx2, [currClusterCenter(1) - windowSize, currClusterCenter(1) + windowSize]);
+ylim(hAx2, [currClusterCenter(2) - windowSize, currClusterCenter(2) + windowSize]);
 
-% Used for plotting the cluster over the sliced widefield image
-locOffsetX = dist2pix * clustersF{ctr}(:,1) - (currClusterCenter(1) - (windowSize + 1)/2);
-locOffsetY = dist2pix * clustersF{ctr}(:,2) - (currClusterCenter(2) - (windowSize + 1)/2);
-plot(locOffsetX, locOffsetY, 'r+', 'Parent', hAx2)
+% Idenfity the cluster on the widefield image
+hold(hAx1, 'on'); hold(hAx2, 'on')
+currClusterAx1 = plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'bo', 'markers', 10, 'Parent', hAx1);
+currClusterAx2 = plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'bo', 'markers', 10, 'Parent', hAx2);
+hold(hAx1, 'off'); hold(hAx2, 'off')
 
-hold(hAx2,'off')
 keyboard
 
+delete(currClusterAx1)
+delete(currClusterAx2)
 
 %% Assign computed values to data structure for return.
 distr.M1 = cell2mat(M1);
