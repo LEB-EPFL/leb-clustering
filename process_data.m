@@ -55,15 +55,6 @@ zAvg = cell2mat(zAvg);
 clustersF = clustersF(abs(zAvg) <= zAxisDist);
 numClustersF = length(clustersF);
 
-%% Display the widefield image
-fileNameImg = getImgPath(fileName);
-
-figure;
-img = imread(fileNameImg);
-imshow(img, [min(img(:)) max(img(:))])
-
-keyboard
-
 %% Find moments of the distribution of localizations within the clusters.
 % Rows of M1 are the first moments of the distribution for each coordinate
 % of the localizations within a single cluster.
@@ -71,11 +62,8 @@ keyboard
 % M2 is the diagonal of the covariance matrix computed from the
 % (Xc, Yc, Zc) positions of the points within a cluster. Each row is the
 % covariance matrix diagonal of a different cluster.
-M1 = cell2mat(cellfun(@mean, clustersF, 'UniformOutput', false));
-M2 = cell2mat(cellfun(@second_central_moment, clustersF, 'UniformOutput', false));
-
-% Radius of gyration
-Rg = sqrt(sum(M2,2));
+M1 = cellfun(@mean, clustersF, 'UniformOutput', false);
+M2 = cellfun(@second_central_moment, clustersF, 'UniformOutput', false);
 
 %% Count the number of localizations within each cluster and noise points.
 numLoc = zeros(numClustersF,1);
@@ -104,9 +92,61 @@ for ctr = 1:numClustersF
     end
 end
 
+%% Display the widefield image for manual filtering
+fileNameImg = getImgPath(fileName);
+img = imread(fileNameImg);
+
+% Half-size of the square window around a cluster to display. This should
+% be even (for example, a half size of 10 will be 21 X 21 pixels).
+windowSize = 10;
+
+% Distance-to-pixel conversion factor
+dist2pix = 1/155;
+
+s = get(0, 'ScreenSize');
+hFig = figure();
+hAx1 = subplot(1,2,1);
+hAx2 = subplot(1,2,2);
+
+imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx1)
+
+% Divide width by two because I'm using dual monitors. Remove this if using
+% a single monitor.
+set(hFig, 'Position', [0, 0, s(3)/2, s(4)]);
+
+% Overlay the localizations on the widefield image
+hold(hAx1, 'on')
+for ctr = 1:numClustersF
+    plot(dist2pix * clustersF{ctr}(:,1), dist2pix * clustersF{ctr}(:,2), 'r+', 'Parent', hAx1)
+end
+hold(hAx1, 'off')
+
+
+% Loop through each cluster and display it in the zoomed-region window
+ctr = 1;
+
+% Used to slice the widefield image around the cluster
+currClusterCenter = round(dist2pix * M1{ctr});
+currImgSlice      = img(currClusterCenter(1) - windowSize:currClusterCenter(1) + windowSize, currClusterCenter(2) - windowSize:currClusterCenter(2) + windowSize);
+imshow(currImgSlice, [min(currImgSlice(:)), max(currImgSlice(:))], 'Parent', hAx2);
+hold(hAx2, 'on')
+
+% Used for plotting the cluster over the sliced widefield image
+locOffsetX = dist2pix * clustersF{ctr}(:,1) - (currClusterCenter(1) - (windowSize + 1)/2);
+locOffsetY = dist2pix * clustersF{ctr}(:,2) - (currClusterCenter(2) - (windowSize + 1)/2);
+plot(locOffsetX, locOffsetY, 'r+', 'Parent', hAx2)
+
+hold(hAx2,'off')
+keyboard
+
+
 %% Assign computed values to data structure for return.
-distr.M1 = M1;
-distr.M2 = M2;
+distr.M1 = cell2mat(M1);
+distr.M2 = cell2mat(M2);
+
+% Radius of gyration
+Rg = sqrt(sum(distr.M2,2));
+
 % Error handling in case M2 is empty
 if isempty(M2)
     distr.RgTrans = [];

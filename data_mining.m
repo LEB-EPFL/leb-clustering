@@ -108,7 +108,7 @@ grid on
 % fNameImg = [fName(1:dateLength) 'WF' fName(dateLength:end-removeLength) fType];
 
 % Distance-to-pixel conversion factor
-dist2pix = 1/160;
+dist2pix = 1/165;
 
 img = imread(fNameImg);
 imshow(img, [min(img(:)) max(img(:))])
