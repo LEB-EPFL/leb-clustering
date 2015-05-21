@@ -92,69 +92,11 @@ for ctr = 1:numClustersF
     end
 end
 
-%% Display the widefield image for manual filtering
+%% Perform manual filtering
 fileNameImg = getImgPath(fileName);
-img = imread(fileNameImg);
 
-% Half-size of the square window around a cluster to display. This should
-% be even (for example, a half size of 10 will be 21 X 21 pixels).
-windowSize = 10;
-
-% Distance-to-pixel conversion factor
-dist2pixX = 1/163;
-dist2pixY = 1/158;
-
-s = get(0, 'ScreenSize');
-hFig = figure();
-hAx1 = subplot(1,2,1);
-hAx2 = subplot(1,2,2);
-
-imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx1)
-
-% Divide width by two because I'm using dual monitors. Remove this if using
-% a single monitor.
-set(hFig, 'Position', [0, 0, s(3)/2, s(4)]);
-
-% Overlay the localizations on the widefield image
-hold(hAx1, 'on')
-for ctr = 1:numClustersF
-    plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'r+', 'Parent', hAx1)
-end
-hold(hAx1, 'off')
-
-% Do the same for the second axis
-imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx2)
-
-% Divide width by two because I'm using dual monitors. Remove this if using
-% a single monitor.
-set(hFig, 'Position', [0, 0, s(3)/2, s(4)]);
-
-% Overlay the localizations on the widefield image
-hold(hAx2, 'on')
-for ctr = 1:numClustersF
-    plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'r+', 'Parent', hAx2)
-end
-hold(hAx2, 'off')
-
-% Loop through each cluster and display it in the zoomed-region window
-ctr = 1;
-
-% Used to zoom the widefield image around the cluster
-%currClusterCenter = round(dist2pix * M1{ctr});
-currClusterCenter = round([dist2pixX * M1{ctr}(1), dist2pixY * M1{ctr}(2)]);
-xlim(hAx2, [currClusterCenter(1) - windowSize, currClusterCenter(1) + windowSize]);
-ylim(hAx2, [currClusterCenter(2) - windowSize, currClusterCenter(2) + windowSize]);
-
-% Idenfity the cluster on the widefield image
-hold(hAx1, 'on'); hold(hAx2, 'on')
-currClusterAx1 = plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'bo', 'markers', 10, 'Parent', hAx1);
-currClusterAx2 = plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'bo', 'markers', 10, 'Parent', hAx2);
-hold(hAx1, 'off'); hold(hAx2, 'off')
-
+filters = ManualFilter(clustersF, fileNameImg, M1, noise);
 keyboard
-
-delete(currClusterAx1)
-delete(currClusterAx2)
 
 %% Assign computed values to data structure for return.
 distr.M1 = cell2mat(M1);
@@ -164,11 +106,11 @@ distr.M2 = cell2mat(M2);
 Rg = sqrt(sum(distr.M2,2));
 
 % Error handling in case M2 is empty
-if isempty(M2)
+if isempty(distr.M2)
     distr.RgTrans = [];
 else
     % Factor of sqrt(3/2) converts to a 3D Rg
-    distr.RgTrans = sqrt(3/2) * sqrt(M2(:,1) + M2(:,2)); 
+    distr.RgTrans = sqrt(3/2) * sqrt(distr.M2(:,1) + distr.M2(:,2)); 
 end
 distr.Rg = Rg;
 distr.numLoc = numLoc;
