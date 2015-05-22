@@ -7,17 +7,20 @@ classdef ManualFilter < handle
         keepOrReject     % Which clusters to keep?
         outputClusters   % Manually filtered and adjusted clusters
         noise            % Localizations not clustered by DBSCAN
+        hFig             % Figure handle to the main GUI
     end
     
     properties (Hidden = true)
-        CoM         % Cluster centers of mass
-        hFig        % Figure handle
-        hAx1        % Handle to full widefield image
-        hAx2        % Handle to zoomed widefield image
-        currCluster % Index of the current cluster being analyzed
+        CoM            % Cluster centers of mass
+        hAx1           % Handle to full widefield image
+        hAx2           % Handle to zoomed widefield image
+        hROI           % Handle to user-selected region
+        currCluster    % Index of the current cluster being analyzed
+        currClusterAx1 % Full image handle to current cluster
+        currClusterAx2 % Zoomed image hangle to current cluster
     end
     
-    properties(Constant)
+    properties(Constant, Hidden = true)
         % Distance-to-pixel conversion factors (empirically determined)
         dist2pixX = 1/163;
         dist2pixY = 1/158;
@@ -28,7 +31,7 @@ classdef ManualFilter < handle
     end
     
     methods
-        function obj = ManualFilter(clusters, imgPath, CoM, noise)
+        function obj = ManualFilter(clusters, imgPath, noise)
             % Perform manual filtering routine on clustered localizations
             %
             % Parameters
@@ -45,18 +48,24 @@ classdef ManualFilter < handle
             % Returns
             % -------
             
+            numClusters = length(clusters);
+            obj.keepOrReject = ones(numClusters, 1);
+            
             obj.inputClusters    = clusters;
+            obj.outputClusters   = clusters;
             obj.imgPath          = imgPath;
-            obj.CoM              = CoM; % MAKE THIS A METHOD EVENTUALLY
             obj.noise            = noise;
             obj.currCluster      = 1;
-            [hFig, hAx1, hAx2] = obj.drawInitFig(clusters);
             
+            % Compute the center of mass of all the clusters
+            obj.CoM = cellfun(@mean, clusters, 'UniformOutput', false);
+            
+            [hFig, hAx1, hAx2] = obj.drawInitFig(clusters);
             obj.hFig = hFig;
             obj.hAx1 = hAx1;
             obj.hAx2 = hAx2;
-            keyboard
-            %[obj.keepOrReject, obj.filteredClusters] = obj.doFiltering(clusters);
+            obj.hROI = [];
+            obj.moveToNextCluster(clusters, true);
         end
     end
     
@@ -106,8 +115,6 @@ classdef ManualFilter < handle
             hAx1        = obj.hAx1;
             hAx2        = obj.hAx2;
             
-            disp(ctr)
-            
             % Display the current cluster in the zoomed-region window
             currClusterCenter = round([ManualFilter.dist2pixX * obj.CoM{ctr}(1), ...
                                        ManualFilter.dist2pixY * obj.CoM{ctr}(2)]);
@@ -118,110 +125,141 @@ classdef ManualFilter < handle
             % Idenfity the cluster on the full and zoomed widefield
             % image by drawing blue circles around the localizations
             hold(hAx1, 'on'); hold(hAx2, 'on')
-            currClusterAx1 = plot(ManualFilter.dist2pixX * obj.CoM{ctr}(:,1), ...
-                                  ManualFilter.dist2pixY * obj.CoM{ctr}(:,2), ...
-                                  'bo', ...
-                                  'markers', 6, ...
-                                  'MarkerFaceColor', 'blue', ...
-                                  'Parent', hAx1);
+             
+            obj.currClusterAx1 = plot(ManualFilter.dist2pixX * obj.CoM{ctr}(:,1), ...
+                                      ManualFilter.dist2pixY * obj.CoM{ctr}(:,2), ...
+                                      'wo', ...
+                                      'markers', 12, ...
+                                      'Parent', hAx1);
 
-            currClusterAx2 = plot(ManualFilter.dist2pixX * clusters{ctr}(:,1), ...
-                                  ManualFilter.dist2pixY * clusters{ctr}(:,2), ...,
-                                  'b.', ...
-                                  'Parent', hAx2);
+            obj.currClusterAx2 = plot(ManualFilter.dist2pixX * clusters{ctr}(:,1), ...
+                                      ManualFilter.dist2pixY * clusters{ctr}(:,2), ...,
+                                      'b.', ...
+                                      'Parent', hAx2);
+                     
+            % Mark the previously analyzed cluster
+            if obj.currCluster ~= 1
+                obj.MarkPreviousCluster();
+            end
 
             hold(hAx1, 'off'); hold(hAx2, 'off')
-            
-            % TODO: CHECK FOR END OF CLUSTERS
-            obj.currCluster = obj.currCluster + 1;
-
-            % Remove highlighting of current cluster
-            %delete(currClusterAx1)
-            %delete(currClusterAx2)
-            
-            %close(hFig);
         
-        end
-        
-        function obj = setCurrentCluster(obj, clusterNumber)
-            % Sets the index of the current cluster for analysis.
-            obj.currCluster = clusterNumber;
         end
 
         function processUI(obj, gcbo, event)
-            disp(event)
-            obj.moveToNextCluster(obj.inputClusters)
+            %
+            disp(event.Key)
+            keepCluster = true;
             
+            % Process the user-input based on which key was pressed
+            switch event.Key
+                case 'space'
+                    % Check whether there is a ROI, and if so, add all
+                    % noise points in the ROI to the cluster
+                    if ~isempty(obj.hROI)
+                        obj.addPointsToCluster();
+                        
+                        % Reset the ROI
+                        delete(obj.hROI);
+                        obj.hROI = [];
+                    end
+                    
+                    % Accept cluster for further analysis
+                    obj.keepOrReject(obj.currCluster) = 1;
+                    disp('Cluster accepted.')
+                    
+                    % Update cluster number
+                    obj.currCluster = obj.currCluster + 1;
+
+                case 'r'
+                    % Reject cluster from analysis
+                    if ~isempty(obj.hROI)
+                                           
+                        % Reset the ROI
+                        delete(obj.hROI);
+                        obj.hROI = [];
+                    end
+                    
+                    obj.keepOrReject(obj.currCluster) = 0;
+                    disp('Cluster rejected.')
+                    keepCluster = false;
+                    
+                    % Update cluster number
+                    obj.currCluster = obj.currCluster + 1;
+                    
+                case 'e'
+                    % Enable user-input for select noise points
+                    if isempty(obj.hROI)
+                        obj.hROI = imrect(obj.hAx2);
+                    else
+                        disp('User-input is already enabled.')
+                    end
+                    
+                case 'b'
+                    % Go to previous cluster and reset the points in it
+                    if obj.currCluster > 1
+                        disp('Moving to previous cluster...')
+                        obj.currCluster = obj.currCluster - 1;
+                        
+                        obj.outputClusters{obj.currCluster} = ...
+                            obj.inputClusters{obj.currCluster};
+                    else
+                        disp('Cannnot go back; already at the beginning.')
+                    end
+            end            
             
-%             dist2pixX = ManualFilter.dist2pixX;
-%             dist2pixY = ManualFilter.dist2pixY;
-%             
-%             xCoord = cropRegion(1);
-%             yCoord = cropRegion(2);
-%             width  = cropRegion(3);
-%             height = cropRegion(4);
-%             
-%             % For testing whether you select a region containing the
-%             % cluster's center of mass.
-%             filterX = dist2pixX * CoM(1) >= xCoord & dist2pixX * CoM(1) <= (xCoord + width);
-%             filterY = dist2pixY * CoM(2) >= yCoord & dist2pixY * CoM(2) <= (yCoord + width);
-%             
-%             if ((width == 0) || (height == 0))
-%                 % Size zero box selected. Reject cluster.
-%                 decision = 0;
-%             elseif (filterX && filterY)
-%                 % Box created and contains CoM. Include all points in box.
-%                 decision = 1;
-%             else
-%                 % Box created but drawn outside of center of mass. Reject
-%                 % cluster.
-%                 decision = 0;
-%             end
+            % Decide whether filtering is done or to move to next cluster
+            numClusters = length(obj.inputClusters);
+            if obj.currCluster > numClusters
+                % Close the figure and report that filtering is finished
+                close(obj.hFig);
+            else
+                % Remove highlighting of previous cluster
+                delete(obj.currClusterAx1);
+                delete(obj.currClusterAx2);
+                
+                % Move to next cluster
+                obj.moveToNextCluster(obj.inputClusters, keepCluster);    
+            end
+        end
+        
+        function addPointsToCluster(obj)
+            % Add noise points within the ROI to the current cluster
+            ctr    = obj.currCluster;
+            pos    = obj.hROI.getPosition();
+            xCoord = pos(1);
+            yCoord = pos(2);
+            width  = pos(3);
+            height = pos(4);
+            
+            noiseX  = ManualFilter.dist2pixX * obj.noise(:,1);
+            noiseY  = ManualFilter.dist2pixY * obj.noise(:,2);
+            filterX = noiseX >= xCoord & noiseX <= (xCoord + width);
+            filterY = noiseY >= yCoord & noiseY <= (yCoord + height);
+
+            includePts = obj.noise(filterX & filterY, :);
+            obj.outputClusters{ctr} = vertcat(obj.outputClusters{ctr}, ...
+                                              includePts);
+        end
+        
+        function markPreviousCluster(obj)
+        % Determine how to mark the previous cluster: blue for accepted and
+        % yellow for rejected.
+            if obj.keepOrReject(obj.currCluster - 1)
+                marker = 'bo';
+                fColor = 'blue';
+            else
+                marker = 'yo';
+                fColor = 'yellow';
+            end
+
+            % Mark previously analyzed cluster
+             plot(ManualFilter.dist2pixX * obj.CoM{ctr-1}(:,1), ...
+                  ManualFilter.dist2pixY * obj.CoM{ctr-1}(:,2), ...
+                  marker, ...
+                  'markers', 6, ...
+                  'MarkerFaceColor', fColor, ...
+                  'Parent', obj.hAx1);
         end
     end
-    
 end
-
-%             % Loop through each cluster and display it in the zoomed-region
-%             % window. If the user rejects a cluster for analysis, set its
-%             % corresponding position in 'clusters2Keep' to zero.
-%             clusters2Keep = ones(numClustersF, 1);
-%             for ctr = 1:numClustersF
-%                 % Used to zoom the widefield image around the cluster
-%                 currClusterCenter = round([dist2pixX * obj.CoM{ctr}(1), dist2pixY * obj.CoM{ctr}(2)]);
-%                 xlim(hAx2, [currClusterCenter(1) - windowSize, currClusterCenter(1) + windowSize]);
-%                 ylim(hAx2, [currClusterCenter(2) - windowSize, currClusterCenter(2) + windowSize]);
-% 
-%                 % Idenfity the cluster on the full and zoomed widefield
-%                 % image by drawing blue circles around the localizations
-%                 hold(hAx1, 'on'); hold(hAx2, 'on')
-%                 currClusterAx1 = plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'bo', 'markers', 10, 'Parent', hAx1);
-%                 currClusterAx2 = plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), 'bo', 'markers', 10, 'Parent', hAx2);
-%                 hold(hAx1, 'off'); hold(hAx2, 'off')
-%                 
-%                 % Select an area from the zoomed region to include points
-%                 % inside the region or reject it.
-%                 selectedArea = imrect();
-%                 cropRegion   = wait(selectedArea);
-%                 delete(selectedArea);
-%                 xCoord = cropRegion(1);
-%                 yCoord = cropRegion(2);
-%                 width  = cropRegion(3);
-%                 height = cropRegion(4);
-% 
-%                 % Decide what to do with the cluster
-%                 decision = obj.processUI(cropRegion, obj.CoM{ctr});
-%                 if decision == 0
-%                     clusters2Keep(ctr) = 0;
-%                     disp('Cluster rejected...')
-%                 else
-%                     % Find all noise points inside the user-selected box
-%                     % and add them to the cluster.
-%                     noiseX  = dist2pixX * obj.noise(:,1);
-%                     noiseY  = dist2pixY * obj.noise(:,2);
-%                     filterX = noiseX >= xCoord & noiseX <= (xCoord + width);
-%                     filterY = noiseY >= yCoord & noiseY <= (yCoord + width);
-%                     
-%                     includePts = obj.noise(filterX & filterY, :);
-%                     clustersF{ctr} = vertcat(clustersF{ctr}, includePts);
-%                 end
