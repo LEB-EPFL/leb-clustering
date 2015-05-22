@@ -11,26 +11,15 @@
 %   saveFolder     - (string)
 %                    Where should the .mat file be saved?
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/20 $ $REVISION: 1.7 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/21 $ $REVISION: 2.0 $
 % $FORMER NAME: main.m $
 %
 
 function [data] = process_helper(dataStructFile, saveFolder)
 
-%% Fitting options
-% Filter data based on distance from robust power-law fit?
-filterFit = false;
-
-% Perform all three fit types, or just robust?
-fitAll = true;
-
-%% Use parallel processing to speed up computation? (use 'false' if unsure)
+%% Use parallel processing to speed up computation?
+%  You cannot do manual filtering if this is true.
 useParallel = false;
-
-if useParallel
-    % Start a Matlab pool if one hasn't started.
-    gcp;
-end
 
 %% Define clustering and filtering parameters.
 % k - number of objects in a neighborhood of an object 
@@ -44,6 +33,9 @@ end
 %             (300 nm is good for initial Telomere experiments)
 % maxOnTime - How many consecutive frames can a pixel be on before its
 %             localization is removed from the analysis?
+% manualFilter - Perform a manual filtering to check and adjust the
+%                automatic filtering results?
+%                (This can take a very long time.)
 k = 8;
 Eps = 65;
 
@@ -53,6 +45,27 @@ maxLoc = 1000;
 zAxisDist = 300;
 
 maxOnTime = 10;
+
+manualFilter = true;
+
+%% Fitting options
+% Filter data based on distance from robust power-law fit?
+filterFit = false;
+
+% Perform all three fit types, or just robust?
+fitAll = true;
+
+%% ================= DO NOT MODIFY BELOW THIS LINE ========================
+%  No more user inputs exist below here.
+
+%% Check that useParallel and manualFilter are not both true.
+assert(~(useParallel & manualFilter), ...
+       'Error: You cannot use parallel processing and manual filtering at the same time.')
+   
+if useParallel
+    % Start a Matlab pool if one hasn't started.
+    gcp;
+end
 %% Setup the data structure and designate files for analysis.
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
@@ -103,14 +116,14 @@ if useParallel
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
         currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
-        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
+        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime, manualFilter);
     end
 else
     for ctr = 1:length(files)
         fileName = [completeDir files(ctr).name];
         currData = tdfread(fileName);
         currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
-        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
+        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime, manualFilter);
     end
 end
 

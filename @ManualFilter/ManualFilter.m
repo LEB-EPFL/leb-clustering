@@ -65,7 +65,7 @@ classdef ManualFilter < handle
             obj.hAx1 = hAx1;
             obj.hAx2 = hAx2;
             obj.hROI = [];
-            obj.moveToNextCluster(clusters, true);
+            obj.moveToNextCluster(clusters);
         end
     end
     
@@ -139,7 +139,7 @@ classdef ManualFilter < handle
                      
             % Mark the previously analyzed cluster
             if obj.currCluster ~= 1
-                obj.MarkPreviousCluster();
+                obj.markPreviousCluster();
             end
 
             hold(hAx1, 'off'); hold(hAx2, 'off')
@@ -149,7 +149,6 @@ classdef ManualFilter < handle
         function processUI(obj, gcbo, event)
             %
             disp(event.Key)
-            keepCluster = true;
             
             % Process the user-input based on which key was pressed
             switch event.Key
@@ -182,7 +181,6 @@ classdef ManualFilter < handle
                     
                     obj.keepOrReject(obj.currCluster) = 0;
                     disp('Cluster rejected.')
-                    keepCluster = false;
                     
                     % Update cluster number
                     obj.currCluster = obj.currCluster + 1;
@@ -219,7 +217,7 @@ classdef ManualFilter < handle
                 delete(obj.currClusterAx2);
                 
                 % Move to next cluster
-                obj.moveToNextCluster(obj.inputClusters, keepCluster);    
+                obj.moveToNextCluster(obj.inputClusters);    
             end
         end
         
@@ -254,8 +252,8 @@ classdef ManualFilter < handle
             end
 
             % Mark previously analyzed cluster
-             plot(ManualFilter.dist2pixX * obj.CoM{ctr-1}(:,1), ...
-                  ManualFilter.dist2pixY * obj.CoM{ctr-1}(:,2), ...
+             plot(ManualFilter.dist2pixX * obj.CoM{obj.currCluster-1}(:,1), ...
+                  ManualFilter.dist2pixY * obj.CoM{obj.currCluster-1}(:,2), ...
                   marker, ...
                   'markers', 6, ...
                   'MarkerFaceColor', fColor, ...

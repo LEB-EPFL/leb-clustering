@@ -12,10 +12,10 @@
 %               +/- this distance from the 0 nm z-plane.
 %   maxOnTime - Maximum number of frames that a molecule can be on for
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/20 $ $REVISION: 2.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/21 $ $REVISION: 2.0 $
 %
 
-function [distr] = process_data(dataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime)
+function [distr] = process_data(dataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime, manualFilter)
 %% Remove localizations on for more than maxOnTime frames.
 %Separate onTimes from the rest of the data.
 onTimes = dataF(:,end);
@@ -93,10 +93,15 @@ for ctr = 1:numClustersF
 end
 
 %% Perform manual filtering
-fileNameImg = getImgPath(fileName);
+if manualFilter
+    fileNameImg = getImgPath(fileName);
 
-filters = ManualFilter(clustersF, fileNameImg, M1, noise);
-keyboard
+    filters = ManualFilter(clustersF, fileNameImg, noise);
+    waitfor(filters.hFig);
+
+    disp('done!')
+    keyboard
+end
 
 %% Assign computed values to data structure for return.
 distr.M1 = cell2mat(M1);
