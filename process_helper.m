@@ -17,9 +17,8 @@
 
 function [data] = process_helper(dataStructFile, saveFolder)
 
-%% Use parallel processing to speed up computation?
-%  You cannot do manual filtering if this is true.
-useParallel = false;
+%% Use parallel processing to speed up automatic filtering?
+useParallel = true;
 
 %% Define clustering and filtering parameters.
 % k - number of objects in a neighborhood of an object 
@@ -35,37 +34,28 @@ useParallel = false;
 %             localization is removed from the analysis?
 % manualFilter - Perform a manual filtering to check and adjust the
 %                automatic filtering results?
-%                (This can take a very long time.)
-k = 8;
-Eps = 65;
+k            = 8;
+Eps          = 65;
 
-minLoc = 50;
-maxLoc = 1000;
+minLoc       = 50;
+maxLoc       = 1000;
 
-zAxisDist = 300;
+zAxisDist    = 300;
 
-maxOnTime = 10;
+maxOnTime    = 10;
 
 manualFilter = true;
 
-%% Fitting options
-% Filter data based on distance from robust power-law fit?
+%% Fitting options for size vs. number of localization plots
+%  Filter data based on distance from robust power-law fit?
 filterFit = false;
 
 % Perform all three fit types, or just robust?
-fitAll = true;
+fitAll    = true;
 
 %% ================= DO NOT MODIFY BELOW THIS LINE ========================
 %  No more user inputs exist below here.
 
-%% Check that useParallel and manualFilter are not both true.
-assert(~(useParallel & manualFilter), ...
-       'Error: You cannot use parallel processing and manual filtering at the same time.')
-   
-if useParallel
-    % Start a Matlab pool if one hasn't started.
-    gcp;
-end
 %% Setup the data structure and designate files for analysis.
 % Read in a separate file that setups up the data structures with
 % descriptive names and root directories for each dataset.
@@ -90,86 +80,172 @@ clear dirCtr
 %% Primary processing loop.
 
 for dataCtr = 1:length(data)
-% Loops over all the data files defined above.
-disp(['Processing experiment ' data(dataCtr).experimentShortName ' / ' data(dataCtr).datasetShortName])
+    % Loops over all the data files defined above.
+    disp(['Processing experiment ' data(dataCtr).experimentShortName ' / ' data(dataCtr).datasetShortName])
 
-completeDir = [data(dataCtr).rootDir data(dataCtr).datasetDir];
+    completeDir = [data(dataCtr).rootDir data(dataCtr).datasetDir];
 
-files = dir(completeDir);
+    files = dir(completeDir);
 
-%% Filter out upper level directors (. and .. on Linux).
-%  This step may not be necessary on Windows
-files = files(3:end);
+    %% Filter out upper level directors (. and .. on Linux).
+    %  This step may not be necessary on Windows
+    files = files(3:end);
 
-%% Process the data within each file.
-clear procData
-procData(length(files),1).M1 = 0;
-procData(length(files),1).M2 = 0;
-procData(length(files),1).RgTrans = 0;
-procData(length(files),1).Rg = 0;
-procData(length(files),1).numLoc = 0;
-procData(length(files),1).volume = 0;
+    %% Automatically cluster and filter the data
+    %  Apply the automatic clustering and filtering steps whose parameters
+    %  are defined above. The result of this step is a structure array with
+    %  each element corresponding to one file in the dataset. Inside each
+    %  element, there is a cell array containing the localizations
+    %  belonging to each cluster, the noise (unclustered) localizations for
+    %  this file, and the input parameters for cataloging.
 
-% process_data(fileName) is custom function call.
-if useParallel
-    parfor ctr = 1:length(files)
-        fileName = [completeDir files(ctr).name];
-        currData = tdfread(fileName);
-        currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
-        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime, manualFilter);
+    autoFilteredData(length(files),1).fileName  = '';
+    autoFilteredData(length(files),1).k         = 0;
+    autoFilteredData(length(files),1).Eps       = 0;
+    autoFilteredData(length(files),1).minLoc    = 0;
+    autoFilteredData(length(files),1).maxLoc    = 0;
+    autoFilteredData(length(files),1).zAxisDist = 0;
+    autoFilteredData(length(files),1).maxOnTime = 0;
+    autoFilteredData(length(files),1).clusters  = {};
+    autoFilteredData(length(files),1).noise     = [];
+
+    if useParallel
+        parfor ctr = 1:length(files)
+            fileName = [completeDir files(ctr).name];
+            currData = tdfread(fileName);
+            currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
+            autoFilteredData(ctr) = auto_filter_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
+        end
+    else
+        for ctr = 1:length(files)
+            fileName = [completeDir files(ctr).name];
+            currData = tdfread(fileName);
+            currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
+            autoFilteredData(ctr) = auto_filter_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime);
+        end
     end
-else
-    for ctr = 1:length(files)
-        fileName = [completeDir files(ctr).name];
-        currData = tdfread(fileName);
-        currDataF = [currData.Xc currData.Yc currData.Zc currData.Length];
-        procData(ctr) = process_data(currDataF, fileName, k, Eps, minLoc, maxLoc, zAxisDist, maxOnTime, manualFilter);
+    
+    data(dataCtr).autoFilteredData = autoFilteredData;
+    disp('Finished with automatic filtering.')
+end
+
+%% Manually check and adjust automatically-filtered data
+%  This step could take a very a long time, depending on how many clusters
+%  are present in your full data set.
+if manualFilter
+    for dataCtr = 1:length(data)
+        numFiles = length(data(dataCtr).autoFilteredData);
+        data(dataCtr).manualFilteredData(numFiles, 1).clusters     = [];
+        data(dataCtr).manualFilteredData(numFiles, 1).keepOrReject = [];
+        
+        for fileCtr = 1:numFiles
+            fileName = data(dataCtr).autoFilteredData(fileCtr).fileName;
+            clusters = data(dataCtr).autoFilteredData(fileCtr).clusters;
+            noise    = data(dataCtr).autoFilteredData(fileCtr).noise;
+
+            fileNameImg = getImgPath(fileName);
+            filters = ManualFilter(clusters, fileNameImg, noise);
+            waitfor(filters.hFig);
+
+            keepOrReject = filters.keepOrReject;
+            dataToKeep   = filters.outputClusters(keepOrReject);
+            
+            data(dataCtr).manualFilteredData(fileCtr).clusters     = dataToKeep;
+            data(dataCtr).manualFilteredData(fileCtr).keepOrReject = keepOrReject;
+        end
+        
+        disp('Finished with manual filtering.')
     end
 end
 
-%% Combine distrubtions from all elements of the data structures.
-allData = struct('M1', [], 'M2', [], 'RgTrans', [], 'Rg', [], 'numLoc', [], 'volume', []);
+%% Compute statistics for all of the clusters
 
-for ctr = 1:length(files)
-    allData.M1 = cat(1, allData.M1, procData(ctr).M1);
-    allData.M2 = cat(1, allData.M2, procData(ctr).M2);
-    allData.RgTrans = cat(1, allData.RgTrans, procData(ctr).RgTrans);
-    allData.Rg = cat(1, allData.Rg, procData(ctr).Rg);
-    allData.numLoc = cat(1, allData.numLoc, procData(ctr).numLoc);
-    allData.volume = cat(1, allData.volume, procData(ctr).volume);
+% Automatically filtered data
+for dataCtr = 1:length(data)
+    numFiles = length(data(dataCtr).autoFilteredData);
+    
+    %  Combine distrubtions from all elements of the data structures.
+    allData = struct('M1', [], ...
+                     'M2', [], ...
+                     'RgTrans', [], ...
+                     'Rg', [], ...
+                     'numLoc', [], ...
+                     'volume', []);
+    keyboard
+    for fileCtr = 1:numFiles
+        currFile = data(dataCtr).autoFilteredData(fileCtr).clusters;
+        
+        [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currFile);
+        
+        allData.M1 = cat(1, allData.M1, M1);
+        allData.M2 = cat(1, allData.M2, M2);
+        allData.RgTrans = cat(1, allData.RgTrans, RgTrans);
+        allData.Rg = cat(1, allData.Rg, Rg);
+        allData.numLoc = cat(1, allData.numLoc, numLoc);
+        allData.volume = cat(1, allData.volume, volume);
+    end
+    
+    data(dataCtr).distributionsAutoFiltered = allData;
 end
 
-%% Perform initial filtering on the data?
-% Remove clusters that are farther than 1.5 standard deviations from a
-% best-fit power law model.
-%
-% This is used to clean up log-log plots of size vs. number of
-% localizations.
-if filterFit
-    dataModel = fittype('a*x.^b');
-    threshold = 1.5;
+% Manually filtered data
+for dataCtr = 1:length(data)
+    numFiles = length(data(dataCtr).manualFilteredData);
+    
+    %  Combine distrubtions from all elements of the data structures.
+    allData = struct('M1', [], ...
+                     'M2', [], ...
+                     'RgTrans', [], ...
+                     'Rg', [], ...
+                     'numLoc', [], ...
+                     'volume', []);
 
-    % Write distributions out to the large data structure for the experiment.
-    data(dataCtr).distributions = filter_noisy_clusters(allData, dataModel, threshold);
-else
+    for fileCtr = 1:numFiles
+        currFile = data(dataCtr).manualFilteredData(fileCtr).clusters;
+        
+        [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currFile);
+        
+        allData.M1 = cat(1, allData.M1, M1);
+        allData.M2 = cat(1, allData.M2, M2);
+        allData.RgTrans = cat(1, allData.RgTrans, RgTrans);
+        allData.Rg = cat(1, allData.Rg, Rg);
+        allData.numLoc = cat(1, allData.numLoc, numLoc);
+        allData.volume = cat(1, allData.volume, volume);
+    end
+    
     data(dataCtr).distributions = allData;
 end
 
-%% Perform nonlinear least squares fits on Rg. vs. number of localizations
-fittedData = fit_scaling_law(allData, fitAll);
-
-% Assign fit information to data structure.
-data(dataCtr).fits = fittedData.fits;
-
-end % Ends loop over datasets.
-
-%% Save the data
-if saveFolder ~= 0
-    save([saveFolder, '/matlab.mat'], ...
-         'data', ...
-         'k', ...
-         'Eps', ...
-         'minLoc', ...
-         'maxLoc')
-end
+%
+% %% Perform post-processing filtering on data?
+% %  Remove clusters that are farther than 1.5 standard deviations from a
+% %  best-fit power law model.
+% %
+% % This is used to clean up log-log plots of size vs. number of
+% % localizations.
+% if filterFit
+%     dataModel = fittype('a*x.^b');
+%     threshold = 1.5;
+% 
+%     % Write distributions out to the large data structure for the experiment.
+%     data(dataCtr).distributions = filter_noisy_clusters(allData, dataModel, threshold);
+% else
+%     data(dataCtr).distributions = allData;
+% end
+% 
+% %% Perform nonlinear least squares fits on Rg. vs. number of localizations
+% fittedData = fit_scaling_law(allData, fitAll);
+% 
+% % Assign fit information to data structure.
+% data(dataCtr).fits = fittedData.fits;
+% 
+% %% Save the data
+% if saveFolder ~= 0
+%     save([saveFolder, '/matlab.mat'], ...
+%          'data', ...
+%          'k', ...
+%          'Eps', ...
+%          'minLoc', ...
+%          'maxLoc')
+% end
 end

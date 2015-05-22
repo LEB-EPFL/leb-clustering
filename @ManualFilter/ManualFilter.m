@@ -49,7 +49,7 @@ classdef ManualFilter < handle
             % -------
             
             numClusters = length(clusters);
-            obj.keepOrReject = ones(numClusters, 1);
+            obj.keepOrReject = logical(ones(numClusters, 1));
             
             obj.inputClusters    = clusters;
             obj.outputClusters   = clusters;
@@ -148,7 +148,6 @@ classdef ManualFilter < handle
 
         function processUI(obj, gcbo, event)
             %
-            disp(event.Key)
             
             % Process the user-input based on which key was pressed
             switch event.Key
@@ -165,7 +164,6 @@ classdef ManualFilter < handle
                     
                     % Accept cluster for further analysis
                     obj.keepOrReject(obj.currCluster) = 1;
-                    disp('Cluster accepted.')
                     
                     % Update cluster number
                     obj.currCluster = obj.currCluster + 1;
@@ -180,7 +178,6 @@ classdef ManualFilter < handle
                     end
                     
                     obj.keepOrReject(obj.currCluster) = 0;
-                    disp('Cluster rejected.')
                     
                     % Update cluster number
                     obj.currCluster = obj.currCluster + 1;
