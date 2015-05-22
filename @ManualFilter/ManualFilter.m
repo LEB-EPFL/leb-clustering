@@ -4,7 +4,7 @@ classdef ManualFilter < handle
     properties (SetAccess = private)
         inputClusters    % Class containing clusters of localizations
         imgPath          % Path to the widefield image to display
-        keepOrReject     % Which clusters to keep?
+        keepOrReject                  % Which clusters to keep?
         outputClusters   % Manually filtered and adjusted clusters
         noise            % Localizations not clustered by DBSCAN
         hFig             % Figure handle to the main GUI

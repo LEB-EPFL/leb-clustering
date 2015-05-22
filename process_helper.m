@@ -171,7 +171,7 @@ for dataCtr = 1:length(data)
                      'Rg', [], ...
                      'numLoc', [], ...
                      'volume', []);
-    keyboard
+    
     for fileCtr = 1:numFiles
         currFile = data(dataCtr).autoFilteredData(fileCtr).clusters;
         
@@ -189,33 +189,34 @@ for dataCtr = 1:length(data)
 end
 
 % Manually filtered data
-for dataCtr = 1:length(data)
-    numFiles = length(data(dataCtr).manualFilteredData);
-    
-    %  Combine distrubtions from all elements of the data structures.
-    allData = struct('M1', [], ...
-                     'M2', [], ...
-                     'RgTrans', [], ...
-                     'Rg', [], ...
-                     'numLoc', [], ...
-                     'volume', []);
+if manualFilter
+    for dataCtr = 1:length(data)
+        numFiles = length(data(dataCtr).manualFilteredData);
 
-    for fileCtr = 1:numFiles
-        currFile = data(dataCtr).manualFilteredData(fileCtr).clusters;
-        
-        [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currFile);
-        
-        allData.M1 = cat(1, allData.M1, M1);
-        allData.M2 = cat(1, allData.M2, M2);
-        allData.RgTrans = cat(1, allData.RgTrans, RgTrans);
-        allData.Rg = cat(1, allData.Rg, Rg);
-        allData.numLoc = cat(1, allData.numLoc, numLoc);
-        allData.volume = cat(1, allData.volume, volume);
+        %  Combine distrubtions from all elements of the data structures.
+        allData = struct('M1', [], ...
+                         'M2', [], ...
+                         'RgTrans', [], ...
+                         'Rg', [], ...
+                         'numLoc', [], ...
+                         'volume', []);
+
+        for fileCtr = 1:numFiles
+            currFile = data(dataCtr).manualFilteredData(fileCtr).clusters;
+
+            [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currFile);
+
+            allData.M1 = cat(1, allData.M1, M1);
+            allData.M2 = cat(1, allData.M2, M2);
+            allData.RgTrans = cat(1, allData.RgTrans, RgTrans);
+            allData.Rg = cat(1, allData.Rg, Rg);
+            allData.numLoc = cat(1, allData.numLoc, numLoc);
+            allData.volume = cat(1, allData.volume, volume);
+        end
+
+        data(dataCtr).distributions = allData;
     end
-    
-    data(dataCtr).distributions = allData;
 end
-
 %
 % %% Perform post-processing filtering on data?
 % %  Remove clusters that are farther than 1.5 standard deviations from a
