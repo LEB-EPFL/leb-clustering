@@ -52,7 +52,6 @@ else
     fileType  = varargin{2};
 end
 
-
 % Obtain just the image file name, not the full path to it. If using Linux,
 % the delimiter is '/'; on Windows it's '\'.
 fileNameSplit = strsplit(fileName, delimiter);
@@ -62,6 +61,6 @@ fileNameImgSplit = [fileNameSplit{end}(1:end-length(fileType)) '.jp2'];
 
 % Rejoin parts leading to the full path, without the folder
 % 'Molecule_Lists'.
-imgPath = strjoin([fileNameSplit(1:end-2), {fileNameImgSplit}], delimiter);
+imgPath = strjoin([fileNameSplit(1:end-3), fileNameSplit(end-1), {fileNameImgSplit}], delimiter);
 
 end

@@ -98,7 +98,7 @@ for dataCtr = 1:length(data)
     %  element, there is a cell array containing the localizations
     %  belonging to each cluster, the noise (unclustered) localizations for
     %  this file, and the input parameters for cataloging.
-
+    clear autoFilteredData
     autoFilteredData(length(files),1).fileName  = '';
     autoFilteredData(length(files),1).k         = 0;
     autoFilteredData(length(files),1).Eps       = 0;
@@ -134,27 +134,52 @@ end
 %  are present in your full data set.
 if manualFilter
     for dataCtr = 1:length(data)
+        % Only do manual filtering if dataset is not pooled
+        % This is currently a workaround to prevent having to filter
+        % datasets twice.
+        isDataNotPooled = isempty(strfind(data(dataCtr).experimentShortName, 'Pooled'));
+        
         numFiles = length(data(dataCtr).autoFilteredData);
-        data(dataCtr).manualFilteredData(numFiles, 1).clusters     = [];
+        data(dataCtr).manualFilteredData(numFiles, 1).clusters     = {};
         data(dataCtr).manualFilteredData(numFiles, 1).keepOrReject = [];
         
-        for fileCtr = 1:numFiles
-            fileName = data(dataCtr).autoFilteredData(fileCtr).fileName;
-            clusters = data(dataCtr).autoFilteredData(fileCtr).clusters;
-            noise    = data(dataCtr).autoFilteredData(fileCtr).noise;
+        if isDataNotPooled
+            for fileCtr = 1:numFiles
+                fileName = data(dataCtr).autoFilteredData(fileCtr).fileName;
+                clusters = data(dataCtr).autoFilteredData(fileCtr).clusters;
+                noise    = data(dataCtr).autoFilteredData(fileCtr).noise;
 
-            fileNameImg = getImgPath(fileName);
-            filters = ManualFilter(clusters, fileNameImg, noise);
-            waitfor(filters.hFig);
+                fileNameImg = getImgPath(fileName);
+                
+                if ~isempty(clusters)
+                    filters = ManualFilter(clusters, fileNameImg, noise);
+                    waitfor(filters.hFig);
 
-            keepOrReject = filters.keepOrReject;
-            dataToKeep   = filters.outputClusters(keepOrReject);
-            
-            data(dataCtr).manualFilteredData(fileCtr).clusters     = dataToKeep;
-            data(dataCtr).manualFilteredData(fileCtr).keepOrReject = keepOrReject;
+                    keepOrReject = filters.keepOrReject;
+                    dataToKeep   = filters.outputClusters(keepOrReject);
+
+                    data(dataCtr).manualFilteredData(fileCtr).clusters     = dataToKeep;
+                    data(dataCtr).manualFilteredData(fileCtr).keepOrReject = keepOrReject;
+                end
+                
+                currDataCtr = dataCtr;
+                currFileCtr = fileCtr;
+                
+                % Save progress after every file
+                save([saveFolder, '/matlab.mat'])
+            end
+        else
+            % Copy autofiltered clusters into manually filtered clusters if
+            % data is pooled.
+            for fileCtr = 1:numFiles
+                clusters = data(dataCtr).autoFilteredData(fileCtr).clusters;
+                
+                data(dataCtr).manualFilteredData(fileCtr).clusters     = clusters;
+                data(dataCtr).manualFilteredData(fileCtr).keepOrReject = logical(ones(length(clusters), 1));
+            end
         end
         
-        disp('Finished with manual filtering.')
+        disp(['Finished with manual filtering: ' data(dataCtr).experimentShortName])
     end
 end
 
