@@ -11,7 +11,7 @@
 %   saveFolder     - (string)
 %                    Where should the .mat file be saved?
 %
-% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/21 $ $REVISION: 2.0 $
+% $AUTHOR: Kyle M. Douglass $ $DATE: 2015/05/27 $ $REVISION: 2.0 $
 % $FORMER NAME: main.m $
 %
 
@@ -107,7 +107,16 @@ for dataCtr = 1:length(data)
     autoFilteredData(length(files),1).maxOnTime = 0;
     autoFilteredData(length(files),1).clusters  = {};
     autoFilteredData(length(files),1).noise     = [];
-
+    
+    % Is this a pooled dataset? If so, skip it to avoid redundancy in
+    % calculations.
+    currExpName  = data(dataCtr).experimentShortName;
+    isDataPooled = ~isempty(strfind(currExpName, 'Pooled'));
+    if isDataPooled
+        disp(['Skipping pooled dataset: ' currExpName '. Will build it later.'])
+        continue
+    end
+    
     if useParallel
         parfor ctr = 1:length(files)
             fileName = [completeDir files(ctr).name];
@@ -132,14 +141,36 @@ end
 % %  This step could take a very a long time, depending on how many clusters
 % %  are present in your full data set.
 if manualFilter
-    [data] = resumeManualFiltering(data, 1, 1, saveFolder);
+    [data] = manual_filter_data(data, 1, 1, saveFolder);
 end
+
+%% Create pooled datasets
+%  Look for same shortName and experiment name containing the TRF1, TRF2,
+%  etc. Next, concatenate clusters cell arrays for each data element
+%  that matches the test above.
+data = makePooledDataset(data);
 
 %% Compute statistics for all of the clusters
 
 % Automatically filtered data
 for dataCtr = 1:length(data)
     numFiles = length(data(dataCtr).autoFilteredData);
+    
+    % Compute statistics on pooled datasets separately
+    currExpName = data(dataCtr).experimentShortName;
+    isDataPooled = ~isempty(strfind(currExpName, 'Pooled'));
+    if isDataPooled
+        currDataset = data(dataCtr).autoFilteredData;
+        [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currDataset);
+        
+        data(dataCtr).distributionsAutoFiltered.M1      = M1;
+        data(dataCtr).distributionsAutoFiltered.M2      = M2;
+        data(dataCtr).distributionsAutoFiltered.RgTrans = RgTrans;
+        data(dataCtr).distributionsAutoFiltered.Rg      = Rg;
+        data(dataCtr).distributionsAutoFiltered.numLoc  = numLoc;
+        data(dataCtr).distributionsAutoFiltered.volume  = volume;
+        continue
+    end
     
     %  Combine distrubtions from all elements of the data structures.
     allData = struct('M1', [], ...
@@ -151,7 +182,6 @@ for dataCtr = 1:length(data)
     
     for fileCtr = 1:numFiles
         currFile = data(dataCtr).autoFilteredData(fileCtr).clusters;
-        
         [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currFile);
         
         allData.M1 = cat(1, allData.M1, M1);
@@ -161,7 +191,6 @@ for dataCtr = 1:length(data)
         allData.numLoc = cat(1, allData.numLoc, numLoc);
         allData.volume = cat(1, allData.volume, volume);
     end
-    
     data(dataCtr).distributionsAutoFiltered = allData;
 end
 
@@ -169,6 +198,22 @@ end
 if manualFilter
     for dataCtr = 1:length(data)
         numFiles = length(data(dataCtr).manualFilteredData);
+        
+         % Compute statistics on pooled datasets separately
+        currExpName = data(dataCtr).experimentShortName;
+        isDataPooled = ~isempty(strfind(currExpName, 'Pooled'));
+        if isDataPooled
+            currDataset = data(dataCtr).manualFilteredData;
+            [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(currDataset);
+
+            data(dataCtr).distributions.M1      = M1;
+            data(dataCtr).distributions.M2      = M2;
+            data(dataCtr).distributions.RgTrans = RgTrans;
+            data(dataCtr).distributions.Rg      = Rg;
+            data(dataCtr).distributions.numLoc  = numLoc;
+            data(dataCtr).distributions.volume  = volume;
+            continue
+        end
 
         %  Combine distrubtions from all elements of the data structures.
         allData = struct('M1', [], ...
@@ -194,36 +239,36 @@ if manualFilter
         data(dataCtr).distributions = allData;
     end
 end
+
+%% Perform post-processing filtering on data?
+%  Remove clusters that are farther than 1.5 standard deviations from a
+%  best-fit power law model.
 %
-% %% Perform post-processing filtering on data?
-% %  Remove clusters that are farther than 1.5 standard deviations from a
-% %  best-fit power law model.
-% %
-% % This is used to clean up log-log plots of size vs. number of
-% % localizations.
-% if filterFit
-%     dataModel = fittype('a*x.^b');
-%     threshold = 1.5;
-% 
-%     % Write distributions out to the large data structure for the experiment.
-%     data(dataCtr).distributions = filter_noisy_clusters(allData, dataModel, threshold);
-% else
-%     data(dataCtr).distributions = allData;
-% end
-% 
-% %% Perform nonlinear least squares fits on Rg. vs. number of localizations
-% fittedData = fit_scaling_law(allData, fitAll);
-% 
-% % Assign fit information to data structure.
-% data(dataCtr).fits = fittedData.fits;
-% 
-% %% Save the data
-% if saveFolder ~= 0
-%     save([saveFolder, '/matlab.mat'], ...
-%          'data', ...
-%          'k', ...
-%          'Eps', ...
-%          'minLoc', ...
-%          'maxLoc')
-% end
+% This is used to clean up log-log plots of size vs. number of
+% localizations.
+for dataCtr = 1:length(data)
+    if filterFit
+        dataModel = fittype('a*x.^b');
+        threshold = 1.5;
+
+        % Write distributions out to the large data structure for the experiment.
+        data(dataCtr).distributions = filter_noisy_clusters(data(dataCtr).distributions, dataModel, threshold);
+    end
+
+    %% Perform nonlinear least squares fits on Rg. vs. number of localizations
+    fittedData = fit_scaling_law(data(dataCtr).distributions, fitAll);
+
+    % Assign fit information to data structure.
+    data(dataCtr).fits = fittedData.fits;
+end
+
+%% Save the data
+if saveFolder ~= 0
+    save([saveFolder, '/matlab.mat'], ...
+         'data', ...
+         'k', ...
+         'Eps', ...
+         'minLoc', ...
+         'maxLoc')
+end
 end

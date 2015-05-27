@@ -2,6 +2,13 @@ function [M1, M2, RgTrans, Rg, numLoc, volume] = computeClusterStats(clusters)
 % Takes a cell array of clusters and computes their statistics.
 numClusters = length(clusters);
 
+% If clusters is empty, convert it to an empty cell array. Previously, no
+% cluster data meant returned an empty array ([]), which is a double.
+% However, cellfun in the next section expects a cell array.
+if numClusters == 0
+    clusters = {};
+end
+
 %% Find moments of the distribution of localizations within the clusters.
 % Rows of M1 are the first moments of the distribution for each coordinate
 % of the localizations within a single cluster.

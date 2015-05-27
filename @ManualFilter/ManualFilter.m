@@ -88,8 +88,6 @@ classdef ManualFilter < handle
             imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx1)
             imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx2)
             
-            title(obj.imgPath, 'Parent', hAx1, 'interpreter', 'none')
-            
             % Overlay the localizations on the widefield image.
             hold(hAx1, 'on'); hold(hAx2, 'on')
             for ctr = 1:numClusters
