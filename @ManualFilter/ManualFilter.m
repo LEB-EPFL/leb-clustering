@@ -4,7 +4,7 @@ classdef ManualFilter < handle
     properties (SetAccess = private)
         inputClusters    % Class containing clusters of localizations
         imgPath          % Path to the widefield image to display
-        keepOrReject                  % Which clusters to keep?
+        keepOrReject     % Which clusters to keep?
         outputClusters   % Manually filtered and adjusted clusters
         noise            % Localizations not clustered by DBSCAN
         hFig             % Figure handle to the main GUI
@@ -80,13 +80,15 @@ classdef ManualFilter < handle
             % Make the figure window full-screen.
             % Divide width by two because I'm using dual monitors. Remove
             % this if using a single monitor.
-            set(hFig, 'Position', [0, 0.1, s(3)/2, s(4)]);
+            set(hFig, 'Position', [0, 0.2, s(3)/2, s(4)]);
             
             hAx1 = subplot(1,2,1);
             hAx2 = subplot(1,2,2);
 
             imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx1)
             imshow(img, [min(img(:)) max(img(:))], 'Parent', hAx2)
+            
+            title(obj.imgPath, 'Parent', hAx1, 'interpreter', 'none')
             
             % Overlay the localizations on the widefield image.
             hold(hAx1, 'on'); hold(hAx2, 'on')
@@ -95,6 +97,10 @@ classdef ManualFilter < handle
                      ManualFilter.dist2pixY * inputClusters{ctr}(:,2), ...
                      'r+', ...
                      'Parent', hAx1)
+                plot(ManualFilter.dist2pixX * inputClusters{ctr}(:,1), ...
+                     ManualFilter.dist2pixY * inputClusters{ctr}(:,2), ...
+                     'r.', ...
+                     'Parent', hAx2)
                 plot(ManualFilter.dist2pixX * obj.noise(:,1), ...
                      ManualFilter.dist2pixY * obj.noise(:,2), ...
                     'xg', ...
