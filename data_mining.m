@@ -7,9 +7,10 @@
 %workDir = '/mnt/LEBZ/Users/Kyle-Michael-Douglass/Projects/Telomeres/';
 %workDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2/';
 %workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/08_09_2014_HelaS_L_Trf1_Trf2_KD_DAPI_FISH_mol_lists/08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD/';
-workDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
+%workDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
+workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/HelaS/Molecule_Lists/TRF2/';
 
-fName = '11_06_2014_FISH_HelaL_8_list.txt';
+fName = '08_09_2014_TRF2_FOV5.txt';
 %fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
@@ -23,8 +24,8 @@ fName = '11_06_2014_FISH_HelaL_8_list.txt';
 %imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pSuper/';
 %fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pSuper_1.jp2'];
 
-imgDir = 'file:///media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pLVP0 Trf2/';
-fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pLVTP Trf2_5.jp2'];
+imgDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/HelaS/TRF2/';
+fNameImg = [imgDir '08_09_2014_TRF2_FOV5.jp2'];
 
 % imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa L_SMCHD1_Trf2_KD_FISH_pLVPTrf2/';
 % fNameImg = [imgDir '11_08_2014_WF_HeLa L_SMCHD1_Trf2_KD_pLVTP Trf2_2.jp2'];
@@ -32,7 +33,14 @@ fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pLVTP Trf2_5.jp2'];
 data = tdfread([workDir fName]);
 
 %% Filter out unnecessary columns and condition data for input to DBSCAN.
-dataF = [data.Xc data.Yc data.Zc];
+dataF = [data.Xc data.Yc data.Zc data.Length];
+
+%% Remove localizations with on times less than maxOnTime
+maxOnTime = 10;
+
+%Separate onTimes from the rest of the data.
+onTimes = dataF(:,end);
+dataF = dataF(onTimes <= maxOnTime,1:3);
 
 %% Cluster localizations using DBSCAN.
 % k - number of objects in a neighborhood of an object 
@@ -70,8 +78,19 @@ noise = dataF(class == -1, :);
 minLoc = 50;
 
 clustersF = clusters(cellfun(@length, clusters) > minLoc);
-numClustersF = length(clustersF);
 
+%% Filter out clusters that lie within a given distance of the z-borders
+zAxisDist = 300;
+
+%  Find average z position of each cluster
+zAvg = cellfun(@mean, clustersF, 'UniformOutput', false);
+for ctr = 1:length(zAvg)
+    zAvg{ctr} = zAvg{ctr}(3);
+end
+zAvg = cell2mat(zAvg);
+
+clustersF = clustersF(abs(zAvg) <= zAxisDist);
+numClustersF = length(clustersF);
 %% Plot 3D scatter plot of all data points.
 scatter3(dataF(:,1),dataF(:,2),dataF(:,3), '.k')
 axis equal
@@ -108,13 +127,13 @@ grid on
 % fNameImg = [fName(1:dateLength) 'WF' fName(dateLength:end-removeLength) fType];
 
 % Distance-to-pixel conversion factor
-dist2pix = 1/165;
+dist2pix = 1/160;
 
 img = imread(fNameImg);
 imshow(img, [min(img(:)) max(img(:))])
 hold on
 for ctr = 1:numClustersF
-    plot(dist2pix * clustersF{ctr}(:,1), dist2pix * clustersF{ctr}(:,2), 'r+')
+    plot(dist2pix * clustersF{ctr}(:,1), dist2pix * clustersF{ctr}(:,2), '+', 'Color', rand(3,1))
 end
 hold off
 

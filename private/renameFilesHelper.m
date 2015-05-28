@@ -1,7 +1,7 @@
-expName   = 'TRF1_TRF2';
-date      = '17_11_2014_';
+expName   = 'TRF1_1TRF2';
+date      = '05_11_2014_';
 
-myDir = '/media/My Book/Kyle/Telomere_Data/17_11_2014_HeLaS_L_TRF1_TRF2_KD_FISH/HelaS/';
+myDir = '/media/My Book/Kyle/Telomere_Data/05_11_2014_HeLaS_L_TRF1_TRF2_KD_FISH/HelaS/';
 
 % Rename molecule_lists
 listDir = ['Molecule_Lists/' expName '/'];
