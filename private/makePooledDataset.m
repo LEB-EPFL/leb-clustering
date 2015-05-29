@@ -20,7 +20,8 @@ for dataCtr = 1:numDatasets
         % and add its clusters to the current cell array of clusters
         data(dataCtr) = searchDataStruct(data, dataCtr, cellType, currTeloLength);
         dataOut = data;
-        
+    else
+        dataOut = data;
     end
 end
 

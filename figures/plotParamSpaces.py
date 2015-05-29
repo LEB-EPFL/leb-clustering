@@ -225,7 +225,7 @@ plt.savefig('output_figs/HelaL_param_space_dists.png')
 packRatio, pLength = zip(*LGoodParams)
 
 options = {'vmin'   : -1.6e4,
-           'vmax'   : -9000,
+           'vmax'   : -8000,
            'origin' : 'lower',
            'extent' : [results['Hela L']['packRatio'].min(), results['Hela L']['packRatio'].max(),
                        results['Hela L']['pLength'].min(),   results['Hela L']['pLength'].max()],
@@ -252,7 +252,8 @@ props = {'marker' : '^'}
 plt.scatter(c, lp, s = 25, c = 'red', **props)
 
 plt.xlim((results['Hela L']['packRatio'].min(), results['Hela L']['packRatio'].max()))
-plt.ylim((results['Hela L']['pLength'].min(),   results['Hela L']['pLength'].max()))
+#plt.ylim((results['Hela L']['pLength'].min(),   results['Hela L']['pLength'].max()))
+plt.ylim((results['Hela L']['pLength'].min(),   200))
 plt.xlabel('Packing ratio, bp/nm')
 plt.ylabel('Persistence length, nm')
 plt.savefig('output_figs/HelaL_param_space.svg')
@@ -368,7 +369,7 @@ plt.savefig('output_figs/HelaS_param_space_dists.png')
 packRatio, pLength = zip(*SGoodParams)
 
 options = {'vmin'   : -1.6e4,
-           'vmax'   : -5000,
+           'vmax'   : -4000,
            'origin' : 'lower',
            'extent' : [results['Hela S']['packRatio'].min(), results['Hela S']['packRatio'].max(),
                        results['Hela S']['pLength'].min(),   results['Hela S']['pLength'].max()],

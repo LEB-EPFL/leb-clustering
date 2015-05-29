@@ -46,6 +46,9 @@ maxOnTime    = 10;
 
 manualFilter = true;
 
+%% Define any special processing parameters here
+%TRF1Inds = [11, 12, 19, 20, 27, 28, 35, 36, 43, 44];
+
 %% Fitting options for size vs. number of localization plots
 %  Filter data based on distance from robust power-law fit?
 filterFit = false;
@@ -79,7 +82,17 @@ clear dirCtr
 
 %% Primary processing loop.
 for dataCtr = 1:length(data)
-    % Loops over all the data files defined above.
+
+%% Implement special processing steps
+%     if any(dataCtr == TRF1Inds)
+%         Eps = 100;
+%         disp('TRF1 dataset found: setting Eps to 100...');
+%     else
+%         Eps = 65;
+%         disp('Non-TRF1 dataset found: leaving Eps at 65...');
+%     end
+    
+%% Loops over all the data files defined above.
     disp(['Processing experiment ' data(dataCtr).experimentShortName ' / ' data(dataCtr).datasetShortName])
 
     completeDir = [data(dataCtr).rootDir data(dataCtr).datasetDir];
