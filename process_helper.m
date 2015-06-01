@@ -35,7 +35,7 @@ useParallel = true;
 % manualFilter - Perform a manual filtering to check and adjust the
 %                automatic filtering results?
 k            = 8;
-Eps          = 65;
+Eps          = 90;
 
 minLoc       = 50;
 maxLoc       = 1000;
