@@ -83,4 +83,9 @@ pubPlots : $(PUBPLOT_REQS)
 	@echo "figures/output_figs/HelaS_param_space_dists.svg"
 	@echo "figures/output_figs/HelaS_param_space_dists.pdf"
 	@echo "figures/output_figs/HelaS_param_space_dists.png"
+	@echo "Generating plots on Shelterin knockdowns from plotShelterinKDs.py"
+	cd figures && python plotShelterinKDs.py && cd ..
+	@echo "The following figures were generated:"
+	@echo "figures/output_figs/Hela_L_TRF_KDs.pdf"
+	@echo "figures/output_figs/Hela_S_TRF_KDs.pdf"
 	@echo "All publication figures have been generated."
