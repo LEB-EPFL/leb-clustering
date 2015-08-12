@@ -497,13 +497,13 @@ could reflect more compaction due to the formation of G-quadruplexes.
 
 * Misc. and Project TODO's
 
-1. [ ] Determine the mean and width of the N distributions from
+1. [X] Determine the mean and width of the N distributions from
    Southern blot data : Original dataset Hela L and S, TRF1/TRF2 L and
    S
 2. [ ] Write code to randomly sample the length of the telomere
-3. [ ] Determine what the localization precision is for the Original
+3. [X] Determine what the localization precision is for the Original
    dataset Hela S and L, and the TRF1/TRF2 dataset, Hela S and L
-4. [ ] Tests of significance on the differences in the distributions
+4. [X] Tests of significance on the differences in the distributions
 5. [X] Remove localizations that are on for more than one frame (this
    was already done in the Nikon software, see the e-mail with Fabian
    at Nikon)
