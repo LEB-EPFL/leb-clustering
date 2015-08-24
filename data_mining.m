@@ -8,9 +8,10 @@
 %workDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLaL_S_SMCHD1_Trf2_KD_FISH_Molecule lists/11_08_2014_HeLaS_KD_Smchd1_TRF2_pLVP TRF2/';
 %workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/08_09_2014_HelaS_L_Trf1_Trf2_KD_DAPI_FISH_mol_lists/08_09_2014_HelaS_DAPI_FISH_TRF2_TRF1_KD/';
 %workDir = '/mnt/LEBSRV/Michael-Kyle-Douglass/Verena/11_06_2014_FISH_HelaS_L/11_06_2014_FISH_Hela_S_L/11_06_2014_Hela_L_FISH/Hela L FISH molecule lists/';
-workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/HelaS/Molecule_Lists/TRF2/';
+%workDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/HelaS/Molecule_Lists/TRF2/';
+workDir = '/media/douglass/My Book/Kyle/Telomere_Data/11_06_2014_FISH_HelaS_L/HelaL/Molecule_Lists/wild_type/';
 
-fName = '08_09_2014_TRF2_FOV5.txt';
+fName = '11_06_2014_wild_type_FOV3.txt';
 %fName = '11_06_2014_FISH_HelaL_slide2_8_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_7_list.txt';
 %fName = '11_06_2014_FISH_HelaS_slide3_10_list.txt';
@@ -24,8 +25,8 @@ fName = '08_09_2014_TRF2_FOV5.txt';
 %imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa S_SMCHD1_Trf2_KD_FISH_pSuper/';
 %fNameImg = [imgDir '11_08_2014_WF_HeLa S_SMCHD1_Trf2_KD_pSuper_1.jp2'];
 
-imgDir = '/media/My Book/Kyle/Telomere_Data/08_09_2014_HelaS_L_Trf1_Trf2_KD/HelaS/TRF2/';
-fNameImg = [imgDir '08_09_2014_TRF2_FOV5.jp2'];
+imgDir = '/media/douglass/My Book/Kyle/Telomere_Data/11_06_2014_FISH_HelaS_L/HelaL/wild_type/';
+fNameImg = [imgDir '11_06_2014_wild_type_FOV3.jp2'];
 
 % imgDir = '/media/My Book/Kyle/Telomere_Data/11_08_2014_HelaS_L_SmchD1_TRf2_KD_FISH/11_08_2014_HeLa L_SMCHD1_Trf2_KD_FISH_pLVPTrf2/';
 % fNameImg = [imgDir '11_08_2014_WF_HeLa L_SMCHD1_Trf2_KD_pLVTP Trf2_2.jp2'];
@@ -127,13 +128,14 @@ grid on
 % fNameImg = [fName(1:dateLength) 'WF' fName(dateLength:end-removeLength) fType];
 
 % Distance-to-pixel conversion factor
-dist2pix = 1/160;
+dist2pixX = 1/162;
+dist2pixY = 1/158.5;
 
 img = imread(fNameImg);
 imshow(img, [min(img(:)) max(img(:))])
 hold on
 for ctr = 1:numClustersF
-    plot(dist2pix * clustersF{ctr}(:,1), dist2pix * clustersF{ctr}(:,2), '+', 'Color', rand(3,1))
+    plot(dist2pixX * clustersF{ctr}(:,1), dist2pixY * clustersF{ctr}(:,2), '+', 'Color', rand(3,1))
 end
 hold off
 
