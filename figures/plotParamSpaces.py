@@ -43,7 +43,7 @@ results = {'Hela L' : {'LLH' : None,
 # In[2]:
 
 # Read in Hela L
-currDataset = '../simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy'
+currDataset = '../simulation_data/llh_Original_Data_L_dataset_RgTrans2015-8-19.npy'
 
 with open(currDataset, mode = 'rb') as inFile:
     hl = np.load(inFile)
@@ -57,7 +57,7 @@ results['Hela L']['pLength']     = hl['f1']
 # In[3]:
 
 # Read in Hela S
-currDataset = '../simulation_data/llh_Original_Data_S_dataset_RgTrans2015-2-2.npy'
+currDataset = '../simulation_data/llh_Original_Data_S_dataset_RgTrans2015-8-21.npy'
 
 with open(currDataset, mode = 'rb') as inFile:
     hs = np.load(inFile)
@@ -93,8 +93,8 @@ LSEM = sem(LExpDist)
 SSEM = sem(SExpDist)
 
 # Model distributions
-LModelDists = loadModel(['../simulation_data/rw_2015-1-26_HelaL_WT'])
-SModelDists = loadModel(['../simulation_data/rw_2015-2-2_HelaS_WT'])
+LModelDists = loadModel(['../simulation_data/simData_HeLaL_WT_2015-8-19'])
+SModelDists = loadModel(['../simulation_data/simData_HeLaS_WT_2015-8-21'])
 
 LModelMeans = {k: np.mean(v[1]) for k, v in LModelDists.items()}
 SModelMeans = {k: np.mean(v[1]) for k, v in SModelDists.items()}
@@ -122,7 +122,7 @@ SGoodParams = list(SMeansFiltered.keys())
 # In[8]:
 
 c  = [35, 60,  30, 80]
-lp = [50, 150, 80, 90]
+lp = [40, 150, 80, 90]
 
 myBins = np.arange(10, 250, 5)
 
