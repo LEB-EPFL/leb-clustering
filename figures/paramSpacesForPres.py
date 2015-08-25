@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
 from PolymerPy.PolymerPy_helpers import unpackLLH, loadModel
+from option_d import test_cm as myCMap # Custom Parula-like colormap
 
 # Set global matplotlib settings
 journalFontSize = 16
@@ -43,7 +44,7 @@ results = {'Hela L' : {'LLH' : None,
 # In[2]:
 
 # Read in Hela L
-currDataset = '../simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy'
+currDataset = '../simulation_data/llh_Original_Data_L_dataset_RgTrans2015-8-19.npy'
 
 with open(currDataset, mode = 'rb') as inFile:
     hl = np.load(inFile)
@@ -57,7 +58,7 @@ results['Hela L']['pLength']     = hl['f1']
 # In[3]:
 
 # Read in Hela S
-currDataset = '../simulation_data/llh_Original_Data_S_dataset_RgTrans2015-2-2.npy'
+currDataset = '../simulation_data/llh_Original_Data_S_dataset_RgTrans2015-8-21.npy'
 
 with open(currDataset, mode = 'rb') as inFile:
     hs = np.load(inFile)
@@ -93,8 +94,8 @@ LSEM = sem(LExpDist)
 SSEM = sem(SExpDist)
 
 # Model distributions
-LModelDists = loadModel(['../simulation_data/rw_2015-1-26_HelaL_WT'])
-SModelDists = loadModel(['../simulation_data/rw_2015-2-2_HelaS_WT'])
+LModelDists = loadModel(['../simulation_data/simData_HeLaL_WT_2015-8-19'])
+SModelDists = loadModel(['../simulation_data/simData_HeLaS_WT_2015-8-21'])
 
 LModelMeans = {k: np.mean(v[1]) for k, v in LModelDists.items()}
 SModelMeans = {k: np.mean(v[1]) for k, v in SModelDists.items()}
@@ -121,8 +122,8 @@ SGoodParams = list(SMeansFiltered.keys())
 
 # In[8]:
 
-c  = [35, 60,  30, 80]
-lp = [50, 150, 80, 90]
+c  = [35, 55,  30, 80]
+lp = [40, 100, 80, 90]
 
 myBins = np.arange(10, 250, 5)
 
@@ -234,13 +235,22 @@ options = {'vmin'   : -1.6e4,
 fig = plt.figure()
 
 # Log-likelihood map
-plt.imshow(results['Hela L']['LLH'], **options)
+plt.imshow(results['Hela L']['LLH'], cmap = myCMap, **options)
 cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-16000, -15000, -14000, -13000, -12000, -11000, -10000, -9000, -8000])
 cbar.ax.set_yticklabels(['< -16000', '-15000', '-14000', '-13000', '-12000', '-11000', '-10000', '-9000', '-8000'])
 
-# Plot points from distributions
-props = {'marker' : '^'}
-plt.scatter(c, lp, s = 25, c = 'red', **props)
+## Plot simulated points
+#props = {'alpha' : 0.6,
+#         'edgecolors' : None}
+#plt.scatter(packRatio, 
+#            pLength,
+#            s = 10,
+#            c = 'white',
+#            **props)
+
+## Plot points from distributions
+#props = {'marker' : '^'}
+#plt.scatter(c, lp, s = 25, c = 'red', **props)
 
 # Plot contours
 levels = [-1.25e4, -1.15e4, -1.05e4, -0.95e4, -0.85e4]
@@ -255,17 +265,17 @@ plt.xlim((results['Hela L']['packRatio'].min(), results['Hela L']['packRatio'].m
 plt.ylim((results['Hela L']['pLength'].min(),   200))
 plt.xlabel('Packing ratio, bp/nm')
 plt.ylabel('Persistence length, nm')
-plt.savefig('presentation_figs/HelaL_param_space_noCircles.svg')
-plt.savefig('presentation_figs/HelaL_param_space_noCircles.pdf')
-plt.savefig('presentation_figs/HelaL_param_space_noCircles.png')
+plt.savefig('presentation_figs/HelaL_param_space.svg')
+plt.savefig('presentation_figs/HelaL_param_space.pdf')
+plt.savefig('presentation_figs/HelaL_param_space.png')
 
 
 ##### Hela S
 
 # In[10]:
 
-c  = [25, 40,  20,  60]
-lp = [45, 110, 80, 110]
+c  = [20, 25, 20, 50]
+lp = [40, 60, 80, 90]
 
 myBins = np.arange(10, 200, 5)
 
@@ -367,7 +377,7 @@ plt.savefig('presentation_figs/HelaS_param_space_dists.png')
 
 packRatio, pLength = zip(*SGoodParams)
 
-options = {'vmin'   : -1.6e4,
+options = {'vmin'   : -1.2e4,
            'vmax'   : -4000,
            'origin' : 'lower',
            'extent' : [results['Hela S']['packRatio'].min(), results['Hela S']['packRatio'].max(),
@@ -377,11 +387,20 @@ options = {'vmin'   : -1.6e4,
 fig = plt.figure()
 
 # Log-likelihood map
-plt.imshow(results['Hela S']['LLH'], **options)
-cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-16000, -14500, -13000, -11500, -10000, -8500, -7000, -5500, -4000])
-cbar.ax.set_yticklabels(['< -16000', '-14500', '-13000', '-11500', '-10000', '-8500', '-7000', '-5500', '-4000'])
+plt.imshow(results['Hela S']['LLH'], cmap = myCMap, **options)
+cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-12000, -11000, -10000, -9000, -8000, -7000, -6000, -5000, -4000])
+cbar.ax.set_yticklabels(['< -12000', '-11000', '-10000', '-9000', '-8000', '-7000', '-6000', '-5000', '-4000'])
 
-# Plot points from distributions
+## Plot simulated points
+#props = {'alpha' : 0.6,
+#         'edgecolors' : None}
+#plt.scatter(packRatio, 
+#            pLength,
+#            s = 10,
+#            c = 'white',
+#            **props)
+
+## Plot points from distributions
 #props = {'marker' : '^'}
 #plt.scatter(c, lp, s = 50, c = 'red', **props)
 
@@ -398,6 +417,6 @@ plt.xlim((results['Hela S']['packRatio'].min(), results['Hela S']['packRatio'].m
 plt.ylim((results['Hela S']['pLength'].min(),   results['Hela S']['pLength'].max()))
 plt.xlabel('Packing ratio, bp/nm')
 plt.ylabel('Persistence length, nm')
-plt.savefig('presentation_figs/HelaS_param_space_noCircles.svg')
-plt.savefig('presentation_figs/HelaS_param_space_noCircles.pdf')
-plt.savefig('presentation_figs/HelaS_param_space_noCircles.png')
+plt.savefig('presentation_figs/HelaS_param_space.svg')
+plt.savefig('presentation_figs/HelaS_param_space.pdf')
+plt.savefig('presentation_figs/HelaS_param_space.png')

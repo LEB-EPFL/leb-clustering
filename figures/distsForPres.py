@@ -111,16 +111,36 @@ plt.savefig('presentation_figs/plotSingleDist_Simulation.pdf')
 plt.savefig('presentation_figs/plotSingleDist_Simulation.png')
 plt.close()
 
+# Plot just the Hela L distribution
+fig, ax = plt.subplots(1, 1, dpi = 600)
+
+nL, binsL, patchesL = ax.hist(hl,
+                              bins = myBins,
+                              histtype = 'stepfilled',
+                              color = '#333333',
+                              label = 'Experiment',
+                              normed = True)
+
+plt.ylim((0, 0.04))
+
+plt.xlabel('Radius of gyration, nm')
+plt.ylabel('Normalized frequency')
+
+plt.savefig('presentation_figs/plotSingleDist_HelaL_only.svg')
+plt.savefig('presentation_figs/plotSingleDist_HelaL_only.pdf')
+plt.savefig('presentation_figs/plotSingleDist_HelaL_only.png')
+plt.close()
+
 
 # Plot just the Hela S distribution
 fig, ax = plt.subplots(1, 1, dpi = 600)
 
 nH, binsH, patchesH = ax.hist(hs,
-                               bins = myBins,
-                               histtype = 'stepfilled',
-                               color = '#333333',
-                               label = 'Experiment',
-                               normed = True)
+                              bins = myBins,
+                              histtype = 'stepfilled',
+                              color = '#333333',
+                              label = 'Experiment',
+                              normed = True)
 
 plt.ylim((0, 0.04))
 

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
 from PolymerPy.PolymerPy_helpers import unpackLLH, loadModel
+from option_d import test_cm as myCMap # Custom Parula-like colormap
 
 # Set global matplotlib settings
 journalFontSize = 7
@@ -51,7 +52,7 @@ with open(currDataset, mode = 'rb') as inFile:
 # Unpack the dataset
 results['Hela L']['packRatio']   = hl['f0']
 results['Hela L']['pLength']     = hl['f1']
-(_, _, results['Hela L']['LLH']) = unpackLLH(hl)
+(CL, LPL, results['Hela L']['LLH']) = unpackLLH(hl)
 
 
 # In[3]:
@@ -65,7 +66,7 @@ with open(currDataset, mode = 'rb') as inFile:
 # Unpack the dataset
 results['Hela S']['packRatio']   = hs['f0']
 results['Hela S']['pLength']     = hs['f1']
-(_, _, results['Hela S']['LLH']) = unpackLLH(hs)
+(CS, LPS, results['Hela S']['LLH']) = unpackLLH(hs)
 
 ### Setup plots for the parameter space close to the mean
 
@@ -121,8 +122,8 @@ SGoodParams = list(SMeansFiltered.keys())
 
 # In[8]:
 
-c  = [35, 60,  30, 80]
-lp = [40, 150, 80, 90]
+c  = [35, 55,  30, 80]
+lp = [40, 100, 80, 90]
 
 myBins = np.arange(10, 250, 5)
 
@@ -234,25 +235,34 @@ options = {'vmin'   : -1.6e4,
 fig = plt.figure()
 
 # Log-likelihood map
-plt.imshow(results['Hela L']['LLH'], **options)
-cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-16000, -15000, -14000, -13000, -12000, -11000, -10000, -9000])
-cbar.ax.set_yticklabels(['< -16000', '-15000', '-14000', '-13000', '-12000', '-11000', '-10000', '-9000'])
+plt.imshow(results['Hela L']['LLH'], cmap = myCMap, **options)
+cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-16000, -15000, -14000, -13000, -12000, -11000, -10000, -9000, -8000])
+cbar.ax.set_yticklabels(['< -16000', '-15000', '-14000', '-13000', '-12000', '-11000', '-10000', '-9000', '-8000'])
 
-# Plot simulated points
-props = {'alpha' : 0.6,
-         'edgecolors' : None}
-plt.scatter(packRatio, 
-            pLength,
-            s = 10,
-            c = 'white',
-            **props)
+## Plot simulated points
+#props = {'alpha' : 0.6,
+#         'edgecolors' : None}
+#plt.scatter(packRatio, 
+#            pLength,
+#            s = 10,
+#            c = 'white',
+#            **props)
 
 # Plot points from distributions
 props = {'marker' : '^'}
 plt.scatter(c, lp, s = 25, c = 'red', **props)
 
-plt.xlim((results['Hela L']['packRatio'].min(), results['Hela L']['packRatio'].max()))
-#plt.ylim((results['Hela L']['pLength'].min(),   results['Hela L']['pLength'].max()))
+# Plot contours
+levels = [-1.25e4, -1.15e4, -1.05e4, -0.95e4, -0.85e4]
+colors = [(0.2, 0.2, 0.2),
+          (0.4, 0.4, 0.4),
+          (0.6, 0.6, 0.6),
+          (0.8, 0.8, 0.8),
+          (1.0, 1.0, 1.0)]
+plt.contour(CL, LPL, results['Hela L']['LLH'], levels, colors = colors, linewidths = 0.5)
+
+#plt.xlim((results['Hela L']['packRatio'].min(), results['Hela L']['packRatio'].max()))
+plt.xlim((results['Hela L']['packRatio'].min(), 90))
 plt.ylim((results['Hela L']['pLength'].min(),   200))
 plt.xlabel('Packing ratio, bp/nm')
 plt.ylabel('Persistence length, nm')
@@ -265,8 +275,8 @@ plt.savefig('output_figs/HelaL_param_space.png')
 
 # In[10]:
 
-c  = [25, 40,  20,  60]
-lp = [45, 110, 80, 110]
+c  = [20, 25, 20, 50]
+lp = [40, 60, 80, 90]
 
 myBins = np.arange(10, 200, 5)
 
@@ -368,7 +378,7 @@ plt.savefig('output_figs/HelaS_param_space_dists.png')
 
 packRatio, pLength = zip(*SGoodParams)
 
-options = {'vmin'   : -1.6e4,
+options = {'vmin'   : -1.2e4,
            'vmax'   : -4000,
            'origin' : 'lower',
            'extent' : [results['Hela S']['packRatio'].min(), results['Hela S']['packRatio'].max(),
@@ -377,23 +387,33 @@ options = {'vmin'   : -1.6e4,
 
 fig = plt.figure()
 
-# Log-liklihood map
-plt.imshow(results['Hela S']['LLH'], **options)
-cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-16000, -14500, -13000, -11500, -10000, -8500, -7000, -5500])
-cbar.ax.set_yticklabels(['< -16000', '-14500', '-13000', '-11500', '-10000', '-8500', '-7000', '-5500'])
+# Log-likelihood map
+plt.imshow(results['Hela S']['LLH'], cmap = myCMap, **options)
+cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-12000, -11000, -10000, -9000, -8000, -7000, -6000, -5000, -4000])
+cbar.ax.set_yticklabels(['< -12000', '-11000', '-10000', '-9000', '-8000', '-7000', '-6000', '-5000', '-4000'])
 
-# Plot simulated points
-props = {'alpha' : 0.6,
-         'edgecolors' : None}
-plt.scatter(packRatio, 
-            pLength,
-            s = 10,
-            c = 'white',
-            **props)
+## Plot simulated points
+#props = {'alpha' : 0.6,
+#         'edgecolors' : None}
+#plt.scatter(packRatio, 
+#            pLength,
+#            s = 10,
+#            c = 'white',
+#            **props)
+
 
 # Plot points from distributions
 props = {'marker' : '^'}
 plt.scatter(c, lp, s = 25, c = 'red', **props)
+
+# Plot contours
+levels = [-0.85e4, -0.75e4, -0.65e4, -0.55e4, -0.45e4]
+colors = [(0.2, 0.2, 0.2),
+          (0.4, 0.4, 0.4),
+          (0.6, 0.6, 0.6),
+          (0.8, 0.8, 0.8),
+          (1.0, 1.0, 1.0)]
+plt.contour(CS, LPS, results['Hela S']['LLH'], levels, colors = colors, linewidths = 0.5)
 
 plt.xlim((results['Hela S']['packRatio'].min(), results['Hela S']['packRatio'].max()))
 plt.ylim((results['Hela S']['pLength'].min(),   results['Hela S']['pLength'].max()))
