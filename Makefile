@@ -83,6 +83,17 @@ pubPlots : $(PUBPLOT_REQS)
 	@echo "figures/output_figs/HelaS_param_space_dists.svg"
 	@echo "figures/output_figs/HelaS_param_space_dists.pdf"
 	@echo "figures/output_figs/HelaS_param_space_dists.png"
+	@echo "Generating plots of the denaturing experiment from plotDenatureExperiment.py"
+	cd figures && python plotDenatureExperiment.py && cd ..
+	@echo "figures/output_figs/denatTest_control.svg"
+	@echo "figures/output_figs/denatTest_control.pdf"
+	@echo "figures/output_figs/denatTest_control.png"
+	@echo "figures/output_figs/denatTest_denatured.svg"
+	@echo "figures/output_figs/denatTest_denatured.pdf"
+	@echo "figures/output_figs/denatTest_denatured.png"
+	@echo "figures/output_figs/denatTest_both.svg"
+	@echo "figures/output_figs/denatTest_both.pdf"
+	@echo "figures/output_figs/denatTest_both.png"
 	@echo "Generating plots on Shelterin knockdowns from plotShelterinKDs.py"
 	cd figures && python plotShelterinKDs.py && cd ..
 	@echo "The following figures were generated:"
