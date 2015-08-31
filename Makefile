@@ -49,11 +49,11 @@ calcLLH: $(LLH_REQS)
 	@echo "(This step can take a couple hours or more.)"
 	@echo "Hela L Wildtype..."
 	cd simulation_data && python LLH_HelaL_WT.py && cd ..
-	@echo "Creating file simulation_data/llh_Original_Data_L_dataset_RgTrans2015-1-26.npy..."
+	@echo "Creating file simulation_data/llh_Original_Data_L_dataset_RgTrans2015-8-19.npy..."
 	@echo "Done computing likelihood for Hela L Wildtype."
 	@echo "Hela S Wildtype..."
 	cd simulation_data && python LLH_HelaS_WT.py && cd ..
-	@echo "Creating file simulation_data/llh_Original_Data_S_dataset_RgTrans2015-2-2.npy..."
+	@echo "Creating file simulation_data/llh_Original_Data_S_dataset_RgTrans2015-8-21.npy..."
 	@echo "Done computing likelihood for Hela S wildtype."
 
 # Makes publication-quality plots, including
