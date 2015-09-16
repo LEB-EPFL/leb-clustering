@@ -420,7 +420,6 @@ plt.ylabel('Persistence length, nm')
 plt.savefig('presentation_figs/HelaS_param_space.svg')
 plt.savefig('presentation_figs/HelaS_param_space.pdf')
 plt.savefig('presentation_figs/HelaS_param_space.png')
-<<<<<<< HEAD
 
 # Plot is again, but with red triangles
 fig = plt.figure()
@@ -459,5 +458,3 @@ plt.ylabel('Persistence length, nm')
 plt.savefig('presentation_figs/HelaS_param_space_with_triangles.svg')
 plt.savefig('presentation_figs/HelaS_param_space_with_triangles.pdf')
 plt.savefig('presentation_figs/HelaS_param_space_with_triangles.png')
-=======
->>>>>>> c8e945f6398cbcd342a5694b5b5cedacaf4ac161
