@@ -11,8 +11,8 @@ from PolymerPy.PolymerPy_helpers import unpackLLH, loadModel
 from option_d import test_cm as myCMap # Custom Parula-like colormap
 
 # Set global matplotlib settings
-journalFontSize = 7
-figureSize = (3.46, 2.5)
+journalFontSize = 6
+figureSize = (1.75, 1.57)
 
 fontpath = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf'
 prop = font_manager.FontProperties(fname = fontpath)
@@ -24,7 +24,8 @@ rcParams.update({'font.size'       : journalFontSize,
                  'figure.dpi'      : 600,
                  'figure.edgecolor' : (1,1,1,0),
                  'figure.facecolor' : (1,1,1,0),
-                 'figure.subplot.bottom' : 0.125})
+                 'figure.subplot.bottom' : 0.125,
+                 'axes.linewidth' : 0.5})
 
 
 """The following was originally and mostly written in an IPython
@@ -235,9 +236,13 @@ options = {'vmin'   : -1.6e4,
 fig = plt.figure()
 
 # Log-likelihood map
-plt.imshow(results['Hela L']['LLH'], cmap = myCMap, **options)
-cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-16000, -15000, -14000, -13000, -12000, -11000, -10000, -9000, -8000])
-cbar.ax.set_yticklabels(['< -16000', '-15000', '-14000', '-13000', '-12000', '-11000', '-10000', '-9000', '-8000'])
+ax1 = fig.add_axes([0.13, 0.11, 0.84, 0.76])
+llhMap = ax1.imshow(results['Hela L']['LLH'], cmap = myCMap, **options)
+ax1.set_xticks([10, 30, 50, 70, 90])
+ax1.tick_params(axis='x', which='major', pad=0.7)
+ax1.tick_params(axis='y', which='major', pad=1.5)
+
+#plt.tight_layout(pad=0)
 
 ## Plot simulated points
 #props = {'alpha' : 0.6,
@@ -264,8 +269,14 @@ plt.contour(CL, LPL, results['Hela L']['LLH'], levels, colors = colors, linewidt
 #plt.xlim((results['Hela L']['packRatio'].min(), results['Hela L']['packRatio'].max()))
 plt.xlim((results['Hela L']['packRatio'].min(), 90))
 plt.ylim((results['Hela L']['pLength'].min(),   200))
-plt.xlabel('Packing ratio, bp/nm')
-plt.ylabel('Persistence length, nm')
+plt.xlabel('Packing density, bp/nm', labelpad = 0.5)
+plt.ylabel('Persistence length, nm', labelpad = -1)
+
+cbaxes = fig.add_axes([0.13, 0.9, 0.84, 0.05]) 
+cbar = plt.colorbar(llhMap, cax = cbaxes, ticks = [-16000, -14000, -12000, -10000, -8000], orientation = 'horizontal')
+cbar.ax.xaxis.set_ticklabels(['', '', '', '', ''])
+cbar.ax.xaxis.set_ticks_position('top')
+
 plt.savefig('output_figs/HelaL_param_space.svg')
 plt.savefig('output_figs/HelaL_param_space.pdf')
 plt.savefig('output_figs/HelaL_param_space.png')
@@ -388,9 +399,11 @@ options = {'vmin'   : -1.2e4,
 fig = plt.figure()
 
 # Log-likelihood map
-plt.imshow(results['Hela S']['LLH'], cmap = myCMap, **options)
-cbar = plt.colorbar(label = 'Log-likelihood', ticks = [-12000, -11000, -10000, -9000, -8000, -7000, -6000, -5000, -4000])
-cbar.ax.set_yticklabels(['< -12000', '-11000', '-10000', '-9000', '-8000', '-7000', '-6000', '-5000', '-4000'])
+ax1 = fig.add_axes([0.13, 0.11, 0.84, 0.76])
+llhMap = ax1.imshow(results['Hela S']['LLH'], cmap = myCMap, **options)
+ax1.set_xticks([10, 30, 50, 70, 90])
+ax1.tick_params(axis='x', which='major', pad=0.7)
+ax1.tick_params(axis='y', which='major', pad=1.5)
 
 ## Plot simulated points
 #props = {'alpha' : 0.6,
@@ -417,8 +430,14 @@ plt.contour(CS, LPS, results['Hela S']['LLH'], levels, colors = colors, linewidt
 
 plt.xlim((results['Hela S']['packRatio'].min(), results['Hela S']['packRatio'].max()))
 plt.ylim((results['Hela S']['pLength'].min(),   results['Hela S']['pLength'].max()))
-plt.xlabel('Packing ratio, bp/nm')
-plt.ylabel('Persistence length, nm')
+plt.xlabel('Packing density, bp/nm', labelpad = 0.5)
+plt.ylabel('Persistence length, nm', labelpad = -1)
+
+cbaxes = fig.add_axes([0.13, 0.9, 0.84, 0.05])
+cbar = plt.colorbar(llhMap, cax = cbaxes, ticks = [-12000, -10000, -8000, -6000, -4000], orientation = 'horizontal')
+cbar.ax.xaxis.set_ticklabels(['', '', '', '', ''])
+cbar.ax.xaxis.set_ticks_position('top')
+
 plt.savefig('output_figs/HelaS_param_space.svg')
 plt.savefig('output_figs/HelaS_param_space.pdf')
 plt.savefig('output_figs/HelaS_param_space.png')
