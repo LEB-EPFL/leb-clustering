@@ -142,7 +142,10 @@ ax1.hist(LModelDists[(c[0],lp[0])][1],
          histtype = 'step',
          color = '#333333',
          normed = True)
-ax1.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[0], lp[0]))
+ax1.text(20, 0.021, r'c = %i, $\ell_p$ = %i' % (c[0], lp[0]))
+ax1.set_ylim((0, 0.025))
+ax1.tick_params(axis = 'y', which = 'major', pad = 1.5)
+plt.yticks([0.000, 0.0125, 0.025])
 
 ax2.hist(LExpDist,
          bins = myBins,
@@ -156,7 +159,8 @@ ax2.hist(LModelDists[(c[1],lp[1])][1],
          histtype = 'step',
          color = '#333333',
          normed = True)
-ax2.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[1], lp[1]))
+ax2.text(20, 0.021, r'c = %i, $\ell_p$ = %i' % (c[1], lp[1]))
+ax2.set_ylim((0, 0.025))
 
 ax3.hist(LExpDist,
          bins = myBins,
@@ -170,7 +174,13 @@ ax3.hist(LModelDists[(c[2],lp[2])][1],
          histtype = 'step',
          color = '#333333',
          normed = True)
-ax3.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[2], lp[2]))
+ax3.text(20, 0.021, r'c = %i, $\ell_p$ = %i' % (c[2], lp[2]))
+ax3.tick_params(axis = 'y', which = 'major', pad = 1.5)
+ax3.set_ylim((0, 0.025))
+ax3.set_xticklabels([0, 50, 100, 150, 200, 250], rotation = 45)
+ax3.tick_params(axis = 'x', which = 'major', pad = 0.6)
+
+plt.yticks([0.000, 0.0125, 0.025])
 
 ax4.hist(LExpDist,
          bins = myBins,
@@ -185,15 +195,13 @@ ax4.hist(LModelDists[(c[3],lp[3])][1],
          color = '#333333',
          label = 'Simulation',
          normed = True)
-ax4.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[3], lp[3]))
-
-ax1.set_ylim((0, 0.025))
-ax2.set_ylim((0, 0.025))
-ax3.set_ylim((0, 0.025))
+ax4.text(20, 0.021, r'c = %i, $\ell_p$ = %i' % (c[3], lp[3]))
 ax4.set_ylim((0, 0.025))
+ax4.set_xticklabels([0, 50, 100, 150, 200, 250], rotation = 45)
+ax4.tick_params(axis = 'x', which = 'major', pad = 0.6)
 
-fig.text(0.525, 0.019, 'Radius of gyration, nm', ha='center', va='center')
-fig.text(0.015, 0.5, 'Probability density', ha='center', va='center', rotation='vertical')
+fig.text(0.525, 0.027, 'Radius of gyration, nm', ha='center', va='center')
+fig.text(0.025, 0.5, 'Probability density', ha='center', va='center', rotation='vertical')
 
 ax1.spines['top'].set_visible(False);   ax1.xaxis.set_ticks_position('bottom')
 ax1.spines['right'].set_visible(False); ax1.yaxis.set_ticks_position('left')
@@ -210,7 +218,7 @@ ax3.spines['bottom'].set_linewidth(0.5); ax3.spines['left'].set_linewidth(0.5)
 ax4.spines['bottom'].set_linewidth(0.5); ax4.spines['left'].set_linewidth(0.5)
 
 # Place legend above subplots
-leg = plt.legend(bbox_to_anchor=(0.65, 0.98),
+leg = plt.legend(bbox_to_anchor=(0.75, 1.02),
                  bbox_transform=plt.gcf().transFigure)
 leg.draw_frame(False)
 
@@ -291,7 +299,7 @@ lp = [40, 60, 80, 90]
 
 myBins = np.arange(10, 200, 5)
 
-fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, sharex = True, sharey = True, figsize = (3.46, 2.7), dpi = 600)
+fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, sharex = True, sharey = True)
 
 ax1.hist(SExpDist,
          bins = myBins,
@@ -305,7 +313,10 @@ ax1.hist(SModelDists[(c[0],lp[0])][1],
          histtype = 'step',
          color = '#333333',
          normed = True)
-ax1.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[0], lp[0]))
+ax1.text(20, 0.043, r'c = %i, $\ell_p$ = %i' % (c[0], lp[0]))
+ax1.set_ylim((0, 0.05))
+ax1.tick_params(axis = 'y', which = 'major', pad = 1.5)
+plt.yticks([0.00, 0.025, 0.05])
 
 ax2.hist(SExpDist,
          bins = myBins,
@@ -319,7 +330,8 @@ ax2.hist(SModelDists[(c[1],lp[1])][1],
          histtype = 'step',
          color = '#333333',
          normed = True)
-ax2.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[1], lp[1]))
+ax2.text(20, 0.043, r'c = %i, $\ell_p$ = %i' % (c[1], lp[1]))
+ax2.set_ylim((0, 0.05))
 
 ax3.hist(SExpDist,
          bins = myBins,
@@ -333,7 +345,13 @@ ax3.hist(SModelDists[(c[2],lp[2])][1],
          histtype = 'step',
          color = '#333333',
          normed = True)
-ax3.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[2], lp[2]))
+ax3.text(20, 0.043, r'c = %i, $\ell_p$ = %i' % (c[2], lp[2]))
+ax3.tick_params(axis = 'y', which = 'major', pad = 1.5)
+ax3.set_ylim((0, 0.025))
+ax3.set_xticklabels([0, 50, 100, 150, 200], rotation = 45)
+ax3.tick_params(axis = 'x', which = 'major', pad = 0.6)
+
+plt.yticks([0, 0.025, 0.050])
 
 ax4.hist(SExpDist,
          bins = myBins,
@@ -348,15 +366,18 @@ ax4.hist(SModelDists[(c[3],lp[3])][1],
          color = '#333333',
          label = 'Simulation',
          normed = True)
-ax4.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[3], lp[3]))
+ax4.text(20, 0.043, r'c = %i, $\ell_p$ = %i' % (c[3], lp[3]))
+ax4.set_ylim((0, 0.025))
+ax4.set_xticklabels([0, 50, 100, 150, 200], rotation = 45)
+ax4.tick_params(axis = 'x', which = 'major', pad = 0.6)
 
 ax1.set_ylim((0, 0.05))
 ax2.set_ylim((0, 0.05))
 ax3.set_ylim((0, 0.05))
 ax4.set_ylim((0, 0.05))
 
-fig.text(0.525, 0.019, 'Radius of gyration, nm', ha='center', va='center')
-fig.text(0.015, 0.5, 'Probability density', ha='center', va='center', rotation='vertical')
+fig.text(0.525, 0.027, 'Radius of gyration, nm', ha='center', va='center')
+fig.text(0.025, 0.5, 'Probability density', ha='center', va='center', rotation='vertical')
 
 ax1.spines['top'].set_visible(False);   ax1.xaxis.set_ticks_position('bottom')
 ax1.spines['right'].set_visible(False); ax1.yaxis.set_ticks_position('left')
@@ -373,7 +394,7 @@ ax3.spines['bottom'].set_linewidth(0.5); ax3.spines['left'].set_linewidth(0.5)
 ax4.spines['bottom'].set_linewidth(0.5); ax4.spines['left'].set_linewidth(0.5)
 
 # Place legend above subplots
-leg = plt.legend(bbox_to_anchor=(0.65, 0.98),
+leg = plt.legend(bbox_to_anchor=(0.75, 1.02),
                  bbox_transform=plt.gcf().transFigure)
 leg.draw_frame(False)
 
