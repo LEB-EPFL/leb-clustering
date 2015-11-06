@@ -29,16 +29,16 @@ myBins = np.arange(10, 200, 5)
 fig, ax = plt.subplots(1, 1, figsize = (3.46 , 2.5), dpi = 300)
 nL, binsL, patchesL = ax.hist(hl,
                                bins = myBins,
-                               histtype = 'stepfilled',
-                               color = '#333333',
-                               label = 'Hela L (N = %i)' % len(hl),
+                               histtype = 'step',
+                               color = '#000000',
+                               label = 'HeLa L (N = %i)' % len(hl),
                                normed = True)
 nH, binsH, patchesH = ax.hist(hs,
                                bins = myBins,
-                               histtype = 'stepfilled',
-                               color = '#AAAAAA',
+                               histtype = 'step',
+                               color = '#333333',
                                alpha = 0.5,
-                               label = 'Hela S (N = %i)' % len(hs),
+                               label = 'HeLa S (N = %i)' % len(hs),
                                normed = True)
 
 
@@ -72,7 +72,7 @@ leg = plt.legend()
 leg.draw_frame(False)   
 
 plt.xlabel('Radius of gyration, nm')
-plt.ylabel('Normalized frequency')
+plt.ylabel('Probability density')
 plt.ylim(tuple(ysMean))
 plt.grid(False)
 plt.savefig('output_figs/plotDistributions.svg')

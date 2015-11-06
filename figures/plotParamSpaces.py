@@ -131,57 +131,57 @@ fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, sharex = True, sharey = True)
 
 ax1.hist(LExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax1.hist(LModelDists[(c[0],lp[0])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          normed = True)
 ax1.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[0], lp[0]))
 
 ax2.hist(LExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax2.hist(LModelDists[(c[1],lp[1])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          normed = True)
 ax2.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[1], lp[1]))
 
 ax3.hist(LExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax3.hist(LModelDists[(c[2],lp[2])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          normed = True)
 ax3.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[2], lp[2]))
 
 ax4.hist(LExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax4.hist(LModelDists[(c[3],lp[3])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          label = 'Simulation',
          normed = True)
 ax4.text(20, 0.022, r'c = %i, $\ell_p$ = %i' % (c[3], lp[3]))
@@ -192,7 +192,7 @@ ax3.set_ylim((0, 0.025))
 ax4.set_ylim((0, 0.025))
 
 fig.text(0.525, 0.019, 'Radius of gyration, nm', ha='center', va='center')
-fig.text(0.015, 0.5, 'Normalized frequency', ha='center', va='center', rotation='vertical')
+fig.text(0.015, 0.5, 'Probability density', ha='center', va='center', rotation='vertical')
 
 ax1.spines['top'].set_visible(False);   ax1.xaxis.set_ticks_position('bottom')
 ax1.spines['right'].set_visible(False); ax1.yaxis.set_ticks_position('left')
@@ -284,57 +284,57 @@ fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, sharex = True, sharey = True, 
 
 ax1.hist(SExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax1.hist(SModelDists[(c[0],lp[0])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          normed = True)
 ax1.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[0], lp[0]))
 
 ax2.hist(SExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax2.hist(SModelDists[(c[1],lp[1])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          normed = True)
 ax2.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[1], lp[1]))
 
 ax3.hist(SExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax3.hist(SModelDists[(c[2],lp[2])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          normed = True)
 ax3.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[2], lp[2]))
 
 ax4.hist(SExpDist,
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#333333',
+         histtype = 'step',
+         color = '#000000',
+         alpha = 0.5,
          label = 'Experiment',
          normed = True)
 ax4.hist(SModelDists[(c[3],lp[3])][1],
          bins = myBins,
-         histtype = 'stepfilled',
-         color = '#AAAAAA',
-         alpha = 0.5,
+         histtype = 'step',
+         color = '#333333',
          label = 'Simulation',
          normed = True)
 ax4.text(20, 0.045, r'c = %i, $\ell_p$ = %i' % (c[3], lp[3]))
@@ -345,7 +345,7 @@ ax3.set_ylim((0, 0.05))
 ax4.set_ylim((0, 0.05))
 
 fig.text(0.525, 0.019, 'Radius of gyration, nm', ha='center', va='center')
-fig.text(0.015, 0.5, 'Normalized frequency', ha='center', va='center', rotation='vertical')
+fig.text(0.015, 0.5, 'Probability density', ha='center', va='center', rotation='vertical')
 
 ax1.spines['top'].set_visible(False);   ax1.xaxis.set_ticks_position('bottom')
 ax1.spines['right'].set_visible(False); ax1.yaxis.set_ticks_position('left')
