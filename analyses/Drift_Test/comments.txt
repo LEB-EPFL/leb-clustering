@@ -1,0 +1,5 @@
+This is the exact same analysis for HeLa S and L wild type as in the
+paper, but uses the non-drift corrected coordinates instead of the
+drift-corrected coordinates. This was to test whether the
+cross-correlation method of drift correction introduced significant
+errors in the reconstruction.
