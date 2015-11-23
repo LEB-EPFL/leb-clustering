@@ -6,7 +6,7 @@ __author__ = 'Kyle M. Douglass'
 __email__  = 'kyle.douglass@epfl.ch'
 
 from numpy import save
-from PolymerPy import PolymerPy_helpers as Helpers
+from STORMlikeChains import STORMlikeChains_helpers as Helpers
 
 import os
 os.chdir('..')

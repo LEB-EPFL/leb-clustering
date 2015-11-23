@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import rcParams
-from PolymerPy.PolymerPy_helpers import unpackLLH, loadModel
+from STORMlikeChains.STORMlikeChains_helpers import unpackLLH, loadModel
 from option_d import test_cm as myCMap # Custom Parula-like colormap
 
 # Set global matplotlib settings
